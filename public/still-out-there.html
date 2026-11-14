@@ -907,7 +907,7 @@ function sceneStep(){
    own audio+transcript if available, otherwise falls back to the TTS scene. --- */
 var currentZoneId=null, currentNarrationKey=null, lastSceneKey=null, revealFlashFired=false;
 var ASSETS={};                 /* zoneId -> { audio: url|null, transcript: json|null } */
-var audioEl=null, audioMode=false, audioZoneId=null;
+var audioBuffers={}, narrSource=null, narrStartTime=0, audioMode=false, audioZoneId=null;
 
 function zoneAtDepth(d){
   for(var i=0;i<ZONES.length;i++){ var z=ZONES[i]; if(d>=z.range[0] && d<z.range[1])return z; }
@@ -926,35 +926,49 @@ function handleSceneEntry(sk){
   if(sk)openDeepReadForScene(sk);
 }
 
-/* detect per-zone audio + transcript files (async; TTS fills any gaps) */
+/* detect per-zone audio + transcript files; preload+decode audio via Web Audio */
+function preloadBuffer(id){
+  if(audioBuffers[id]||!ASSETS[id]||!ASSETS[id].audio||!AC)return;
+  fetch(ASSETS[id].audio).then(function(r){return r.arrayBuffer();}).then(function(buf){
+    AC.decodeAudioData(buf).then(function(decoded){ audioBuffers[id]=decoded; }).catch(function(){});
+  }).catch(function(){});
+}
 function detectAssets(){
   ASSETS.cold={audio:null,transcript:null};
-  fetch("audio/cold.mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS.cold.audio="audio/cold.mp3"; }).catch(function(){});
+  fetch("audio/cold.mp3",{method:"HEAD"}).then(function(r){ if(r.ok){ASSETS.cold.audio="audio/cold.mp3"; preloadBuffer("cold");} }).catch(function(){});
   fetch("transcripts/cold.json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS.cold.transcript=j; }).catch(function(){});
   ZONES.forEach(function(z){
     var id=z.id; ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
-    fetch("audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS[id].audio="audio/"+id+".mp3"; }).catch(function(){});
+    fetch("audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok){ASSETS[id].audio="audio/"+id+".mp3"; preloadBuffer(id);} }).catch(function(){});
     fetch("transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
   });
 }
-function initAudioElement(){ audioEl=new Audio(); audioEl.preload="auto"; audioEl.volume=state.muted?0:1; }
+/* play narration through the Web Audio graph (already unlocked by the Begin click) */
 function startAudioMode(id){
-  var a=ASSETS[id]; if(!a||!a.audio||!a.transcript)return false;
-  audioMode=true; audioZoneId=id; audioEl.src=a.audio; audioEl.currentTime=0;
-  audioEl.onended = (id==="cold") ? function(){ state.coldOpenDone=true; stopAudioMode(); } : null;
-  var p=audioEl.play(); if(p&&p.catch)p.catch(function(){});
+  var a=ASSETS[id]; if(!a||!a.audio||!a.transcript||!audioBuffers[id]||!AC)return false;
+  audioMode=true; audioZoneId=id;
+  if(AC.state!=="running")AC.resume();   /* best-effort; Begin click already unlocked it */
+  narrSource=AC.createBufferSource(); narrSource.buffer=audioBuffers[id]; narrSource.connect(master);
+  narrStartTime=AC.currentTime;
+  narrSource.start(0);
+  narrSource.onended = (id==="cold") ? function(){ state.coldOpenDone=true; stopAudioMode(); } : null;
   return true;
 }
-function stopAudioMode(){ audioMode=false; audioZoneId=null; if(audioEl)audioEl.pause(); }
+function stopAudioMode(){
+  audioMode=false; audioZoneId=null;
+  if(narrSource){ try{narrSource.stop();}catch(e){} narrSource=null; }
+}
 
-/* transcript caption sync: one line at a time, locked to audio.currentTime */
+/* transcript caption sync: one line at a time, locked to the audio clock */
 function syncAudioCaption(){
-  if(!audioMode||!audioEl)return;
+  if(!audioMode||!narrSource)return;
   var a=ASSETS[audioZoneId]; if(!a||!a.transcript)return;
-  var t=audioEl.currentTime, segs=a.transcript.segments||[], seg=null, si=-1;
+  var t=AC.currentTime - narrStartTime;
+  var segs=a.transcript.segments||[], seg=null, si=-1;
   for(var i=0;i<segs.length;i++){ if(segs[i].t<=t){ seg=segs[i]; si=i; } else break; }
   if(!seg)return;
-  var nextT=(si+1<segs.length)?segs[si+1].t:(audioEl.duration||seg.t+5);
+  var bufDur=audioBuffers[audioZoneId]?audioBuffers[audioZoneId].duration:(seg.t+5);
+  var nextT=(si+1<segs.length)?segs[si+1].t:bufDur;
   var segDur=Math.max(0.6,nextT-seg.t);
   var chunks=splitChunks(seg.text||"",8);
   var ci=Math.min(chunks.length-1,Math.floor((t-seg.t)/segDur*chunks.length));
@@ -1169,30 +1183,40 @@ scene.addEventListener("click",function(e){
    CONTROLS
    ==================================================================== */
 btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(state.captionsOn){ if(capText.textContent)caption.classList.add("on"); } else { hideCaption(); } });
-btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(audioEl)audioEl.volume=state.muted?0:1; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
+btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
 var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this line"; document.body.appendChild(replay);
-replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(audioMode&&audioEl){ audioEl.currentTime=0; var p=audioEl.play(); if(p&&p.catch)p.catch(function(){}); } else if(SCENES[currentZoneId]){ cancelSpeech(); playScene(currentZoneId,null); } });
+replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(audioBuffers[currentZoneId]&&ASSETS[currentZoneId]&&ASSETS[currentZoneId].transcript){ stopAudioMode(); startAudioMode(currentZoneId); } else if(SCENES[currentZoneId]){ cancelSpeech(); playScene(currentZoneId,null); } });
 
 /* ====================================================================
    START GATE
    ==================================================================== */
+function startColdOpen(retries){
+  retries=retries||0;
+  if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){
+    if(audioBuffers.cold){ startAudioMode("cold"); }
+    else if(retries<30){ setTimeout(function(){startColdOpen(retries+1);},200); }
+    else { playScene("cold", function(){state.coldOpenDone=true;}); }
+  } else { playScene("cold", function(){ state.coldOpenDone=true; }); }
+}
 function begin(){
   if(state.started)return; state.started=true;
   initAudio(); if(AC&&AC.state==="suspended")AC.resume();
-  initAudioElement(); detectAssets();
+  detectAssets();
   gate.classList.add("gone");
   brand.classList.add("on"); navEl.classList.add("on"); rail.classList.add("on"); timechip.classList.add("on");
   showVisor();
   echoEl.classList.remove("cold");
   coldText.classList.add("on"); scrollPrompt.classList.add("on");
   startGoldenRecord();
-  setTimeout(function(){
-    if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){ startAudioMode("cold"); }
-    else { playScene("cold", function(){ state.coldOpenDone=true; }); }
-  }, 2800);
+  setTimeout(function(){ startColdOpen(0); }, 2800);
 }
 startbtn.addEventListener("click",begin);
 window.addEventListener("keydown",function(e){ if(!state.started&&(e.key===" "||e.key==="Enter")){ e.preventDefault(); begin(); } });
+/* resume the AudioContext on any user gesture (browsers require activation for sound) */
+function resumeAC(){ if(AC&&AC.state!=="running")AC.resume(); }
+document.addEventListener("click",resumeAC);
+document.addEventListener("keydown",resumeAC);
+document.addEventListener("touchstart",resumeAC);
 
 /* ====================================================================
    PIXEL ART (deep space sprites)
