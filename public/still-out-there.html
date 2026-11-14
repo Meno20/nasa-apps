@@ -928,6 +928,9 @@ function handleSceneEntry(sk){
 
 /* detect per-zone audio + transcript files (async; TTS fills any gaps) */
 function detectAssets(){
+  ASSETS.cold={audio:null,transcript:null};
+  fetch("audio/cold.mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS.cold.audio="audio/cold.mp3"; }).catch(function(){});
+  fetch("transcripts/cold.json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS.cold.transcript=j; }).catch(function(){});
   ZONES.forEach(function(z){
     var id=z.id; ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
     fetch("audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS[id].audio="audio/"+id+".mp3"; }).catch(function(){});
@@ -938,6 +941,7 @@ function initAudioElement(){ audioEl=new Audio(); audioEl.preload="auto"; audioE
 function startAudioMode(id){
   var a=ASSETS[id]; if(!a||!a.audio||!a.transcript)return false;
   audioMode=true; audioZoneId=id; audioEl.src=a.audio; audioEl.currentTime=0;
+  audioEl.onended = (id==="cold") ? function(){ state.coldOpenDone=true; stopAudioMode(); } : null;
   var p=audioEl.play(); if(p&&p.catch)p.catch(function(){});
   return true;
 }
@@ -962,11 +966,11 @@ function syncAudioCaption(){
 }
 
 function updateNarration(){
+  if(audioMode) syncAudioCaption();                  /* per-frame caption sync (incl. cold open) */
   if(!state.coldOpenDone){
     if(state.started && camDepth>1600){ state.coldOpenDone=true; cancelSpeech(); stopAudioMode(); }
     else return;
   }
-  if(audioMode) syncAudioCaption();                  /* per-frame caption sync while audio plays */
   var z=zoneAtDepth(camDepth);
   var zid=z?z.id:null;
   if(zid===currentZoneId) return;                    /* same zone — no switch */
@@ -1182,7 +1186,10 @@ function begin(){
   echoEl.classList.remove("cold");
   coldText.classList.add("on"); scrollPrompt.classList.add("on");
   startGoldenRecord();
-  setTimeout(function(){ playScene("cold", function(){ state.coldOpenDone=true; }); }, 2800);
+  setTimeout(function(){
+    if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){ startAudioMode("cold"); }
+    else { playScene("cold", function(){ state.coldOpenDone=true; }); }
+  }, 2800);
 }
 startbtn.addEventListener("click",begin);
 window.addEventListener("keydown",function(e){ if(!state.started&&(e.key===" "||e.key==="Enter")){ e.preventDefault(); begin(); } });
