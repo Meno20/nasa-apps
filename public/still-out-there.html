@@ -181,6 +181,9 @@ body{
 #scroll-prompt{position:fixed;bottom:9vh;left:50%;transform:translateX(-50%);z-index:55;text-align:center;color:var(--echo);font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.2em;opacity:0;transition:opacity 1.4s ease;pointer-events:none}
 #scroll-prompt.on{opacity:.85}
 #scroll-prompt .arrow{display:block;margin:10px auto 0;width:12px;height:20px;border-right:2px solid var(--echo);border-bottom:2px solid var(--echo);transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
+#play-intro{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:57;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--echo);background:rgba(8,10,22,.85);border:1px solid rgba(120,220,255,.5);border-radius:30px;padding:16px 30px;cursor:pointer;transition:opacity .3s ease;opacity:0;pointer-events:none}
+#play-intro.on{opacity:1;pointer-events:auto}
+#play-intro:hover{background:rgba(120,220,255,.12);border-color:var(--echo);box-shadow:0 0 24px rgba(120,220,255,.3)}
 @keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(3px,3px)}}
 
 /* epilogue overlay */
@@ -271,6 +274,8 @@ body{
 </style>
 </head>
 <body>
+
+<audio id="narr-audio" preload="auto"></audio>
 
 <canvas id="stars"></canvas>
 <div id="planets">
@@ -440,6 +445,7 @@ body{
   <small>golden record · cold open</small>
 </div>
 <div id="scroll-prompt">scroll to dive deeper<span class="arrow"></span></div>
+<button id="play-intro">▶ play introduction</button>
 
 <div id="reveal-flash"></div>
 
@@ -721,7 +727,7 @@ var brand=$("#brand"), navEl=$("#nav"), rail=$("#rail"), railFill=$("#rail .fill
 var timechip=$("#timechip"), timeEra=timechip.querySelector(".era");
 var deepread=$("#deepread"), drTitle=$("#dr-title"), drMeta=$("#dr-meta"), drFact=$("#dr-fact"), drClose=$("#dr-close");
 var btnCap=$("#btn-captions"), btnDR=$("#btn-deepread"), btnMute=$("#btn-mute");
-var coldText=$("#cold-text"), scrollPrompt=$("#scroll-prompt"), epilogue=$("#epilogue"), revealFlash=$("#reveal-flash");
+var coldText=$("#cold-text"), scrollPrompt=$("#scroll-prompt"), epilogue=$("#epilogue"), revealFlash=$("#reveal-flash"), playIntro=$("#play-intro");
 var visorOn=false, stats={distance:$("#stat-distance"),status:$("#stat-status"),year:$("#stat-year"),power:$("#stat-power")};
 
 LAYOUT.forEach(function(L){ L.el=scene.querySelector('.art-obj[data-art="'+L.id+'"]'); });
@@ -907,7 +913,7 @@ function sceneStep(){
    own audio+transcript if available, otherwise falls back to the TTS scene. --- */
 var currentZoneId=null, currentNarrationKey=null, lastSceneKey=null, revealFlashFired=false;
 var ASSETS={};                 /* zoneId -> { audio: url|null, transcript: json|null } */
-var audioBuffers={}, narrSource=null, narrStartTime=0, audioMode=false, audioZoneId=null;
+var narrAudio=null, audioMode=false, audioZoneId=null;
 
 function zoneAtDepth(d){
   for(var i=0;i<ZONES.length;i++){ var z=ZONES[i]; if(d>=z.range[0] && d<z.range[1])return z; }
@@ -926,49 +932,40 @@ function handleSceneEntry(sk){
   if(sk)openDeepReadForScene(sk);
 }
 
-/* detect per-zone audio + transcript files; preload+decode audio via Web Audio */
-function preloadBuffer(id){
-  if(audioBuffers[id]||!ASSETS[id]||!ASSETS[id].audio||!AC)return;
-  fetch(ASSETS[id].audio).then(function(r){return r.arrayBuffer();}).then(function(buf){
-    AC.decodeAudioData(buf).then(function(decoded){ audioBuffers[id]=decoded; }).catch(function(){});
-  }).catch(function(){});
-}
+/* detect per-zone audio + transcript files (HEAD check only; HTML5 audio decodes on load) */
 function detectAssets(){
   ASSETS.cold={audio:null,transcript:null};
-  fetch("audio/cold.mp3",{method:"HEAD"}).then(function(r){ if(r.ok){ASSETS.cold.audio="audio/cold.mp3"; preloadBuffer("cold");} }).catch(function(){});
+  fetch("audio/cold.mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS.cold.audio="audio/cold.mp3"; }).catch(function(){});
   fetch("transcripts/cold.json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS.cold.transcript=j; }).catch(function(){});
   ZONES.forEach(function(z){
     var id=z.id; ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
-    fetch("audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok){ASSETS[id].audio="audio/"+id+".mp3"; preloadBuffer(id);} }).catch(function(){});
+    fetch("audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS[id].audio="audio/"+id+".mp3"; }).catch(function(){});
     fetch("transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
   });
 }
-/* play narration through the Web Audio graph (already unlocked by the Begin click) */
+function initNarrAudio(){ narrAudio=document.getElementById("narr-audio"); if(narrAudio)narrAudio.volume=state.muted?0:1; }
+/* play narration via the HTML5 audio element (unlocked by the Begin click) */
 function startAudioMode(id){
-  var a=ASSETS[id]; if(!a||!a.audio||!a.transcript||!audioBuffers[id]||!AC)return false;
+  var a=ASSETS[id]; if(!a||!a.audio||!a.transcript||!narrAudio)return false;
   audioMode=true; audioZoneId=id;
-  if(AC.state!=="running")AC.resume();   /* best-effort; Begin click already unlocked it */
-  narrSource=AC.createBufferSource(); narrSource.buffer=audioBuffers[id]; narrSource.connect(master);
-  narrStartTime=AC.currentTime;
-  narrSource.start(0);
-  narrSource.onended = (id==="cold") ? function(){ state.coldOpenDone=true; stopAudioMode(); } : null;
+  narrAudio.src=a.audio; narrAudio.currentTime=0;
+  narrAudio.onended = (id==="cold") ? function(){ state.coldOpenDone=true; stopAudioMode(); } : null;
+  /* show the first caption immediately, even if autoplay blocks the play() */
+  var segs=a.transcript.segments||[];
+  if(segs.length){ var chunks=splitChunks(segs[0].text||"",8); showCaption(segs[0].speaker||"echo", chunks[0]||"", eraCaptionClass(), segs[0].aside); currentNarrationKey=id+":0:0"; }
+  var p=narrAudio.play(); if(p&&p.catch)p.catch(function(){ audioMode=false; audioZoneId=null; });
   return true;
 }
-function stopAudioMode(){
-  audioMode=false; audioZoneId=null;
-  if(narrSource){ try{narrSource.stop();}catch(e){} narrSource=null; }
-}
+function stopAudioMode(){ audioMode=false; audioZoneId=null; if(narrAudio)narrAudio.pause(); }
 
-/* transcript caption sync: one line at a time, locked to the audio clock */
+/* transcript caption sync: one line at a time, locked to the audio element's clock */
 function syncAudioCaption(){
-  if(!audioMode||!narrSource)return;
+  if(!audioMode||!narrAudio)return;
   var a=ASSETS[audioZoneId]; if(!a||!a.transcript)return;
-  var t=AC.currentTime - narrStartTime;
-  var segs=a.transcript.segments||[], seg=null, si=-1;
+  var t=narrAudio.currentTime, segs=a.transcript.segments||[], seg=null, si=-1;
   for(var i=0;i<segs.length;i++){ if(segs[i].t<=t){ seg=segs[i]; si=i; } else break; }
   if(!seg)return;
-  var bufDur=audioBuffers[audioZoneId]?audioBuffers[audioZoneId].duration:(seg.t+5);
-  var nextT=(si+1<segs.length)?segs[si+1].t:bufDur;
+  var nextT=(si+1<segs.length)?segs[si+1].t:(narrAudio.duration||seg.t+5);
   var segDur=Math.max(0.6,nextT-seg.t);
   var chunks=splitChunks(seg.text||"",8);
   var ci=Math.min(chunks.length-1,Math.floor((t-seg.t)/segDur*chunks.length));
@@ -1180,31 +1177,31 @@ scene.addEventListener("click",function(e){
    CONTROLS
    ==================================================================== */
 btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(state.captionsOn){ if(capText.textContent)caption.classList.add("on"); } else { hideCaption(); } });
-btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
+btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(narrAudio)narrAudio.volume=state.muted?0:1; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
 var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this line"; document.body.appendChild(replay);
-replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(audioBuffers[currentZoneId]&&ASSETS[currentZoneId]&&ASSETS[currentZoneId].transcript){ stopAudioMode(); startAudioMode(currentZoneId); } else if(SCENES[currentZoneId]){ cancelSpeech(); playScene(currentZoneId,null); } });
+replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(ASSETS[currentZoneId]&&ASSETS[currentZoneId].audio&&ASSETS[currentZoneId].transcript){ stopAudioMode(); startAudioMode(currentZoneId); } else if(SCENES[currentZoneId]){ cancelSpeech(); playScene(currentZoneId,null); } });
 
 /* ====================================================================
    START GATE
    ==================================================================== */
-function startColdOpen(retries){
-  retries=retries||0;
-  if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){
-    if(audioBuffers.cold){ startAudioMode("cold"); }
-    else if(retries<60){ setTimeout(function(){startColdOpen(retries+1);},200); }
-    else { playScene("cold", function(){state.coldOpenDone=true;}); }
-  } else { playScene("cold", function(){ state.coldOpenDone=true; }); }
+function startColdOpen(){
+  if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){ startAudioMode("cold"); }
+  else { playScene("cold", function(){ state.coldOpenDone=true; }); }
 }
 function begin(){
   if(state.started)return; state.started=true;
+  beginTime=Date.now();
   initAudio(); if(AC&&AC.state==="suspended")AC.resume();
+  initNarrAudio();
+  /* unlock the audio element inside the Begin gesture so later play() calls aren't blocked */
+  if(narrAudio){ narrAudio.src="audio/cold.mp3"; var u=narrAudio.play(); if(u&&u.then)u.then(function(){ narrAudio.pause(); narrAudio.currentTime=0; }).catch(function(){}); }
   detectAssets();
   gate.classList.add("gone");
   brand.classList.add("on"); navEl.classList.add("on"); rail.classList.add("on"); timechip.classList.add("on");
   showVisor();
   echoEl.classList.remove("cold");
   startGoldenRecord();
-  setTimeout(function(){ startColdOpen(0); }, 2800);
+  setTimeout(function(){ startColdOpen(); }, 2800);
 }
 startbtn.addEventListener("click",begin);
 window.addEventListener("keydown",function(e){ if(!state.started&&(e.key===" "||e.key==="Enter")){ e.preventDefault(); begin(); } });
@@ -1213,6 +1210,18 @@ function resumeAC(){ if(AC&&AC.state!=="running")AC.resume(); }
 document.addEventListener("click",resumeAC);
 document.addEventListener("keydown",resumeAC);
 document.addEventListener("touchstart",resumeAC);
+/* manual "play introduction" fallback — a fresh gesture that always unlocks sound */
+var beginTime=0;
+playIntro.addEventListener("click",function(){
+  if(AC&&AC.state!=="running")AC.resume();
+  stopAudioMode(); startAudioMode("cold");
+});
+/* show the play button if the audio hasn't started within 4s of Begin */
+setInterval(function(){
+  if(state.started && !state.coldOpenDone && Date.now()-beginTime>4000){
+    if(!audioMode || (narrAudio&&narrAudio.paused)){ playIntro.classList.add("on"); } else { playIntro.classList.remove("on"); }
+  } else { playIntro.classList.remove("on"); }
+},400);
 
 /* ====================================================================
    PIXEL ART (deep space sprites)
@@ -1274,3 +1283,4 @@ setInterval(function(){
 </script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        
