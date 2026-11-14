@@ -940,11 +940,21 @@ function speakBeat(beat,onDone){
    ==================================================================== */
 function project(d,cam){ var tz=cam-d; var denom=PERSP-tz; if(denom<1)return{vis:0}; return{factor:PERSP/denom}; }
 function tzOpacity(tz){
-  if(tz>=PERSP*0.85)return 0;
-  if(tz<=-PERSP*5)return 0;
-  if(tz<=-PERSP*2.5)return (tz+PERSP*5)/(PERSP*2.5);
-  if(tz<=PERSP*0.15)return 1;
-  return 1-(tz-PERSP*0.15)/(PERSP*0.7);
+  /* Tight visibility window: only the artifact you're AT is full. The next
+     one ahead fades in as a faint preview; everything else is invisible.
+     This keeps the dive clean — no stacked models overlapping at center. */
+  if(tz>=PERSP*0.35) return 0;            // passed the camera: gone
+  if(tz<=-PERSP*1.8) return 0;            // too far ahead: invisible
+  if(tz<=-PERSP*0.5){                      // far approach: faint preview 0 → 0.18
+    var f=(tz+PERSP*1.8)/(PERSP*1.3);
+    return 0.18*f;
+  }
+  if(tz<=-PERSP*0.2){                      // near approach: ramp 0.18 → 1
+    var g=(tz+PERSP*0.5)/(PERSP*0.3);
+    return 0.18+0.82*g;
+  }
+  if(tz<=PERSP*0.12) return 1;            // at the artifact: full
+  return 1-(tz-PERSP*0.12)/(PERSP*0.23);  // passing: fade out 1 → 0
 }
 function layoutById(id){ for(var i=0;i<LAYOUT.length;i++) if(LAYOUT[i].id===id)return LAYOUT[i]; return LAYOUT[0]; }
 
@@ -970,8 +980,9 @@ function renderArtifacts(){
     el.style.opacity=op;
     /* all on one line: x=0, y=0 */
     el.style.transform="translate3d(0px,0px,"+tz+"px)";
-    var near=(tz>-PERSP*1.4 && tz<PERSP*0.25);
-    el.classList.toggle("near", near && op>0.3);
+    /* nameplate + click only when basically AT the artifact (no label overlap) */
+    var near=(tz>-PERSP*0.22 && tz<PERSP*0.12);
+    el.classList.toggle("near", near && op>0.85);
   }
 }
 function renderEcho(){
