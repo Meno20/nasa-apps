@@ -683,25 +683,28 @@ var EPOCH_DEPTH=11600;       /* reveal/epilogue begins here (past Pioneer 10) */
 var ERA_BOUNDS={ lobby:1400, mars:6500, moon:9200, deepspace:EPOCH_DEPTH };
 
 /* ====================================================================
-   NARRATION TIMELINE — each scene's beats are mapped to a depth range,
-   so narration position TRACKS scroll position. Scroll forward -> beats
-   advance; scroll back -> beats go back. The caption always reflects the
-   current depth; speech re-triggers when the active beat changes.
+   NARRATION ZONES — the dive is divided into zones (one per artifact +
+   era transitions). Scroll picks the active zone; each zone plays its own
+   audio+transcript if those files exist, otherwise falls back to TTS.
+   Drop files in public/audio/<id>.mp3 + public/transcripts/<id>.json and
+   they're picked up automatically.
    ==================================================================== */
-var SCENE_DEPTH={
-  perseverance:[1600,3400], insight:[3400,4300],
-  opportunity:[4300,5200], spirit:[5200,6000], viking:[6000,6500],
-  moonSilence:[6500,7000], rover:[7000,7900], eagle:[7900,8700],
-  surveyor:[8700,9200], deepHum:[9200,9600], voyager:[9600,10400],
-  pioneer11:[10400,11200], reveal:[11200,EPOCH_DEPTH], epilogue:[EPOCH_DEPTH,TOTAL_DEPTH]
-};
-var SCENE_ORDER=["perseverance","insight","opportunity","spirit","viking","moonSilence","rover","eagle","surveyor","deepHum","voyager","pioneer11","reveal","epilogue"];
-var TIMELINE=[];
-SCENE_ORDER.forEach(function(key){
-  var S=SCENES[key]; if(!S||!SCENE_DEPTH[key])return;
-  var r=SCENE_DEPTH[key], beats=S.conv, span=r[1]-r[0], per=span/beats.length;
-  beats.forEach(function(b,i){ TIMELINE.push({key:key+":"+i, sceneKey:key, beatIdx:i, depthStart:r[0]+i*per, depthEnd:r[0]+(i+1)*per, beat:b}); });
-});
+var ZONES=[
+  {id:"perseverance",range:[1600,3400]},
+  {id:"insight",      range:[3400,4300]},
+  {id:"opportunity",  range:[4300,5200]},
+  {id:"spirit",       range:[5200,6000]},
+  {id:"viking",       range:[6000,6500]},
+  {id:"moonSilence",  range:[6500,7000]},
+  {id:"rover",        range:[7000,7900]},
+  {id:"eagle",        range:[7900,8700]},
+  {id:"surveyor",     range:[8700,9200]},
+  {id:"deepHum",      range:[9200,9600]},
+  {id:"voyager",      range:[9600,10400]},
+  {id:"pioneer11",    range:[10400,11200]},
+  {id:"reveal",       range:[11200,EPOCH_DEPTH]},
+  {id:"epilogue",     range:[EPOCH_DEPTH,TOTAL_DEPTH]}
+];
 
 /* ====================================================================
    DOM refs
@@ -900,10 +903,14 @@ function sceneStep(){
   speakBeat(beat,sceneStep);
 }
 
-/* --- (2) depth-mapped narration: the active beat is derived from camDepth --- */
-var currentNarrationKey=null, lastSceneKey=null, revealFlashFired=false;
-function beatAtDepth(d){
-  for(var i=0;i<TIMELINE.length;i++){ var t=TIMELINE[i]; if(d>=t.depthStart && d<t.depthEnd)return t; }
+/* --- (2) zone-based narration: scroll picks the zone; each zone plays its
+   own audio+transcript if available, otherwise falls back to the TTS scene. --- */
+var currentZoneId=null, currentNarrationKey=null, lastSceneKey=null, revealFlashFired=false;
+var ASSETS={};                 /* zoneId -> { audio: url|null, transcript: json|null } */
+var audioEl=null, audioMode=false, audioZoneId=null;
+
+function zoneAtDepth(d){
+  for(var i=0;i<ZONES.length;i++){ var z=ZONES[i]; if(d>=z.range[0] && d<z.range[1])return z; }
   return null;
 }
 function artifactForScene(sk){
@@ -918,21 +925,57 @@ function handleSceneEntry(sk){
   else if(sk==="epilogue"){ epilogue.classList.add("on"); startGoldenRecord(); }
   if(sk)openDeepReadForScene(sk);
 }
+
+/* detect per-zone audio + transcript files (async; TTS fills any gaps) */
+function detectAssets(){
+  ZONES.forEach(function(z){
+    var id=z.id; ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
+    fetch("audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS[id].audio="audio/"+id+".mp3"; }).catch(function(){});
+    fetch("transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
+  });
+}
+function initAudioElement(){ audioEl=new Audio(); audioEl.preload="auto"; audioEl.volume=state.muted?0:1; }
+function startAudioMode(id){
+  var a=ASSETS[id]; if(!a||!a.audio||!a.transcript)return false;
+  audioMode=true; audioZoneId=id; audioEl.src=a.audio; audioEl.currentTime=0;
+  var p=audioEl.play(); if(p&&p.catch)p.catch(function(){});
+  return true;
+}
+function stopAudioMode(){ audioMode=false; audioZoneId=null; if(audioEl)audioEl.pause(); }
+
+/* transcript caption sync: one line at a time, locked to audio.currentTime */
+function syncAudioCaption(){
+  if(!audioMode||!audioEl)return;
+  var a=ASSETS[audioZoneId]; if(!a||!a.transcript)return;
+  var t=audioEl.currentTime, segs=a.transcript.segments||[], seg=null, si=-1;
+  for(var i=0;i<segs.length;i++){ if(segs[i].t<=t){ seg=segs[i]; si=i; } else break; }
+  if(!seg)return;
+  var nextT=(si+1<segs.length)?segs[si+1].t:(audioEl.duration||seg.t+5);
+  var segDur=Math.max(0.6,nextT-seg.t);
+  var chunks=splitChunks(seg.text||"",8);
+  var ci=Math.min(chunks.length-1,Math.floor((t-seg.t)/segDur*chunks.length));
+  var key=audioZoneId+":"+si+":"+ci;
+  if(key!==currentNarrationKey){
+    currentNarrationKey=key;
+    showCaption(seg.speaker||"echo", chunks[ci]||"", eraCaptionClass(), seg.aside);
+  }
+}
+
 function updateNarration(){
-  /* wait for the cold open to finish (or until the user dives past the lobby) */
   if(!state.coldOpenDone){
-    if(state.started && camDepth>1600){ state.coldOpenDone=true; cancelSpeech(); }
+    if(state.started && camDepth>1600){ state.coldOpenDone=true; cancelSpeech(); stopAudioMode(); }
     else return;
   }
-  var np=beatAtDepth(camDepth);
-  var key=np?np.key:null;
-  if(key===currentNarrationKey)return;   /* same beat — no change */
-  currentNarrationKey=key;
-  cancelSpeech();
-  handleSceneEntry(np?np.sceneKey:null);
-  if(!np){ hideCaption(); return; }
-  if(np.beat.pause){ hideCaption(); }
-  else { speakBeat(np.beat,null); }
+  if(audioMode) syncAudioCaption();                  /* per-frame caption sync while audio plays */
+  var z=zoneAtDepth(camDepth);
+  var zid=z?z.id:null;
+  if(zid===currentZoneId) return;                    /* same zone — no switch */
+  currentZoneId=zid; currentNarrationKey=null;
+  stopAudioMode(); cancelSpeech();
+  handleSceneEntry(zid);
+  if(!zid){ hideCaption(); return; }
+  if(ASSETS[zid]&&ASSETS[zid].audio&&ASSETS[zid].transcript){ startAudioMode(zid); }
+  else if(SCENES[zid]){ playScene(zid,null); }       /* TTS fallback */
 }
 
 /* ====================================================================
@@ -1122,9 +1165,9 @@ scene.addEventListener("click",function(e){
    CONTROLS
    ==================================================================== */
 btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(state.captionsOn){ if(capText.textContent)caption.classList.add("on"); } else { hideCaption(); } });
-btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
+btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(audioEl)audioEl.volume=state.muted?0:1; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
 var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this line"; document.body.appendChild(replay);
-replay.addEventListener("click",function(){ if(!state.coldOpenDone)return; var np=beatAtDepth(camDepth); if(np&&!np.beat.pause){ cancelSpeech(); speakBeat(np.beat,null); } });
+replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(audioMode&&audioEl){ audioEl.currentTime=0; var p=audioEl.play(); if(p&&p.catch)p.catch(function(){}); } else if(SCENES[currentZoneId]){ cancelSpeech(); playScene(currentZoneId,null); } });
 
 /* ====================================================================
    START GATE
@@ -1132,6 +1175,7 @@ replay.addEventListener("click",function(){ if(!state.coldOpenDone)return; var n
 function begin(){
   if(state.started)return; state.started=true;
   initAudio(); if(AC&&AC.state==="suspended")AC.resume();
+  initAudioElement(); detectAssets();
   gate.classList.add("gone");
   brand.classList.add("on"); navEl.classList.add("on"); rail.classList.add("on"); timechip.classList.add("on");
   showVisor();
