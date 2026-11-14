@@ -718,6 +718,27 @@ var EPOCH_DEPTH=11600;       /* reveal/epilogue begins here (past Pioneer 10) */
 var ERA_BOUNDS={ lobby:1400, mars:6500, moon:9200, deepspace:EPOCH_DEPTH };
 
 /* ====================================================================
+   NARRATION TIMELINE — each scene's beats are mapped to a depth range,
+   so narration position TRACKS scroll position. Scroll forward -> beats
+   advance; scroll back -> beats go back. The caption always reflects the
+   current depth; speech re-triggers when the active beat changes.
+   ==================================================================== */
+var SCENE_DEPTH={
+  perseverance:[1600,2500], curiosity:[2500,3400], insight:[3400,4300],
+  opportunity:[4300,5200], spirit:[5200,6000], viking:[6000,6500],
+  moonSilence:[6500,7000], rover:[7000,7900], eagle:[7900,8700],
+  surveyor:[8700,9200], deepHum:[9200,9600], voyager:[9600,10400],
+  pioneer11:[10400,11200], reveal:[11200,EPOCH_DEPTH], epilogue:[EPOCH_DEPTH,TOTAL_DEPTH]
+};
+var SCENE_ORDER=["perseverance","curiosity","insight","opportunity","spirit","viking","moonSilence","rover","eagle","surveyor","deepHum","voyager","pioneer11","reveal","epilogue"];
+var TIMELINE=[];
+SCENE_ORDER.forEach(function(key){
+  var S=SCENES[key]; if(!S||!SCENE_DEPTH[key])return;
+  var r=SCENE_DEPTH[key], beats=S.conv, span=r[1]-r[0], per=span/beats.length;
+  beats.forEach(function(b,i){ TIMELINE.push({key:key+":"+i, sceneKey:key, beatIdx:i, depthStart:r[0]+i*per, depthEnd:r[0]+(i+1)*per, beat:b}); });
+});
+
+/* ====================================================================
    DOM refs
    ==================================================================== */
 var $=function(s){return document.querySelector(s);};
@@ -739,8 +760,7 @@ LAYOUT.forEach(function(L){ L.el=scene.querySelector('.art-obj[data-art="'+L.id+
 
 var state={
   started:false, muted:false, captionsOn:true, deepOn:false,
-  currentArt:null, era:"cold", played:new Set(),
-  revealSaid:false
+  currentArt:null, era:"cold", coldOpenDone:false
 };
 
 /* ====================================================================
@@ -834,8 +854,8 @@ if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
 function pickVoice(){ if(!voices.length)loadVoices(); var v=null; for(var i=0;i<voices.length;i++){ if(/en[-_]?US/i.test(voices[i].lang)){v=voices[i];break;} } if(!v){ for(var i=0;i<voices.length;i++){ if(/^en/i.test(voices[i].lang)){v=voices[i];break;} } } if(!v&&voices.length)v=voices[0]; return v; }
 function splitSentences(t){ var parts=t.match(/[^.!?…]+[.!?…]*/g)||[t]; return parts.map(function(s){return s.trim();}).filter(Boolean); }
 
-var scenePlayer={active:false,conv:null,idx:0,token:0,onDone:null};
 var currentCancelToken=0;
+function cancelSpeech(){ currentCancelToken++; if(synth)try{synth.cancel();}catch(e){} }
 
 function eraCaptionClass(){ if(state.era==="moon")return "moon"; if(state.era==="deepspace")return "space clear"; return null; }
 
@@ -849,16 +869,37 @@ function showCaption(speakerKey,text,cls,aside){
 }
 function hideCaption(){ caption.classList.remove("on"); }
 
+/* speak one beat (all its sentences). bails if cancelSpeech is called. */
+function speakBeat(beat,onDone){
+  if(beat.pause){ if(onDone)setTimeout(onDone,beat.pause); return; }
+  var sp=SPEAKERS[beat.s]||SPEAKERS.echo;
+  showCaption(beat.s,beat.t,eraCaptionClass(),beat.aside);
+  var myToken=currentCancelToken;
+  var chunks=splitSentences(beat.t); var ci=0;
+  function speakNext(){
+    if(myToken!==currentCancelToken)return;
+    if(ci>=chunks.length){ if(onDone)setTimeout(onDone, beat.s==="echo"?(beat.aside?500:450):340); return; }
+    var line=chunks[ci++];
+    if(!synth){ setTimeout(speakNext, Math.max(1800,line.length*45)); return; }
+    try{
+      var u=new SpeechSynthesisUtterance(line); var v=pickVoice(); if(v)u.voice=v;
+      u.rate=sp.voice.rate*(beat.aside?0.9:1); u.pitch=sp.voice.pitch; u.volume=state.muted?0:1;
+      u.onend=function(){ setTimeout(speakNext, 280); };
+      u.onerror=function(){ setTimeout(speakNext, 200); };
+      synth.speak(u);
+    }catch(e){ setTimeout(speakNext,1200); }
+  }
+  speakNext();
+}
+
+/* --- (1) cold open: one-time linear play on Begin --- */
+var scenePlayer={active:false,conv:null,idx:0,token:0,onDone:null};
 function playScene(key,onDone){
   var S=SCENES[key]; if(!S){ if(onDone)onDone(); return; }
-  cancelScene();
+  cancelSpeech();
   scenePlayer.active=true; scenePlayer.conv=S.conv; scenePlayer.idx=0;
-  scenePlayer.token=++currentCancelToken; scenePlayer.onDone=onDone||null;
+  scenePlayer.token=currentCancelToken; scenePlayer.onDone=onDone||null;
   sceneStep();
-}
-function cancelScene(){
-  scenePlayer.active=false; scenePlayer.token=++currentCancelToken; scenePlayer.onDone=null;
-  if(synth)try{synth.cancel();}catch(e){}
 }
 function sceneStep(){
   if(!scenePlayer.active)return;
@@ -871,24 +912,40 @@ function sceneStep(){
   if(beat.pause){ setTimeout(sceneStep,beat.pause); return; }
   speakBeat(beat,sceneStep);
 }
-function speakBeat(beat,onDone){
-  var sp=SPEAKERS[beat.s]||SPEAKERS.echo;
-  showCaption(beat.s,beat.t,eraCaptionClass(),beat.aside);
-  var chunks=splitSentences(beat.t); var ci=0;
-  function speakNext(){
-    if(scenePlayer.token!==currentCancelToken)return;
-    if(ci>=chunks.length){ setTimeout(onDone, beat.s==="echo"?(beat.aside?500:450):340); return; }
-    var line=chunks[ci++];
-    if(!synth){ setTimeout(speakNext, Math.max(1800,line.length*45)); return; }
-    try{
-      var u=new SpeechSynthesisUtterance(line); var v=pickVoice(); if(v)u.voice=v;
-      u.rate=sp.voice.rate*(beat.aside?0.9:1); u.pitch=sp.voice.pitch; u.volume=state.muted?0:1;
-      u.onend=function(){ setTimeout(speakNext, 280); };
-      u.onerror=function(){ setTimeout(speakNext, 200); };
-      synth.speak(u);
-    }catch(e){ setTimeout(speakNext,1200); }
+
+/* --- (2) depth-mapped narration: the active beat is derived from camDepth --- */
+var currentNarrationKey=null, lastSceneKey=null, revealFlashFired=false;
+function beatAtDepth(d){
+  for(var i=0;i<TIMELINE.length;i++){ var t=TIMELINE[i]; if(d>=t.depthStart && d<t.depthEnd)return t; }
+  return null;
+}
+function artifactForScene(sk){
+  return (sk==="moonSilence"||sk==="deepHum")?null : (sk==="reveal"||sk==="epilogue")?"pioneer10" : sk;
+}
+function openDeepReadForScene(sk){ var id=artifactForScene(sk); if(id&&META[id]){ state.currentArt=id; openDeepRead(id); } }
+function handleSceneEntry(sk){
+  if(sk===lastSceneKey)return;
+  var prev=lastSceneKey; lastSceneKey=sk;
+  if(prev==="epilogue")epilogue.classList.remove("on");
+  if(sk==="reveal"){ if(!revealFlashFired){revealFlashFired=true; revealFlash.classList.add("on"); setTimeout(function(){revealFlash.classList.remove("on");},2600);} startGoldenRecord(); }
+  else if(sk==="epilogue"){ epilogue.classList.add("on"); startGoldenRecord(); }
+  if(sk)openDeepReadForScene(sk);
+}
+function updateNarration(){
+  /* wait for the cold open to finish (or until the user dives past the lobby) */
+  if(!state.coldOpenDone){
+    if(state.started && camDepth>1600){ state.coldOpenDone=true; cancelSpeech(); }
+    else return;
   }
-  speakNext();
+  var np=beatAtDepth(camDepth);
+  var key=np?np.key:null;
+  if(key===currentNarrationKey)return;   /* same beat — no change */
+  currentNarrationKey=key;
+  cancelSpeech();
+  handleSceneEntry(np?np.sceneKey:null);
+  if(!np){ hideCaption(); return; }
+  if(np.beat.pause){ hideCaption(); }
+  else { speakBeat(np.beat,null); }
 }
 
 /* ====================================================================
@@ -1022,48 +1079,6 @@ function detectEra(){
   else setEra("epilogue");
 }
 
-function fireTriggers(){
-  /* per-artifact arrival */
-  for(var i=0;i<LAYOUT.length;i++){
-    var L=LAYOUT[i]; var tz=camDepth-L.depth;
-    /* Opportunity calls out first — wider trigger window */
-    var win = L.widen ? PERSP*0.75 : PERSP*0.45;
-    if(tz>-win && tz<PERSP*0.05){
-      if(!state.played.has(L.id)){
-        state.played.add(L.id); state.currentArt=L.id; openDeepRead(L.id);
-        if(L.sec){
-          /* Echo-narrated silent artifacts */
-          if(L.id==="pioneer11"){ playScene("pioneer11"); }
-          else { playScene(L.id); }
-        } else {
-          playScene(L.id);
-        }
-      }
-    }
-  }
-  /* era transitions (Echo narrates the science) */
-  if(state.era==="moon" && !state.played.has("moonSilence")){ state.played.add("moonSilence"); playScene("moonSilence"); pulseStat("distance"); }
-  if(state.era==="deepspace" && !state.played.has("deepHum")){ state.played.add("deepHum"); playScene("deepHum"); }
-  /* reveal past Pioneer 10 */
-  if(camDepth>=EPOCH_DEPTH && !state.revealSaid){ state.revealSaid=true; enterReveal(); }
-}
-
-/* ====================================================================
-   THE REVEAL + EPILOGUE
-   ==================================================================== */
-function enterReveal(){
-  cancelScene();
-  revealFlash.classList.add("on");
-  setTimeout(function(){ revealFlash.classList.remove("on"); },2600);
-  startGoldenRecord();
-  playScene("reveal", function(){ setTimeout(enterEpilogue, 2200); });
-}
-function enterEpilogue(){
-  if(state.played.has("epilogue"))return; state.played.add("epilogue");
-  epilogue.classList.add("on");
-  setTimeout(function(){ playScene("epilogue"); }, 800);
-}
-
 /* ====================================================================
    NAV (click-to-drift) — smooth scrollTo + camera lerp glides the rest
    ==================================================================== */
@@ -1107,13 +1122,13 @@ function openDeepRead(id){ var A=META[id]; if(!A)return; drTitle.textContent=A.n
 drClose.addEventListener("click",function(){ deepread.classList.remove("on"); state.deepOn=false; btnDR.classList.remove("active"); });
 btnDR.addEventListener("click",function(){ state.deepOn=!state.deepOn; btnDR.classList.toggle("active",state.deepOn); deepread.classList.toggle("on",state.deepOn); if(state.deepOn&&state.currentArt)openDeepRead(state.currentArt); });
 
-/* click an artifact (when near) -> open deep read + replay its scene */
+/* click an artifact (when near) -> open its deep read panel.
+   narration stays mapped to scroll; drift to it to hear its scene. */
 scene.addEventListener("click",function(e){
   var el=e.target.closest(".art-obj"); if(!el||!el.classList.contains("near"))return;
-  var id=el.getAttribute("data-art"); if(!SCENES[id]&&!META[id])return;
+  var id=el.getAttribute("data-art"); if(!META[id])return;
   state.currentArt=id; openDeepRead(id);
   if(!state.deepOn){ state.deepOn=true; btnDR.classList.add("active"); deepread.classList.add("on"); }
-  if(SCENES[id]){ state.played.add(id); playScene(id); }
 });
 
 /* ====================================================================
@@ -1121,8 +1136,8 @@ scene.addEventListener("click",function(e){
    ==================================================================== */
 btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(!state.captionsOn)hideCaption(); });
 btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
-var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this scene"; replay.style.display="block"; caption.appendChild(replay);
-replay.addEventListener("click",function(){ if(state.currentArt&&SCENES[state.currentArt]){ playScene(state.currentArt); } });
+var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this line"; replay.style.display="block"; caption.appendChild(replay);
+replay.addEventListener("click",function(){ if(!state.coldOpenDone)return; var np=beatAtDepth(camDepth); if(np&&!np.beat.pause){ cancelSpeech(); speakBeat(np.beat,null); } });
 
 /* ====================================================================
    START GATE
@@ -1136,7 +1151,7 @@ function begin(){
   echoEl.classList.remove("cold");
   coldText.classList.add("on"); scrollPrompt.classList.add("on");
   startGoldenRecord();
-  setTimeout(function(){ playScene("cold"); }, 2800);
+  setTimeout(function(){ playScene("cold", function(){ state.coldOpenDone=true; }); }, 2800);
 }
 startbtn.addEventListener("click",begin);
 window.addEventListener("keydown",function(e){ if(!state.started&&(e.key===" "||e.key==="Enter")){ e.preventDefault(); begin(); } });
@@ -1177,7 +1192,7 @@ function loop(ts){
   renderEcho();
   renderRail();
   updateVisor();
-  fireTriggers();
+  updateNarration();
   updateNav();
   requestAnimationFrame(loop);
 }
