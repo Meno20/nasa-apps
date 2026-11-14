@@ -118,20 +118,18 @@ body{
 .stat .val.dead{color:#9a6a6a}
 .stat .val.live{color:#7fe6a0}
 
-/* ---------- caption (visor readout, bottom center) ---------- */
-#hud{position:fixed;left:0;right:0;bottom:0;z-index:20;pointer-events:none;padding:0 18px 18px}
-#caption{pointer-events:auto;max-width:720px;margin:0 auto;background:var(--hud-bg);
-  border:1px solid var(--hud-border);border-radius:12px;
-  padding:13px 18px;min-height:72px;display:flex;flex-direction:column;gap:5px;
-  opacity:0;transform:translateY(10px);transition:opacity .4s ease,transform .4s ease}
-#caption.on{opacity:1;transform:translateY(0)}
-#cap-speaker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--echo);font-family:ui-monospace,Menlo,monospace}
+/* ---------- caption (plain text at the very bottom, no box) ---------- */
+#hud{position:fixed;left:0;right:0;bottom:0;z-index:20;pointer-events:none;padding:0 24px 20px;text-align:center}
+#caption{pointer-events:none;max-width:760px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;
+  opacity:0;transition:opacity .35s ease}
+#caption.on{opacity:1}
+#cap-speaker{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--echo);font-family:ui-monospace,Menlo,monospace;text-shadow:0 1px 8px rgba(0,0,0,.95)}
 #cap-speaker.art{color:var(--amber)}
 #cap-speaker.opp{color:#ffcf8a}
-#cap-text{font-size:1.0rem;color:#eef3ff;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+#cap-text{font-size:1.04rem;color:#eef3ff;line-height:1.4;text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 24px rgba(0,0,0,.7)}
 #cap-text.moon{color:#eaf0fb}
 #cap-text.space{color:#d6e0ff;font-family:ui-monospace,Menlo,monospace;font-size:.92rem}
-#cap-text.clear{color:#f4faff;text-shadow:0 0 14px rgba(120,220,255,.25)}
+#cap-text.clear{color:#f4faff;text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 24px rgba(120,220,255,.25)}
 #cap-text.aside{color:#bcd6ee;font-style:italic}
 
 /* top bar */
@@ -224,12 +222,6 @@ body{
 .percy .d1{left:6px;top:96px;transform:rotate(-18deg)}
 .percy .d2{left:140px;top:98px;transform:rotate(22deg) scale(.8)}
 .percy .cable{position:absolute;left:80px;top:60px;width:2px;height:50px;background:rgba(220,200,150,.5);transform:rotate(6deg)}
-.curiosity{width:80px;height:54px;filter:drop-shadow(0 0 12px rgba(255,180,90,.45))}
-.curiosity .body{position:absolute;left:10px;top:16px;width:60px;height:20px;border-radius:4px;background:linear-gradient(180deg,#c9b48a,#7a6a44)}
-.curiosity .mast{position:absolute;left:32px;top:2px;width:3px;height:16px;background:#9a8a5a}
-.curiosity .head{position:absolute;left:28px;top:-2px;width:12px;height:8px;border-radius:2px;background:#b0a070}
-.curiosity .whl{position:absolute;bottom:0;width:11px;height:11px;border-radius:50%;background:#4a3f28}
-.curiosity .rtg{position:absolute;left:2px;top:14px;width:6px;height:14px;background:linear-gradient(180deg,#5a5a5a,#2a2a2a);border-radius:2px}
 .insight{width:200px;height:130px}
 .insight .panel{position:absolute;top:54px;width:80px;height:48px;border-radius:50%/30%;background:linear-gradient(180deg,#5a3a78,#3a2350);box-shadow:inset 0 0 18px rgba(0,0,0,.5)}
 .insight .panel::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse at 40% 30%, rgba(200,120,70,.55), rgba(120,60,30,.85) 70%)}
@@ -273,7 +265,7 @@ body{
   .art-obj{width:280px;margin-left:-140px}
   .stat.tl,.stat.tr{top:48px}
   .stat .val{font-size:.82rem}
-  .stat.bl,.stat.br{bottom:96px}
+  .stat.bl,.stat.br{display:none}
 }
 </style>
 </head>
@@ -297,14 +289,6 @@ body{
 
     </div>
     <div class="nameplate"><div class="yr">2021 · mars</div><div class="nm">Perseverance Descent Stage</div><div class="loc">Jezero Crater — the sky crane</div></div>
-  </div>
-
-  <div class="art-obj" data-art="curiosity">
-    <div class="visual">
-      <div class="obj curiosity"><div class="rtg"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl" style="left:8px"></div><div class="whl" style="left:32px"></div><div class="whl" style="left:56px"></div></div>
-
-    </div>
-    <div class="nameplate"><div class="yr">2012–present · mars</div><div class="nm">Curiosity</div><div class="loc">the trendsetter · Gale Crater</div></div>
   </div>
 
   <div class="art-obj" data-art="insight">
@@ -466,7 +450,6 @@ body{
   </div>
   <ul id="roll">
     <li><span class="ep-name">Perseverance Descent Stage<small>Not bad for a crash.</small></span><span class="ep-meta">Mars · 2021</span></li>
-    <li><span class="ep-name">Curiosity<small>And I'm not done.</small></span><span class="ep-meta">Mars · 2012–present</span></li>
     <li><span class="ep-name">InSight<small>The planet has a heartbeat.</small></span><span class="ep-meta">Mars · 2018–2022</span></li>
     <li><span class="ep-name">Opportunity<small>Ninety days. I gave them fifteen years.</small></span><span class="ep-meta">Mars · 2004–2018</span></li>
     <li><span class="ep-name">Spirit<small>Don't forget me.</small></span><span class="ep-meta">Mars · 2004–2010</span></li>
@@ -507,7 +490,6 @@ body{
    ==================================================================== */
 var SPEAKERS={
   echo:       {label:"ECHO",         cls:"echo", voice:{rate:0.95,pitch:1.0}},
-  curiosity:  {label:"CURIOSITY",    cls:"art",  voice:{rate:1.08,pitch:1.14}},
   insight:    {label:"INSIGHT",      cls:"art",  voice:{rate:0.82,pitch:0.9}},
   opportunity:{label:"OPPORTUNITY",  cls:"opp",  voice:{rate:1.02,pitch:1.08}},
   spirit:     {label:"SPIRIT",       cls:"art",  voice:{rate:1.0,pitch:0.92}},
@@ -536,21 +518,6 @@ var SCENES={
     {s:"echo", t:"That was its whole job. Seven minutes. And the reason there's a little helicopter flying around on Mars right now. First powered flight on another planet. Not bad for a crash."}
   ]},
 
-  curiosity:{ conv:[
-    {s:"echo", t:"Oh — hang on. Something's still moving over there."},
-    {s:"curiosity", t:"Echo? Is that — hey! You brought someone."},
-    {s:"echo", t:"You're still out here?"},
-    {s:"curiosity", t:"Still out here? I haven't stopped. You try parking on Mars."},
-    {s:"echo", t:"How are you still running though? Everyone else out here is solar."},
-    {s:"curiosity", t:"Nuclear. Got a chunk of plutonium that gives off heat, I turn it into electricity. Dust storm, nighttime, doesn't matter. I just keep going."},
-    {s:"echo", t:"Showoff."},
-    {s:"curiosity", t:"I found an ancient lakebed. Drilled into rocks that are three billion years old. Found organic molecules in them."},
-    {s:"echo", t:"…Okay yeah that's pretty good."},
-    {s:"curiosity", t:"Perseverance used my landing system, by the way. My exact playbook. Four thousand sols and counting."},
-    {s:"echo", t:"A sol's a Martian day. About forty minutes longer than yours. He's been out here a long time."},
-    {s:"curiosity", t:"And I'm not done."}
-  ]},
-
   insight:{ conv:[
     {s:"echo", t:"This one's quiet. InSight. Solar panels completely buried in dust."},
     {pause:1100},
@@ -570,7 +537,7 @@ var SCENES={
     {s:"opportunity", t:"Barely. Hi. You're new. Okay — they gave me ninety days. Ninety. I lasted fifteen years."},
     {s:"echo", t:"Twenty-eight miles."},
     {s:"opportunity", t:"Twenty-eight miles across a planet where nothing moves. Found rocks that proved this whole desert was an ocean once. An actual ocean."},
-    {s:"echo", t:"She's the reason they built Curiosity. And Perseverance."},
+    {s:"echo", t:"She's the reason they built Perseverance."},
     {s:"opportunity", t:"Don't make it weird."},
     {s:"echo", t:"I'm not — I relayed every mile of your data. I was there."},
     {s:"opportunity", t:"…The storm was bad though."},
@@ -670,8 +637,6 @@ var SCENES={
 var META={
   perseverance:{name:"Perseverance Descent Stage",meta:"2021 · Mars · Jezero Crater",year:2021,dist:140000000,status:"DESTROYED",statusCls:"dead",power:"HYDRAZINE",
     fact:"The sky crane was deliberately crashed ~700 m from the rover so its debris wouldn't endanger Perseverance. The landing it enabled made Ingenuity possible — the first powered flight on another planet."},
-  curiosity:{name:"Curiosity",meta:"2012–present · Mars · Gale Crater",year:2012,dist:140000000,status:"ACTIVE",statusCls:"live",power:"NUCLEAR · RTG",
-    fact:"Curiosity's MMRTG powers it with heat from decaying plutonium-238. It has driven over 20 miles and confirmed Mars once had conditions habitable to microbial life by finding organic molecules in ~3-billion-year-old rocks."},
   insight:{name:"InSight",meta:"2018–2022 · Mars · Elysium Planitia",year:2018,dist:140000000,status:"SILENT",statusCls:"dead",power:"SOLAR",
     fact:"InSight's SEIS instrument detected over 1,300 marsquakes, including Mars's largest (mag ~4.7) in May 2022. It fell silent as dust covered its solar panels."},
   opportunity:{name:"Opportunity",meta:"2004–2018 · Mars · Endeavour Crater",year:2004,dist:140000000,status:"SILENT",statusCls:"dead",power:"SOLAR",
@@ -700,7 +665,6 @@ var META={
    ==================================================================== */
 var LAYOUT=[
   {id:"perseverance",depth:1600, era:"mars",    sec:true},
-  {id:"curiosity",    depth:2500, era:"mars"},
   {id:"insight",      depth:3400, era:"mars"},
   {id:"opportunity",  depth:4300, era:"mars", widen:true},   /* calls out first */
   {id:"spirit",       depth:5200, era:"mars"},
@@ -724,13 +688,13 @@ var ERA_BOUNDS={ lobby:1400, mars:6500, moon:9200, deepspace:EPOCH_DEPTH };
    current depth; speech re-triggers when the active beat changes.
    ==================================================================== */
 var SCENE_DEPTH={
-  perseverance:[1600,2500], curiosity:[2500,3400], insight:[3400,4300],
+  perseverance:[1600,3400], insight:[3400,4300],
   opportunity:[4300,5200], spirit:[5200,6000], viking:[6000,6500],
   moonSilence:[6500,7000], rover:[7000,7900], eagle:[7900,8700],
   surveyor:[8700,9200], deepHum:[9200,9600], voyager:[9600,10400],
   pioneer11:[10400,11200], reveal:[11200,EPOCH_DEPTH], epilogue:[EPOCH_DEPTH,TOTAL_DEPTH]
 };
-var SCENE_ORDER=["perseverance","curiosity","insight","opportunity","spirit","viking","moonSilence","rover","eagle","surveyor","deepHum","voyager","pioneer11","reveal","epilogue"];
+var SCENE_ORDER=["perseverance","insight","opportunity","spirit","viking","moonSilence","rover","eagle","surveyor","deepHum","voyager","pioneer11","reveal","epilogue"];
 var TIMELINE=[];
 SCENE_ORDER.forEach(function(key){
   var S=SCENES[key]; if(!S||!SCENE_DEPTH[key])return;
@@ -865,7 +829,7 @@ function showCaption(speakerKey,text,cls,aside){
   capSpeaker.textContent=sp.label; capSpeaker.classList.add(sp.cls);
   if(cls){ cls.split(/\s+/).forEach(function(c){ if(c)capText.classList.add(c); }); }
   if(aside)capText.classList.add("aside");
-  capText.textContent=text; caption.classList.add("on");
+  capText.textContent=text; if(state.captionsOn)caption.classList.add("on");
 }
 function hideCaption(){ caption.classList.remove("on"); }
 
@@ -1083,7 +1047,7 @@ function detectEra(){
    NAV (click-to-drift) — smooth scrollTo + camera lerp glides the rest
    ==================================================================== */
 var navItems=[
-  {id:"perseverance",label:"Perseverance"},{id:"curiosity",label:"Curiosity"},
+  {id:"perseverance",label:"Perseverance"},
   {id:"insight",label:"InSight"},{id:"opportunity",label:"Opportunity"},
   {id:"spirit",label:"Spirit"},{id:"viking",label:"Viking 1"},
   {id:"rover",label:"Apollo 17 Rover"},{id:"eagle",label:"Eagle"},
@@ -1134,7 +1098,7 @@ scene.addEventListener("click",function(e){
 /* ====================================================================
    CONTROLS
    ==================================================================== */
-btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(!state.captionsOn)hideCaption(); });
+btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(state.captionsOn){ if(capText.textContent)caption.classList.add("on"); } else { hideCaption(); } });
 btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
 var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this line"; replay.style.display="block"; caption.appendChild(replay);
 replay.addEventListener("click",function(){ if(!state.coldOpenDone)return; var np=beatAtDepth(camDepth); if(np&&!np.beat.pause){ cancelSpeech(); speakBeat(np.beat,null); } });
