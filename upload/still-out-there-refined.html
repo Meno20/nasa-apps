@@ -981,10 +981,7 @@ function syncAudioCaption(){
 
 function updateNarration(){
   if(audioMode) syncAudioCaption();                  /* per-frame caption sync (incl. cold open) */
-  if(!state.coldOpenDone){
-    if(state.started && camDepth>1600){ state.coldOpenDone=true; cancelSpeech(); stopAudioMode(); }
-    else return;
-  }
+  if(!state.coldOpenDone) return;                    /* let the cold open play fully; dive starts when it's done */
   var z=zoneAtDepth(camDepth);
   var zid=z?z.id:null;
   if(zid===currentZoneId) return;                    /* same zone — no switch */
@@ -1194,7 +1191,7 @@ function startColdOpen(retries){
   retries=retries||0;
   if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){
     if(audioBuffers.cold){ startAudioMode("cold"); }
-    else if(retries<30){ setTimeout(function(){startColdOpen(retries+1);},200); }
+    else if(retries<60){ setTimeout(function(){startColdOpen(retries+1);},200); }
     else { playScene("cold", function(){state.coldOpenDone=true;}); }
   } else { playScene("cold", function(){ state.coldOpenDone=true; }); }
 }
@@ -1206,7 +1203,6 @@ function begin(){
   brand.classList.add("on"); navEl.classList.add("on"); rail.classList.add("on"); timechip.classList.add("on");
   showVisor();
   echoEl.classList.remove("cold");
-  coldText.classList.add("on"); scrollPrompt.classList.add("on");
   startGoldenRecord();
   setTimeout(function(){ startColdOpen(0); }, 2800);
 }
@@ -1261,8 +1257,8 @@ function loop(ts){
 }
 requestAnimationFrame(loop);
 
-/* hide cold text once diving begins */
-setInterval(function(){ if(state.started && progress>0.02){ coldText.classList.remove("on"); scrollPrompt.classList.remove("on"); } },200);
+/* show the scroll prompt once the cold open is done; hide it once the user dives */
+setInterval(function(){ if(state.coldOpenDone){ if(progress<0.03)scrollPrompt.classList.add("on"); else scrollPrompt.classList.remove("on"); } },200);
 
 /* pulse visor stats when Echo mentions them */
 var lastCapText="";
