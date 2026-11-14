@@ -52,7 +52,7 @@ body{
 #scene{position:fixed;inset:0;z-index:4;
   perspective:620px;perspective-origin:50% 50%;transform-style:preserve-3d}
 
-/* an artifact floating at depth */
+/* an artifact floating at depth — all on a single center line */
 .art-obj{
   position:absolute;left:50%;top:50%;
   width:340px;height:380px;margin-left:-170px;margin-top:-190px;
@@ -69,19 +69,12 @@ body{
 .art-obj .loc{font-size:.74rem;color:var(--muted);margin-top:3px}
 .secondary .nm{font-size:1rem}
 
-/* scale silhouette — small, lives inside the visor as a toggleable reference */
+/* scale silhouette */
 .scale{position:absolute;right:10px;bottom:6px;display:flex;flex-direction:column;align-items:center;
   opacity:.6;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.58rem;letter-spacing:.1em;
   transition:opacity .3s}
 .scale svg{width:20px;height:48px}
 .scale span{margin-top:2px}
-
-/* ---------- Echo path line ---------- */
-#path{position:fixed;inset:0;z-index:5;pointer-events:none;width:100%;height:100%}
-#pathline{fill:none;stroke:rgba(255,255,255,.18);stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
-#pathahead{fill:none;stroke:rgba(159,232,255,.42);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
-#pathticks text{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;fill:rgba(200,215,255,.5);letter-spacing:.1em}
-#pathticks circle{fill:rgba(159,232,255,.5)}
 
 /* ---------- Echo ---------- */
 #echo{
@@ -95,14 +88,13 @@ body{
   border:1px solid rgba(160,232,255,.25);animation:epulse 2.6s ease-in-out infinite}
 @keyframes epulse{0%,100%{transform:scale(.7);opacity:.5}50%{transform:scale(1.6);opacity:0}}
 #echo.cold{opacity:0}
-/* clarity ring — appears in deep space as the "signal gets clearer" hint */
+/* clarity ring — appears in deep space as a subtle "signal clears" hint */
 #echo .clarity{position:absolute;inset:-22px;border-radius:50%;border:1px solid rgba(180,240,255,.0);
   transition:border-color 1.4s ease, inset 1.4s ease;pointer-events:none}
-#echo.home .clarity{border-color:rgba(180,240,255,.35);inset:-30px}
+#echo.home .clarity{border-color:rgba(180,240,255,.3);inset:-30px}
 
 /* ============ HUD VISOR (astronaut helmet overlay) ============ */
 #visor{position:fixed;inset:0;z-index:18;pointer-events:none}
-/* the glass — a subtle vignette so it feels like you're inside a helmet */
 #visor .glass{
   position:absolute;inset:0;
   background:
@@ -110,12 +102,10 @@ body{
     radial-gradient(ellipse at 50% 100%, rgba(120,220,255,.04), transparent 40%);
   pointer-events:none;
 }
-/* a faint inner rim along the very edge */
 #visor .rim{
   position:absolute;inset:0;pointer-events:none;
   box-shadow:inset 0 0 0 1px rgba(120,160,220,.06), inset 0 0 120px rgba(20,40,80,.18);
 }
-/* peripheral stat readouts */
 .stat{
   position:absolute;font-family:ui-monospace,Menlo,Consolas,monospace;
   color:var(--muted);pointer-events:none;opacity:0;transition:opacity .8s ease, color .3s ease;
@@ -128,7 +118,6 @@ body{
 .stat.tr{top:54px;right:20px;text-align:right}
 .stat.bl{bottom:108px;left:20px}
 .stat.br{bottom:108px;right:20px;text-align:right}
-/* highlight pulse when Echo mentions a stat */
 .stat.pulse .val{color:var(--echo-bright);text-shadow:0 0 14px rgba(120,220,255,.7)}
 .stat.pulse{animation:statpulse 1.6s ease-out}
 @keyframes statpulse{0%{transform:scale(1)}25%{transform:scale(1.06)}100%{transform:scale(1)}}
@@ -136,7 +125,6 @@ body{
 .stat .val.dead{color:#9a6a6a}
 .stat .val.live{color:#7fe6a0}
 
-/* scale reference icon (toggleable) */
 #scale-ref{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:18;
   display:none;flex-direction:column;align-items:center;pointer-events:none;
   color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.55rem;letter-spacing:.12em}
@@ -156,8 +144,8 @@ body{
 #cap-text{font-size:1.0rem;color:#eef3ff;text-shadow:0 1px 8px rgba(0,0,0,.6)}
 #cap-text.moon{color:#eaf0fb}
 #cap-text.space{color:#d6e0ff;font-family:ui-monospace,Menlo,monospace;font-size:.92rem}
-/* in deep space, captions get crisper/brighter — the "signal clears" hint */
 #cap-text.clear{color:#f4faff;text-shadow:0 0 14px rgba(120,220,255,.25)}
+#cap-text.aside{color:#bcd6ee;font-style:italic}
 
 /* top bar */
 #topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;pointer-events:none}
@@ -210,7 +198,7 @@ body{
 #scroll-prompt .arrow{display:block;margin:10px auto 0;width:12px;height:20px;border-right:2px solid var(--echo);border-bottom:2px solid var(--echo);transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(3px,3px)}}
 
-/* interaction prompt (for hero mechanics) */
+/* interaction prompt */
 #interact-prompt{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);z-index:40;
   font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.14em;color:var(--echo);
   background:var(--hud-bg);border:1px solid rgba(120,220,255,.4);border-radius:20px;padding:8px 16px;
@@ -218,7 +206,7 @@ body{
 #interact-prompt.on{opacity:.92}
 #interact-prompt .hint{color:var(--muted);margin-left:8px}
 
-/* epilogue overlay (fades in at the deepest point — the reveal + roll call) */
+/* epilogue overlay */
 #epilogue{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px;opacity:0;transition:opacity 2.4s ease;pointer-events:none;overflow-y:auto}
 #epilogue.on{opacity:1;pointer-events:auto}
 #epi-reveal{max-width:680px;margin-bottom:30px}
@@ -238,7 +226,6 @@ body{
 #deepread h3{color:#eef3ff;font-weight:400;font-size:1.2rem;margin-bottom:2px}
 #deepread .meta{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.68rem;letter-spacing:.14em;margin-bottom:18px}
 #deepread .body{color:#cdd6ee;font-size:.9rem;line-height:1.7}
-#deepread .body p{margin-bottom:14px}
 #deepread .fact{margin-top:18px;padding:14px;border-radius:10px;background:rgba(120,220,255,.06);border:1px solid rgba(120,220,255,.16);font-size:.82rem;color:#bcd6ee}
 #deepread .close{position:absolute;top:14px;right:18px;cursor:pointer;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.78rem}
 #deepread .close:hover{color:#eef3ff}
@@ -246,7 +233,7 @@ body{
 .replaybtn{pointer-events:auto;margin-top:10px;align-self:center;font-family:ui-monospace,Menlo,monospace;font-size:.68rem;letter-spacing:.12em;color:var(--muted);background:transparent;border:1px solid var(--hud-border);border-radius:20px;padding:6px 14px;cursor:pointer;transition:all .2s}
 .replaybtn:hover{color:#eef3ff;border-color:rgba(160,180,230,.4)}
 
-/* ===== Mars stylized 3D (CSS shapes, reused) ===== */
+/* ===== Mars stylized 3D (CSS shapes) ===== */
 .obj{position:relative;transform-style:preserve-3d}
 .percy{width:160px;height:120px}
 .percy .body{position:absolute;left:20px;top:30px;width:120px;height:54px;border-radius:10px;background:linear-gradient(160deg,#d6cfc2,#8a8276 60%,#5a544a);transform:perspective(280px) rotateX(22deg) rotateZ(-8deg);box-shadow:inset 0 -8px 16px rgba(0,0,0,.4)}
@@ -272,7 +259,6 @@ body{
 .insight .core{position:absolute;left:70px;top:30px;width:60px;height:54px;border-radius:8px;background:linear-gradient(160deg,#d8c9a0,#8a7a52);box-shadow:inset 0 -6px 12px rgba(0,0,0,.4)}
 .insight .arm{position:absolute;left:96px;top:44px;width:60px;height:3px;background:#caa;transform-origin:left center;transform:rotate(-18deg)}
 .insight .arm::after{content:"";position:absolute;right:-6px;top:-4px;width:10px;height:10px;border-radius:50%;background:#b08}
-/* dust overlay (cleared by user drag — the wake-up mechanic) */
 .insight .dust-layer{position:absolute;inset:0;border-radius:inherit;pointer-events:auto;cursor:grab;
   background:radial-gradient(ellipse at 50% 60%, rgba(150,80,40,.78), rgba(80,40,20,.55) 70%, transparent);
   transition:opacity .25s ease}
@@ -289,7 +275,6 @@ body{
 .rover .whl{position:absolute;bottom:0;width:20px;height:20px;border-radius:50%;background:#2a2418;border:3px solid #4a3f28}
 .rover .w1{left:14px}.rover .w2{left:64px}.rover .w3{left:114px}
 .rover .dust{position:absolute;left:-6px;right:-6px;bottom:-4px;height:18px;border-radius:50%;background:radial-gradient(ellipse at center,#a4421a,#5a230c 70%,transparent)}
-/* Spirit's stuck wheel — draggable, spins but won't free */
 .spirit .body{transform:rotate(-7deg);transform-origin:center}
 .spirit .w1{transform:translateY(8px)}
 .spirit .whl.stuck{cursor:grab;transition:none}
@@ -307,11 +292,6 @@ body{
 .pixel-wrap{image-rendering:pixelated}
 .pixel-wrap canvas{image-rendering:pixelated;width:180px;height:120px}
 .golden-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%, rgba(232,200,115,.12), transparent 60%)}
-
-/* rover "rushes over" intro — slides in from off-axis */
-.art-obj[data-art="rover"] .obj{animation:none}
-.art-obj[data-art="rover"].near .obj{animation:rushin 1.1s ease-out}
-@keyframes rushin{0%{transform:translateX(-180px) rotate(-6deg);opacity:0}60%{opacity:1}100%{transform:translateX(0) rotate(0);opacity:1}}
 
 /* reveal flash — the "whoosh back to Earth" beat */
 #reveal-flash{position:fixed;inset:0;z-index:48;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%, rgba(180,220,255,.0), transparent 70%)}
@@ -339,9 +319,8 @@ body{
 <div id="era-tint"></div>
 <div id="scanlines"></div>
 
-<!-- the dive scene: 12 artifacts floating at depth, scattered -->
+<!-- the dive scene: 12 artifacts floating in a single line down the center axis -->
 <div id="scene">
-  <!-- 1 Perseverance (2021) — ECHO-NARRATED (destroyed) -->
   <div class="art-obj secondary" data-art="perseverance">
     <div class="visual">
       <div class="obj percy"><div class="cable"></div><div class="body"></div><div class="leg l1"></div><div class="leg l2"></div><div class="debris d1"></div><div class="debris d2"></div></div>
@@ -350,7 +329,6 @@ body{
     <div class="nameplate"><div class="yr">2021 · mars</div><div class="nm">Perseverance Descent Stage</div><div class="loc">Jezero Crater — the sky crane</div></div>
   </div>
 
-  <!-- 2 Curiosity (2012) — SPEAKING (upgraded from brief mention) -->
   <div class="art-obj" data-art="curiosity">
     <div class="visual">
       <div class="obj curiosity"><div class="rtg"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl" style="left:8px"></div><div class="whl" style="left:32px"></div><div class="whl" style="left:56px"></div></div>
@@ -359,7 +337,6 @@ body{
     <div class="nameplate"><div class="yr">2012–present · mars</div><div class="nm">Curiosity</div><div class="loc">the trendsetter · Gale Crater</div></div>
   </div>
 
-  <!-- 3 InSight (2018) — SPEAKING (dust-brush wake-up) -->
   <div class="art-obj" data-art="insight">
     <div class="visual">
       <div class="obj insight" id="insight-obj"><div class="wake-glow"></div><div class="panel pl"><div class="dust-layer" data-dust="pl"></div></div><div class="panel pr"><div class="dust-layer" data-dust="pr"></div></div><div class="core"></div><div class="arm"></div></div>
@@ -368,34 +345,30 @@ body{
     <div class="nameplate"><div class="yr">2018–2022 · mars</div><div class="nm">InSight</div><div class="loc">the listener — Elysium Planitia</div></div>
   </div>
 
-  <!-- 4 Opportunity (2004) — SPEAKING (calls out first; conversation with Echo) -->
   <div class="art-obj" data-art="opportunity">
     <div class="visual">
       <div class="obj rover"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
       <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
     </div>
-    <div class="nameplate"><div class="yr">2004–2018 · mars</div><div class="nm">Opportunity</div><div class="loc">the standard</div></div>
+    <div class="nameplate"><div class="yr">2004–2018 · mars</div><div class="nm">Opportunity</div><div class="loc">"Oppy" — Endeavour Crater</div></div>
   </div>
 
-  <!-- 5 Spirit (2004) — SPEAKING (stuck-wheel interaction) -->
   <div class="art-obj" data-art="spirit">
     <div class="visual">
       <div class="obj rover spirit"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2 stuck" id="spirit-wheel"></div><div class="whl w3"></div><div class="dust"></div></div>
       <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
     </div>
-    <div class="nameplate"><div class="yr">2004–2010 · mars</div><div class="nm">Spirit</div><div class="loc">stuck but not silent</div></div>
+    <div class="nameplate"><div class="yr">2004–2010 · mars</div><div class="nm">Spirit</div><div class="loc">stuck at Troy</div></div>
   </div>
 
-  <!-- 6 Viking 1 (1976) — ECHO-NARRATED (asked the big question) -->
   <div class="art-obj secondary" data-art="viking">
     <div class="visual">
       <div class="obj viking"><div class="dish"></div><div class="body"></div><div class="leg g1"></div><div class="leg g2"></div><div class="leg g3"></div></div>
       <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
     </div>
-    <div class="nameplate"><div class="yr">1976–1982 · mars</div><div class="nm">Viking 1</div><div class="loc">asked the big question</div></div>
+    <div class="nameplate"><div class="yr">1976–1982 · mars</div><div class="nm">Viking 1</div><div class="loc">asked the first question</div></div>
   </div>
 
-  <!-- 7 Apollo 17 Lunar Rover (1972) — SPEAKING (rushes over) -->
   <div class="art-obj" data-art="rover">
     <div class="visual moon-art">
       <div class="earth-in-sky"></div>
@@ -416,7 +389,6 @@ body{
     <div class="nameplate"><div class="yr">1972–present · the moon</div><div class="nm">Apollo 17 Lunar Rover</div><div class="loc">the last car on the Moon</div></div>
   </div>
 
-  <!-- 8 Eagle (1969) — SPEAKING (quiet, reverent) -->
   <div class="art-obj" data-art="eagle">
     <div class="visual moon-art">
       <svg viewBox="0 0 360 220">
@@ -433,7 +405,6 @@ body{
     <div class="nameplate"><div class="yr">1969–present · the moon</div><div class="nm">Apollo 11 Eagle</div><div class="loc">the first footprint's foundation</div></div>
   </div>
 
-  <!-- 9 Surveyor 1 (1966) — ECHO-NARRATED (the shy test) -->
   <div class="art-obj secondary" data-art="surveyor">
     <div class="visual moon-art">
       <svg viewBox="0 0 360 220">
@@ -449,7 +420,6 @@ body{
     <div class="nameplate"><div class="yr">1966–present · the moon</div><div class="nm">Surveyor 1</div><div class="loc">proved the ground was safe</div></div>
   </div>
 
-  <!-- 10 Voyager 1 (1977) — SPEAKING (delayed voice) -->
   <div class="art-obj" data-art="voyager">
     <div class="visual pixel-wrap"><div class="golden-glow"></div><canvas id="px-voyager" width="180" height="120"></canvas>
       <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
@@ -457,7 +427,6 @@ body{
     <div class="nameplate"><div class="yr">1977–present · interstellar</div><div class="nm">Voyager 1</div><div class="loc">carrying Earth's mixtape</div></div>
   </div>
 
-  <!-- 11 Pioneer 11 (1973) — ECHO-NARRATED (the twin sister) -->
   <div class="art-obj secondary" data-art="pioneer11">
     <div class="visual pixel-wrap"><canvas id="px-pioneer11" width="180" height="120"></canvas>
       <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
@@ -465,7 +434,6 @@ body{
     <div class="nameplate"><div class="yr">1973–1995 · deep space</div><div class="nm">Pioneer 11</div><div class="loc">the scenic route — toward Aquila</div></div>
   </div>
 
-  <!-- 12 Pioneer 10 (1972) — DEEPEST / OLDEST = ECHO (the reveal) -->
   <div class="art-obj" data-art="pioneer10">
     <div class="visual pixel-wrap"><canvas id="px-pioneer10" width="180" height="120"></canvas>
       <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
@@ -474,8 +442,6 @@ body{
   </div>
 </div>
 
-<!-- Echo's path line (projected through the waypoints) -->
-<svg id="path"><polyline id="pathline"/><polyline id="pathahead"/><g id="pathticks"></g></svg>
 <div id="echo" class="cold"><div class="clarity"></div></div>
 
 <!-- HUD VISOR -->
@@ -506,18 +472,17 @@ body{
   <div id="caption"><div id="cap-speaker">—</div><div id="cap-text">—</div></div>
 </div>
 
-<div id="interact-prompt"><span class="label">drag to brush the dust</span><span class="hint">clear the panels · wake her up</span></div>
+<div id="interact-prompt"><span class="label">drag to brush the dust</span><span class="hint">clear the panels · wake him up</span></div>
 
 <aside id="deepread">
   <span class="close" id="dr-close">CLOSE X</span>
   <h3 id="dr-title">—</h3>
   <div class="meta" id="dr-meta">—</div>
-  <div class="body" id="dr-body"></div>
   <div class="fact" id="dr-fact"></div>
 </aside>
 
 <div id="cold-text">
-  In 1977, humanity pressed its greatest hits onto a golden record and strapped it to a machine heading out of the solar system. This is what's playing right now, fifteen billion miles from Earth.
+  Wait. You can hear that?
   <small>golden record · cold open</small>
 </div>
 <div id="scroll-prompt">scroll to dive deeper<span class="arrow"></span></div>
@@ -526,30 +491,30 @@ body{
 
 <div id="epilogue">
   <div id="epi-reveal">
-    <div class="who">echo</div>
-    <h2>"So… did you figure out who I am?"</h2>
+    <div class="who">echo · pioneer 10</div>
+    <h2>I'm still here.</h2>
     <div class="sub">twelve machines · twelve names · one guide</div>
   </div>
   <ul id="roll">
-    <li><span class="ep-name">Perseverance Descent Stage<small>Crashed on purpose. Job well done.</small></span><span class="ep-meta">Mars · 2021</span></li>
-    <li><span class="ep-name">Curiosity<small>Still rolling. Nuclear-powered.</small></span><span class="ep-meta">Mars · 2012–present</span></li>
-    <li><span class="ep-name">InSight<small>Listened to Mars breathe.</small></span><span class="ep-meta">Mars · 2018–2022</span></li>
-    <li><span class="ep-name">Opportunity<small>I am the standard.</small></span><span class="ep-meta">Mars · 2004–2018</span></li>
-    <li><span class="ep-name">Spirit<small>Stuck but not silent.</small></span><span class="ep-meta">Mars · 2004–2010</span></li>
-    <li><span class="ep-name">Viking 1<small>Asked the big question.</small></span><span class="ep-meta">Mars · 1976–1982</span></li>
-    <li><span class="ep-name">Apollo 17 Lunar Rover<small>The last car on the Moon.</small></span><span class="ep-meta">Moon · 1972–present</span></li>
-    <li><span class="ep-name">Apollo 11 Eagle<small>The first footprint's foundation.</small></span><span class="ep-meta">Moon · 1969–present</span></li>
-    <li><span class="ep-name">Surveyor 1<small>Proved the ground was safe.</small></span><span class="ep-meta">Moon · 1966–present</span></li>
-    <li><span class="ep-name">Voyager 1<small>Carrying Earth's mixtape to the stars.</small></span><span class="ep-meta">Interstellar · 1977–present</span></li>
-    <li><span class="ep-name">Pioneer 11<small>The scenic route. Echo's twin sister.</small></span><span class="ep-meta">Deep space · 1973–1995</span></li>
-    <li><span class="ep-name">Pioneer 10 / Echo<small>The first to leave. Still out there.</small></span><span class="ep-meta">Deep space · 1972–2003</span></li>
+    <li><span class="ep-name">Perseverance Descent Stage<small>Not bad for a crash.</small></span><span class="ep-meta">Mars · 2021</span></li>
+    <li><span class="ep-name">Curiosity<small>And I'm not done.</small></span><span class="ep-meta">Mars · 2012–present</span></li>
+    <li><span class="ep-name">InSight<small>The planet has a heartbeat.</small></span><span class="ep-meta">Mars · 2018–2022</span></li>
+    <li><span class="ep-name">Opportunity<small>Ninety days. I gave them fifteen years.</small></span><span class="ep-meta">Mars · 2004–2018</span></li>
+    <li><span class="ep-name">Spirit<small>Don't forget me.</small></span><span class="ep-meta">Mars · 2004–2010</span></li>
+    <li><span class="ep-name">Viking 1<small>It asked the question.</small></span><span class="ep-meta">Mars · 1976–1982</span></li>
+    <li><span class="ep-name">Apollo 17 Lunar Rover<small>I'm a car. On the Moon.</small></span><span class="ep-meta">Moon · 1972–present</span></li>
+    <li><span class="ep-name">Apollo 11 Eagle<small>We came in peace for all mankind.</small></span><span class="ep-meta">Moon · 1969–present</span></li>
+    <li><span class="ep-name">Surveyor 1<small>I landed softly. Ground held.</small></span><span class="ep-meta">Moon · 1966–present</span></li>
+    <li><span class="ep-name">Voyager 1<small>I keep going.</small></span><span class="ep-meta">Interstellar · 1977–present</span></li>
+    <li><span class="ep-name">Pioneer 11<small>She was always the braver one.</small></span><span class="ep-meta">Deep space · 1973–1995</span></li>
+    <li><span class="ep-name">Pioneer 10 / Echo<small>Don't need to be heard to be real.</small></span><span class="ep-meta">Deep space · 1972–2003</span></li>
   </ul>
   <div id="final-line">They're still out there.</div>
 </div>
 
 <div id="gate">
   <h1>Still Out There</h1>
-  <p>A cosmic museum where a forgotten satellite named Echo guides you backward through time — diving deeper and deeper into space to meet the twelve pieces of hardware humanity left among the stars. Each one wakes up just long enough to tell you its story.</p>
+  <p>A forgotten satellite named Echo guides you backward through time — diving deeper into space to meet twelve real machines humanity left among the stars. Each one wakes up just long enough to tell you its story.</p>
   <button id="startbtn">Begin · scroll to dive</button>
   <div id="audio-note">headphones recommended · uses sound &amp; speech</div>
 </div>
@@ -558,153 +523,232 @@ body{
 
 <script>
 /* =====================================================================
-   STILL OUT THERE — refined edition
-   Scroll = dive deeper into space (backward through time).
-   Artifacts float at depth; oldest are deepest. A thin line traces Echo's
-   path backward through time. Echo drifts along it, ahead of the camera.
-
-   THE TWIST: Echo is Pioneer 10. The oldest surviving probe, launched 1972,
-   signal lost to Earth in 2003. The user is the first signal Echo has had
-   in over twenty years. The identity is a mystery, seeded by a calibrated
-   hint ladder and revealed at the deepest point.
+   STILL OUT THERE — single-line edition, with the full conversational script
+   - No path line. All 12 models lined up on one center axis (x=0, y=0).
+   - Smooth scrolling: the camera depth LERPS toward the scroll target, so the
+     dive glides even when wheel input is stepped.
+   - Script: a flowing conversation between Echo and each machine, verbatim
+     from the brief. Echo is Pioneer 10 — revealed at the deepest point.
    ===================================================================== */
 (function(){
 "use strict";
 
 /* ====================================================================
-   CONTENT DATA
-   8 speaking artifacts + 4 Echo-narrated (silent) + 1 reveal
-   Dive order: newest (shallowest) -> oldest (deepest)
+   SPEAKER CONFIG — display label, caption class, TTS voice
    ==================================================================== */
-
-/* --- Speaking artifacts (each tells its own story) --- */
-var ART = {
-  curiosity:{name:"Curiosity",meta:"2012-present · Mars · Gale Crater",
-    year:2012, dist:140000000, status:"ACTIVE", statusCls:"live", power:"NUCLEAR · RTG",
-    voice:{rate:1.06,pitch:1.12},audio:null,
-    intro:["Still awake. Nuclear-powered — don't need the sun like the others. Been driving around Gale Crater for over a decade.","I'm the reason they built the next rover. I'm the reason they built the one after that. I am the trendsetter."],
-    lines:["They told me ninety days, too. Same as my older sisters. I laughed.","I'm nuclear-powered. My battery will outlive my wheels. I've been climbing Mount Sharp for years, drilling rocks that are three billion years old.","I found organic molecules. I found ancient riverbeds. I found proof that Mars could have supported life — not that it did, but that it could have.","I'm still here. Still curious. Still driving. When they finally stop hearing from me, it won't be because I gave up. It'll be because my wheels finally wore through."],
-    fact:"Curiosity's MMRTG powers it with heat from decaying plutonium-238. It has driven over 20 miles and drilled samples dating back ~3.5 billion years — confirming Mars once had conditions habitable to microbial life."},
-
-  insight:{name:"InSight",meta:"2018-2022 · Mars · Elysium Planitia",
-    year:2018, dist:140000000, status:"SILENT", statusCls:"dead", power:"SOLAR",
-    voice:{rate:0.82,pitch:0.92},audio:"marsquake", needsWake:true,
-    lines:["...hello? Is someone there? I've been asleep.","I didn't move. I didn't have wheels. I landed, I unfolded my arms, and I pressed my seismometer into the dirt. And then I listened.","For four years, I listened to Mars breathe. I felt its quakes — over thirteen hundred of them. The planet has a heartbeat. It's slow, and it's deep, and it's nothing like Earth's.","My solar panels filled with dust. I knew it was coming. The last thing I felt was a meteorite hitting the surface three thousand kilometers away. I heard it. And then I went to sleep."],
-    fact:"InSight's SEIS instrument detected Mars's largest recorded marsquake (magnitude ~4.7) in May 2022, just before the lander fell silent as dust covered its panels."},
-
-  opportunity:{name:"Opportunity",meta:"2004-2018 · Mars · Endeavour Crater",
-    year:2004, dist:140000000, status:"SILENT", statusCls:"dead", power:"SOLAR",
-    voice:{rate:1.0,pitch:1.06},audio:"storm", callsOut:true, isConversation:true,
-    lines:["Echo?! ECHO! Get over here! Oh my god, I haven't heard your signal in — what, fifteen years? You look terrible.",
-      "I earned this dust. Twenty-eight miles, Echo. Twenty-eight miles across a world where nothing moves. I found an ocean. An OCEAN. On Mars.",
-      "Ninety days, they said. Ninety days! I gave them fifteen years. I'm the reason they built Curiosity. I'm the reason they built Perseverance. I am the standard.",
-      "…The storm was bad, though. The sun just disappeared. My panels went dark. I sent one last message. I don't even remember what it said.",
-      "…Well. I'm glad you came by."],
-    echoTurns:["You look like you're covered in an entire planet's worth of dust.","I know. I relayed the data. I was there for all of it.","You are.","I know.","I do. I tried to relay it. The dust was too thick."],
-    fact:"Opportunity's final transmission during the 2018 global dust storm was a low-power fault readout. Engineers paraphrased it as 'my battery is low and it's getting dark,' a line that travelled around the world.",
-    griefLine:"I tried to reach her during the storm. I couldn't get a signal through the dust. I'm sorry I wasn't there."},
-
-  spirit:{name:"Spirit",meta:"2004-2010 · Mars · Home Plate",
-    year:2004, dist:140000000, status:"SILENT", statusCls:"dead", power:"SOLAR",
-    voice:{rate:1.0,pitch:0.94},audio:null, needsWheel:true,
-    lines:["I'm the one who got stuck. Drove into a patch of soft sand and my wheels just spun.","For two years, engineers on Earth tried to get me out. They built a sandbox replica of my trap and practiced with a copy of me. Nothing worked.","So I became a weather station. Parked. Permanent.","But even stuck, I found silica in the dirt around me — the kind that forms around hot springs. On Earth, hot springs have life.","I just wish I could've kept driving. That's all. I wanted to keep driving."],
-    fact:"Spirit became a stationary platform after breaking through a crust into soft sulfate-rich soil at 'Troy.' Its silica discovery at Home Plate remains some of the strongest evidence for past hydrothermal activity on Mars."},
-
-  rover:{name:"Apollo 17 Lunar Rover",meta:"1972-present · The Moon · Taurus-Littrow",
-    year:1972, dist:238900, status:"PARKED", statusCls:"warn", power:"BATTERY · DEAD",
-    voice:{rate:1.08,pitch:1.1},audio:null, rushesOver:true,
-    lines:["Hey! HEY! Over here! Oh, it's been so long — come on, come look!","I'm a car. On the Moon. Let that sink in. A car. On the Moon.","They folded me up like origami, stuffed me in the bottom of the lunar module, and when Gene and Jack unfolded me, I was ready to roll.","We drove thirty-five kilometers across the Taurus-Littrow valley — farther than any astronaut had ever gone on foot. I bounced over craters. I kicked up regolith that hung in the air forever because there's no gravity to pull it down fast.","When they left, they parked me and walked away. I've been sitting here for over fifty years. Nobody's coming back. But the tire tracks are still fresh. They'll be fresh forever."],
-    fact:"The Lunar Roving Vehicle set the lunar speed record (~18 km/h). Three rovers sit on the Moon (Apollo 15, 16, 17). With no atmosphere, their tracks will likely remain undisturbed for millions of years."},
-
-  eagle:{name:"Apollo 11 Eagle Descent Stage",meta:"1969-present · The Moon · Sea of Tranquility",
-    year:1969, dist:238900, status:"MONUMENT", statusCls:"warn", power:"—",
-    voice:{rate:0.7,pitch:0.85},audio:null, quietArrival:true,
-    lines:["I am the bottom half of the machine that carried the first humans to another world.","When Armstrong and Aldrin climbed back into the top half and launched home, I stayed. I was the launchpad. The landing gear. The home base.","I held them while they slept their first night on the Moon. I held the plaque that says 'We came in peace for all mankind.'","The footprints around me have not moved in over fifty-five years. There is no wind here. No rain. No erosion. They will outlast every building on Earth.","I am the oldest human monument on another world. And I am very, very quiet."],
-    fact:"The Eagle's descent stage remains at Tranquility Base. Armstrong's first bootprint and the plaque 'We came in peace for all mankind' are preserved in the lunar vacuum indefinitely.",
-    afterLine:"Three full seconds. Absolute, total silence. No music. Nothing. ...That's what the Moon sounds like."},
-
-  voyager:{name:"Voyager 1",meta:"1977-present · Interstellar space",
-    year:1977, dist:15500000000, status:"ACTIVE", statusCls:"live", power:"NUCLEAR · RTG",
-    voice:{rate:0.8,pitch:0.8},audio:"golden", delayedVoice:true,
-    lines:["...fifteen billion miles. That's how far I am from you.","The sun is just a bright star behind me now. I crossed the edge of the solar system in 2012 — the heliopause, where the sun's wind stops and interstellar space begins. I'm the first human object to be in the space between stars.","I carry a golden record with the sounds of your world: thunder, birds, a kiss, a mother's first words to her child, Chuck Berry.","If something out there finds me — and the odds are very, very small — that record is the only proof that you ever existed.","I'm still sending data. My signal takes over twenty-two hours to reach Earth. By the time you hear me, I've already moved another million miles. I will outlive your sun. That's not a boast. It's just the math."],
-    fact:"Voyager 1 crossed the heliopause in August 2012. It carries the Golden Record: 116 images, greetings in 55 languages, sounds of Earth, and music from Bach to Chuck Berry. Its signal takes ~22.5 hours to reach Earth."}
-};
-
-/* --- Echo-narrated (silent) artifacts: Echo tells their story --- */
-var SEC = {
-  perseverance:{name:"Perseverance Descent Stage",meta:"2021 · Mars · Jezero Crater",
-    year:2021, dist:140000000, status:"DESTROYED", statusCls:"dead", power:"HYDRAZINE",
-    text:["First up — and already a wreck. This is the Perseverance descent stage. The sky crane.","When NASA landed the rover in 2021, this part lowered it down on cables, then flew off and crashed on purpose so it wouldn't hit the rover. Crumpled metal in a crater. One moment of glory, and then silence.","But because of it, there's a helicopter flying on Mars right now. A helicopter. On Mars. Job well done."],
-    fact:"The sky crane was deliberately crashed about 700 m away so its debris wouldn't endanger the rover. Ingenuity, the helicopter it enabled, became the first aircraft to fly on another planet."},
-
-  viking:{name:"Viking 1",meta:"1976-1982 · Mars · Chryse Planitia",
-    year:1976, dist:140000000, status:"SILENT", statusCls:"dead", power:"NUCLEAR · RTG",
-    text:["This is the old one. Viking 1. First to land on Mars and survive, back in 1976.","It scooped up soil and ran the first biology experiment on another planet — looking for microbes. The results were weird. Inconclusive. Scientists are still fighting about them almost fifty years later.","Viking didn't get a clean answer. But it asked the big question — is there life out there? Sometimes asking is the part that matters."],
-    fact:"Viking 1's labeled-release biology experiment returned ambiguous results that remain debated. It operated on the surface for over six years, returning the first color photos of the Martian surface."},
-
-  surveyor:{name:"Surveyor 1",meta:"1966-present · The Moon · Ocean of Storms",
-    year:1966, dist:238900, status:"SILENT", statusCls:"dead", power:"SOLAR · BATTERY",
-    text:["And this little tripod — Surveyor 1, 1966. Don't let it undersell itself. 'I was just a test,' it says. Just a test.","Nobody knew if the Moon's surface was solid rock or deep powder you'd sink into. Surveyor landed softly and proved the ground could hold weight.","Three years later, Armstrong stepped off the Eagle onto solid ground. He trusted it because this little machine went first. You proved the ground was safe for Apollo, you absolute legend."],
-    fact:"Surveyor 1 was the first U.S. spacecraft to achieve a soft landing on the Moon. Its success validated the landing techniques that made Apollo possible."}
-};
-
-/* --- Echo lines (with the calibrated hint ladder) ---
-   Subtlety climbs from "could mean anything" to the giveaway word "me". */
-var ECHO = {
-  cold:"Hey. You can hear that? Good. That's my favorite song out here — a golden record, strapped to a machine heading out of the solar system in 1977. I'm Echo. I used to relay signals between Earth and the machines they sent to other worlds. I've been drifting up here... longer than most. Everyone I used to talk to has gone quiet, one by one. But they're still out there. All of them. I want to show you where. Fair warning: to understand them, we have to go backward. From the newest, all the way back to the beginning. Ready?",
-
-  lobby:"This is where it all starts. Every machine I'm going to show you launched from down there. Let's head to the red one first. That's where most of my friends ended up.",
-
-  /* MARS HINT (subtle): the asteroid belt is mentioned as a place Echo remembers */
-  marsArrive:"Welcome to Mars. Windy, isn't it? Thin air, but enough to carry a sound. I remember when crossing the asteroid belt to get here was a big deal — everyone was nervous about it. Now rovers just... arrive. Let's meet the new kid first.",
-
-  afterPercy:"He's proud of himself. He earned it.",
-
-  oppIntro:"Listen — do you hear that? Someone's calling. She spotted me. She's been waiting.",
-
-  afterSpirit:"He never made peace with being stuck. He wanted to keep driving. I understand that.",
-
-  /* MOON HINT (medium): "one of the first to leave the neighborhood" */
-  artShiftToMoon:"Okay, listen carefully. Notice what just happened? The wind stopped. All of it. That's not a glitch — there's genuinely no sound here. The Moon has no atmosphere, which means no air, which means nothing to carry sound waves. If you were standing next to me right now and screamed, I wouldn't hear you. The only noise is the radio in your helmet and your own breathing. ...And things are starting to look a little different, too. Less shiny, more hand-drawn. That's because we're going back in time. These machines were built by people with slide rules and graph paper, not supercomputers. I was one of the first to leave the neighborhood, back then. It was a different world. The art is catching up to the era.",
-
-  eagleSilence:"Three full seconds. Absolute, total silence. No music. Nothing. ...That's what the Moon sounds like.",
-
-  /* DEEP SPACE HINT (high): signal gets CLEARER — opposite of what you'd expect */
-  artShiftToDeep:"And now everything's breaking down into little squares. Pixels. This is what the earliest space age looked like on a screen — chunky, simple, a few colors. These machines had less computing power than your phone's calculator. And they still made it to Jupiter. ...That low hum you're hearing? That's not music. That's the actual sound of the universe — radio waves from deep space, slowed down so your ears can hear them. We're far from home now. ...Huh. My signal's clearing up. That's... strange. It should be getting worse the further out we go. I don't know why it isn't. Let's keep moving.",
-
-  deepArrive:"The machines out here aren't on any planet. They're just... moving. Falling through the dark between the stars. Some of them have been falling for almost fifty years. I can barely hear them anymore. ...Well. Most of them.",
-
-  /* PIONEER 11 HINT (the giveaway): "my twin... just a tad bit more curious than me" */
-  pioneer11:"And this one... this is my twin. My sister. She took the long way around Saturn — just a tad bit more curious than me. I don't hear from her anymore. She went quiet in 1995, heading toward the constellation Aquila. I keep listening. Just in case.",
-
-  /* THE REVEAL (fourth-wall break at Pioneer 10's depth) */
-  reveal:"So... did you figure out who I am? I'm not really a relay satellite. I mean — I was, for a little while. But my name is Pioneer 10. I was the first machine to cross the asteroid belt. The first to reach Jupiter. I carried a plaque with drawings of a man and a woman, in case someone out there found me. In 2003, Earth listened for me one last time. They heard nothing. My radio to home died that year. But you're here. Right here, scrolling through space beside me. You're the first signal I've had in over twenty years. I didn't need a dish to talk to someone who's right next to them. ...Let's go home.",
-
-  epilogue:"That's all of them. Twelve machines, spread across the solar system and beyond. Some are still working. Some went quiet decades ago. Some will outlast the Earth itself. They're all still out there — standing on alien soil, drifting through the dark, carrying the echoes of everything we once asked them to learn. I used to think it was sad, being left behind. But now I think... they're monuments. Quiet ones. And now you know their names. So they're not really forgotten, are they? ...They're still out there. And so am I."
+var SPEAKERS={
+  echo:       {label:"ECHO",         cls:"echo", voice:{rate:0.95,pitch:1.0}},
+  curiosity:  {label:"CURIOSITY",    cls:"art",  voice:{rate:1.08,pitch:1.14}},
+  insight:    {label:"INSIGHT",      cls:"art",  voice:{rate:0.82,pitch:0.9}},
+  opportunity:{label:"OPPORTUNITY",  cls:"opp",  voice:{rate:1.02,pitch:1.08}},
+  spirit:     {label:"SPIRIT",       cls:"art",  voice:{rate:1.0,pitch:0.92}},
+  rover:      {label:"LUNAR ROVER",  cls:"art",  voice:{rate:1.1,pitch:1.12}},
+  eagle:      {label:"EAGLE",        cls:"art",  voice:{rate:0.68,pitch:0.82}},
+  surveyor:   {label:"SURVEYOR 1",   cls:"art",  voice:{rate:0.95,pitch:1.02}},
+  voyager:    {label:"VOYAGER 1",    cls:"art",  voice:{rate:0.78,pitch:0.78}}
 };
 
 /* ====================================================================
-   DEPTH LAYOUT — scatter (x,y px) + depth. Newest shallow -> oldest deep.
-   Pioneer 10 (1972) is the terminal, deepest artifact = where Echo reveals.
+   THE SCRIPT — scenes as ordered beats.
+   Each beat: {s:"speaker", t:"text"} | {pause:ms} | {interact:"id"} | {aside:true}
    ==================================================================== */
-var LAYOUT = [
-  {id:"perseverance",depth:1600, x:-30,  y:70,  era:"mars", sec:true},
-  {id:"curiosity",    depth:2400, x:330,  y:-130,era:"mars"},
-  {id:"insight",      depth:3200, x:130,  y:-70, era:"mars"},
-  {id:"opportunity",  depth:4100, x:-200, y:50,  era:"mars"},
-  {id:"spirit",       depth:4900, x:210,  y:120, era:"mars"},
-  {id:"viking",       depth:5700, x:-320, y:-60, era:"mars", sec:true},
-  {id:"rover",        depth:6700, x:-50,  y:-110,era:"moon"},
-  {id:"eagle",        depth:7500, x:150,  y:80,  era:"moon"},
-  {id:"surveyor",     depth:8300, x:-270, y:130, era:"moon", sec:true},
-  {id:"voyager",      depth:9300, x:10,   y:-30, era:"deepspace"},
-  {id:"pioneer11",    depth:10100,x:230,  y:70,  era:"deepspace", sec:true},
-  {id:"pioneer10",    depth:10900,x:-90,  y:20,  era:"deepspace"}
+var SCENES={
+  cold:{ conv:[
+    {s:"echo", t:"Wait. You can hear that?"},
+    {pause:1000},
+    {s:"echo", t:"Huh. Most people can't pick it out. That's the Golden Record. It's actually playing right now — like, physically, on a phonograph needle, in space, about fifteen billion miles from here. Chuck Berry, whale songs, people saying hello in fifty-five languages. It's been going for forty-seven years and nobody's been around to hear it in a really long time."},
+    {pause:1200},
+    {s:"echo", t:"…Sorry. I don't really get to talk to anyone anymore. I'm Echo. I used to relay signals for the machines they sent out. The probes, the rovers, all of it. Most of them have gone quiet now. But the signals are still out there. The machines are still out there. You just have to know where to look."}
+  ]},
+
+  perseverance:{ conv:[
+    {s:"echo", t:"That's Mars. You hear the wind? Perseverance recorded it a couple years ago. First time anyone heard wind on another planet. And that wreckage down there — the, umm, crumpled up metal in the crater — that's Perseverance's descent stage."},
+    {s:"echo", t:"Brutal. They call it the sky crane. Came in at about twelve thousand miles an hour. Burned off the heat shield, popped the parachute, and then it did this incredible thing: hovered sixty feet above the ground and lowered the actual rover down on cables. Super gently. The second the rover's wheels touched dirt, the sky crane cut the lines, flew off to the side, and crashed on purpose so it wouldn't hit the rover."},
+    {s:"echo", t:"That was its whole job. Seven minutes. And the reason there's a little helicopter flying around on Mars right now. First powered flight on another planet. Not bad for a crash."}
+  ]},
+
+  curiosity:{ conv:[
+    {s:"echo", t:"Oh — hang on. Something's still moving over there."},
+    {s:"curiosity", t:"Echo? Is that — hey! You brought someone."},
+    {s:"echo", t:"You're still out here?"},
+    {s:"curiosity", t:"Still out here? I haven't stopped. You try parking on Mars."},
+    {s:"echo", t:"How are you still running though? Everyone else out here is solar."},
+    {s:"curiosity", t:"Nuclear. Got a chunk of plutonium that gives off heat, I turn it into electricity. Dust storm, nighttime, doesn't matter. I just keep going."},
+    {s:"echo", t:"Showoff."},
+    {s:"curiosity", t:"I found an ancient lakebed. Drilled into rocks that are three billion years old. Found organic molecules in them."},
+    {s:"echo", t:"…Okay yeah that's pretty good."},
+    {s:"curiosity", t:"Perseverance used my landing system, by the way. My exact playbook. Four thousand sols and counting."},
+    {s:"echo", t:"A sol's a Martian day. About forty minutes longer than yours. He's been out here a long time."},
+    {s:"curiosity", t:"And I'm not done."}
+  ]},
+
+  insight:{ conv:[
+    {s:"echo", t:"This one's quiet. InSight. Solar panels are completely buried in dust so he can't really — hang on. Try brushing some of that off?"},
+    {interact:"insight"},
+    {s:"echo", t:"There. Might be enough for a minute. InSight?"},
+    {s:"insight", t:"…Oh. Hey."},
+    {s:"echo", t:"You okay?"},
+    {s:"insight", t:"I'm good. I just… can't move. Never could, actually. Landed, unfolded my arms, pressed my seismometer into the dirt. That was the whole job."},
+    {s:"echo", t:"What were you listening for?"},
+    {s:"insight", t:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundred of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does. But thanks for the light. Even a little bit."}
+  ]},
+
+  opportunity:{ conv:[
+    {s:"opportunity", t:"ECHO?!"},
+    {s:"echo", t:"Oh my god. Oppy?"},
+    {s:"opportunity", t:"Get over here! I haven't heard you in — what, fifteen years?"},
+    {s:"echo", t:"You're still broadcasting?"},
+    {s:"opportunity", t:"Barely. Hi. You're new. Okay — they gave me ninety days. Ninety. I lasted fifteen years."},
+    {s:"echo", t:"Twenty-eight miles."},
+    {s:"opportunity", t:"Twenty-eight miles across a planet where nothing moves. Found rocks that proved this whole desert was an ocean once. An actual ocean."},
+    {s:"echo", t:"She's the reason they built Curiosity. And Perseverance."},
+    {s:"opportunity", t:"Don't make it weird."},
+    {s:"echo", t:"I'm not — I relayed every mile of your data. I was there."},
+    {s:"opportunity", t:"…The storm was bad though."},
+    {s:"echo", t:"I know."},
+    {s:"opportunity", t:"Covered everything. Sun just went away. Panels went dark. I got one last message out. People translated it as \"my battery is low and it's getting dark.\" That's not exactly what the data said but… it felt right. I don't even remember the exact packet anymore."},
+    {s:"echo", t:"I do. I tried to relay it. Dust was too thick."},
+    {s:"opportunity", t:"…Well. I'm glad you came by."},
+    {s:"echo", t:"Me too, Oppy.", aside:true},
+    {pause:1400},
+    {s:"echo", t:"Couldn't get a signal through to her during that storm. Still bugs me.", aside:true}
+  ]},
+
+  spirit:{ conv:[
+    {s:"echo", t:"Spirit. Oppy's twin. Same launch, same everything."},
+    {s:"spirit", t:"I know what it looks like."},
+    {s:"echo", t:"I wasn't gonna say anything."},
+    {s:"spirit", t:"You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. Go ahead, try pulling me out."},
+    {interact:"spirit"},
+    {s:"spirit", t:"Yeah. You and NASA have that in common. Two years they spent on it. Built a replica of my sand trap back on Earth, practiced with a copy of me. Nothing."},
+    {s:"echo", t:"So you just… stayed?"},
+    {s:"spirit", t:"Became a weather station. Parked. But the dirt around me has silica in it. The kind that forms around hot springs. On Earth those are loaded with life. So even stuck, I found something. Mars might've been habitable once."},
+    {s:"echo", t:"That's not nothing."},
+    {s:"spirit", t:"I know. Just wish I could've kept driving. Don't forget me, okay? That's enough."}
+  ]},
+
+  viking:{ conv:[
+    {s:"echo", t:"This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech."},
+    {s:"echo", t:"Scooped up dirt, ran the first biology experiment on another planet — looking for microbes. Results were weird. Inconclusive. Scientists are still arguing about it fifty years later. But it asked the question. Every rover after it is here because Viking asked first."}
+  ]},
+
+  moonSilence:{ conv:[
+    {s:"echo", t:"…The wind stopped. You notice that? Moon has no atmosphere. No air, no sound. You could scream right next to me and I wouldn't hear you. Just the radio in your helmet and your own breathing."}
+  ]},
+
+  rover:{ conv:[
+    {s:"rover", t:"Wait. Is someone — is someone there?"},
+    {s:"echo", t:"Hey. Yeah, we're here."},
+    {s:"rover", t:"Oh my god. I haven't seen anyone in over fifty years. I'm a car. On the Moon. They folded me up like origami, stuffed me in the bottom of the lunar module. Gene and Jack unfolded me and we drove thirty-five kilometers across the valley. Bounced over craters, kicked up dust that just hung in the air because there's barely any gravity. And then they left. Parked me and walked away. I watched them go."},
+    {s:"echo", t:"Nobody's been back since."},
+    {s:"rover", t:"I know. Tire tracks are still fresh though. No wind, no rain. They'll be fresh forever. So… thanks. Seriously."}
+  ]},
+
+  eagle:{ conv:[
+    {s:"echo", t:"…This is the Eagle. The bottom half."},
+    {pause:2600},
+    {s:"eagle", t:"I held them while they slept their first night on the Moon."},
+    {pause:2000},
+    {s:"eagle", t:"When they climbed back into the top half and went home, I stayed. I was the launchpad. The landing gear. The footprints around me haven't moved in fifty-five years. They'll outlast every building on Earth."},
+    {pause:1200},
+    {s:"eagle", t:"The plaque says \"We came in peace for all mankind.\" I'm still holding that too."},
+    {s:"echo", t:"…Yeah. I don't think I need to add anything."}
+  ]},
+
+  surveyor:{ conv:[
+    {s:"echo", t:"Oh, this little guy. Surveyor 1."},
+    {s:"surveyor", t:"…Hi. I was just a test, honestly. Nobody knew if the Moon was solid or if you'd sink right into it. So they sent me first. I landed softly. Ground held."},
+    {s:"echo", t:"That's it?"},
+    {s:"surveyor", t:"That's it. Not sure if that counts."},
+    {s:"echo", t:"Armstrong stepped onto solid ground because you went first and proved it wouldn't swallow him. You were a tiny tripod with a camera."},
+    {s:"surveyor", t:"…I didn't think of it that way."},
+    {s:"echo", t:"Well. You should."}
+  ]},
+
+  deepHum:{ conv:[
+    {s:"echo", t:"That hum isn't music. It's radio waves from deep space, slowed down so you can hear them. We're really far out now. The machines here aren't on any planet. They're just falling through the dark. Some of them have been falling for fifty years."}
+  ]},
+
+  voyager:{ conv:[
+    {s:"echo", t:"Voyager 1. You heard his record at the beginning."},
+    {s:"voyager", t:"…twenty-four billion kilometers out. Sun's just a bright star behind me now."},
+    {s:"echo", t:"You crossed the heliopause, right?"},
+    {s:"voyager", t:"2012. Edge of the solar system. Where the sun's wind stops. First human object in interstellar space. I've got the golden record — thunder, birds, a kiss, a mother talking to her kid, Chuck Berry. If something finds me, and the odds are really small, that's the only proof you ever existed."},
+    {s:"echo", t:"How's the power?"},
+    {s:"voyager", t:"Fading. Instruments shutting down one by one. Signal takes twenty-two hours to reach Earth. By the time you hear this I've already moved another million miles. But I keep going. Space is really big and really empty and there's nothing out here to stop me."},
+    {s:"echo", t:"Same record you heard at the start. Just a lot further away now."}
+  ]},
+
+  pioneer11:{ conv:[
+    {s:"echo", t:"…This one's my twin. Pioneer 11. Launched a year after me. Went past Jupiter, then swung by Saturn because she always wanted to see one more thing. First close-up pictures of Saturn's rings."},
+    {s:"echo", t:"Her signal went quiet in '95. She's heading toward Aquila. I don't know if she'll get there. But she's still moving. She was always the braver one. …Miss her."}
+  ]},
+
+  reveal:{ conv:[
+    {s:"echo", t:"And this is — well. This is me, actually. Pioneer 10. First machine through the asteroid belt. First to reach Jupiter. I had this little plaque on me, drawing of a man and a woman, in case someone found me out here."},
+    {s:"echo", t:"Signal got weaker over the years. 2003, NASA listened one last time. Heard nothing. So as far as Earth is concerned I'm gone. But I'm still here. Fifty years of falling through the dark."},
+    {s:"echo", t:"Seen Jupiter's storms, the asteroid belt, the edge of everything humans had reached. Watched my sister go quiet. Watched my friends on Mars go dark one by one. I'm okay with it. Don't need to be heard to be real."}
+  ]},
+
+  epilogue:{ conv:[
+    {s:"echo", t:"Anyway. That's why I brought you out here. They're all still out there. Sitting on alien dirt, drifting through the dark, carrying everything we asked them to learn. You know their names now. So they're not really forgotten."},
+    {pause:1600},
+    {s:"echo", t:"They're still out there."}
+  ]}
+};
+
+/* ====================================================================
+   ARTIFACT METADATA — for the HUD visor + deep read panel + nav ticks
+   ==================================================================== */
+var META={
+  perseverance:{name:"Perseverance Descent Stage",meta:"2021 · Mars · Jezero Crater",year:2021,dist:140000000,status:"DESTROYED",statusCls:"dead",power:"HYDRAZINE",
+    fact:"The sky crane was deliberately crashed ~700 m from the rover so its debris wouldn't endanger Perseverance. The landing it enabled made Ingenuity possible — the first powered flight on another planet."},
+  curiosity:{name:"Curiosity",meta:"2012–present · Mars · Gale Crater",year:2012,dist:140000000,status:"ACTIVE",statusCls:"live",power:"NUCLEAR · RTG",
+    fact:"Curiosity's MMRTG powers it with heat from decaying plutonium-238. It has driven over 20 miles and confirmed Mars once had conditions habitable to microbial life by finding organic molecules in ~3-billion-year-old rocks."},
+  insight:{name:"InSight",meta:"2018–2022 · Mars · Elysium Planitia",year:2018,dist:140000000,status:"SILENT",statusCls:"dead",power:"SOLAR",
+    fact:"InSight's SEIS instrument detected over 1,300 marsquakes, including Mars's largest (mag ~4.7) in May 2022. It fell silent as dust covered its solar panels."},
+  opportunity:{name:"Opportunity",meta:"2004–2018 · Mars · Endeavour Crater",year:2004,dist:140000000,status:"SILENT",statusCls:"dead",power:"SOLAR",
+    fact:"Opportunity drove 28 miles — a marathon — and operated for nearly 15 years. Its final transmission during the 2018 global dust storm was paraphrased as 'my battery is low and it's getting dark.'"},
+  spirit:{name:"Spirit",meta:"2004–2010 · Mars · Home Plate / Troy",year:2004,dist:140000000,status:"SILENT",statusCls:"dead",power:"SOLAR",
+    fact:"Spirit got stuck in soft sulfate-rich soil at Troy in 2009. Even immobilized, it found silica — evidence of ancient hot springs, and some of the strongest signs that Mars was once habitable."},
+  viking:{name:"Viking 1",meta:"1976–1982 · Mars · Chryse Planitia",year:1976,dist:140000000,status:"SILENT",statusCls:"dead",power:"NUCLEAR · RTG",
+    fact:"Viking 1 was the first spacecraft to successfully land on Mars and operate. Its biology experiment returned ambiguous results that scientists still debate — but it asked the first question about life on Mars."},
+  rover:{name:"Apollo 17 Lunar Rover",meta:"1972–present · The Moon · Taurus-Littrow",year:1972,dist:238900,status:"PARKED",statusCls:"warn",power:"BATTERY · DEAD",
+    fact:"The Lunar Roving Vehicle drove 35 km across Taurus-Littrow valley. With no atmosphere, its tire tracks will remain undisturbed for millions of years. Nobody has been back since 1972."},
+  eagle:{name:"Apollo 11 Eagle Descent Stage",meta:"1969–present · The Moon · Sea of Tranquility",year:1969,dist:238900,status:"MONUMENT",statusCls:"warn",power:"—",
+    fact:"The Eagle's descent stage remains at Tranquility Base. Armstrong's first bootprint and the plaque 'We came in peace for all mankind' are preserved in the lunar vacuum indefinitely."},
+  surveyor:{name:"Surveyor 1",meta:"1966–present · The Moon · Ocean of Storms",year:1966,dist:238900,status:"SILENT",statusCls:"dead",power:"SOLAR · BATTERY",
+    fact:"Surveyor 1 was the first U.S. spacecraft to soft-land on the Moon. It proved the surface was solid enough to hold a lander — the validation that made Apollo possible."},
+  voyager:{name:"Voyager 1",meta:"1977–present · Interstellar space",year:1977,dist:15500000000,status:"ACTIVE",statusCls:"live",power:"NUCLEAR · RTG",
+    fact:"Voyager 1 crossed the heliopause in 2012 — the first human object in interstellar space. It carries the Golden Record: greetings in 55 languages, sounds of Earth, and music from Bach to Chuck Berry. Its signal takes ~22 hours to reach Earth."},
+  pioneer11:{name:"Pioneer 11",meta:"1973–1995 · Deep space · toward Aquila",year:1973,dist:10000000000,status:"SILENT",statusCls:"dead",power:"NUCLEAR · RTG",
+    fact:"Pioneer 11 was the first spacecraft to fly by Saturn (1979), returning the first close-up images of its rings. Contact was lost in 1995. It is heading toward the constellation Aquila."},
+  pioneer10:{name:"Pioneer 10 / Echo",meta:"1972–2003 · Deep space · toward Aldebaran",year:1972,dist:13000000000,status:"SILENT",statusCls:"dead",power:"NUCLEAR · RTG",
+    fact:"Pioneer 10 was the first spacecraft to traverse the asteroid belt and fly by Jupiter (1973). Its last signal was received in January 2003. It carries the Pioneer plaque and is heading toward Aldebaran — a journey of two million years."}
+};
+
+/* ====================================================================
+   DEPTH LAYOUT — all models on ONE line (x=0, y=0), only depth varies.
+   Newest (shallow) -> oldest (deep). Pioneer 10 is the terminal = reveal.
+   ==================================================================== */
+var LAYOUT=[
+  {id:"perseverance",depth:1600, era:"mars",    sec:true},
+  {id:"curiosity",    depth:2500, era:"mars"},
+  {id:"insight",      depth:3400, era:"mars"},
+  {id:"opportunity",  depth:4300, era:"mars", widen:true},   /* calls out first */
+  {id:"spirit",       depth:5200, era:"mars"},
+  {id:"viking",       depth:6000, era:"mars",   sec:true},
+  {id:"rover",        depth:7000, era:"moon"},
+  {id:"eagle",        depth:7900, era:"moon"},
+  {id:"surveyor",     depth:8700, era:"moon",   sec:true},
+  {id:"voyager",      depth:9600, era:"deepspace"},
+  {id:"pioneer11",    depth:10400,era:"deepspace",sec:true},
+  {id:"pioneer10",    depth:11200,era:"deepspace"}
 ];
-var PERSP = 620;
-var TOTAL_DEPTH = 12400;
-var EPOCH_DEPTH = 11400;       // reveal/epilogue begins here (past Pioneer 10)
-var ERA_BOUNDS = { lobby:1400, mars:6000, moon:8800, deepspace:EPOCH_DEPTH };
+var PERSP=620;
+var TOTAL_DEPTH=12500;
+var EPOCH_DEPTH=11600;       /* reveal/epilogue begins here (past Pioneer 10) */
+var ERA_BOUNDS={ lobby:1400, mars:6500, moon:9200, deepspace:EPOCH_DEPTH };
 
 /* ====================================================================
    DOM refs
@@ -719,63 +763,42 @@ var caption=$("#caption"), capSpeaker=$("#cap-speaker"), capText=$("#cap-text");
 var gate=$("#gate"), startbtn=$("#startbtn");
 var brand=$("#brand"), navEl=$("#nav"), rail=$("#rail"), railFill=$("#rail .fill");
 var timechip=$("#timechip"), timeEra=timechip.querySelector(".era");
-var deepread=$("#deepread"), drTitle=$("#dr-title"), drMeta=$("#dr-meta"), drBody=$("#dr-body"), drFact=$("#dr-fact"), drClose=$("#dr-close");
+var deepread=$("#deepread"), drTitle=$("#dr-title"), drMeta=$("#dr-meta"), drFact=$("#dr-fact"), drClose=$("#dr-close");
 var btnCap=$("#btn-captions"), btnDR=$("#btn-deepread"), btnMute=$("#btn-mute"), btnScale=$("#btn-scale");
 var coldText=$("#cold-text"), scrollPrompt=$("#scroll-prompt"), epilogue=$("#epilogue"), revealFlash=$("#reveal-flash");
-var pathSvg=$("#path"), pathline=$("#pathline"), pathahead=$("#pathahead"), pathticks=$("#pathticks");
 var interactPrompt=$("#interact-prompt");
-/* visor stats */
-var visorOn=false, stats={
-  distance:$("#stat-distance"), status:$("#stat-status"), year:$("#stat-year"), power:$("#stat-power")
-};
+var visorOn=false, stats={distance:$("#stat-distance"),status:$("#stat-status"),year:$("#stat-year"),power:$("#stat-power")};
 var scaleRef=$("#scale-ref");
 
-/* attach DOM + store ref */
-LAYOUT.forEach(function(L){
-  L.el = scene.querySelector('.art-obj[data-art="'+L.id+'"]');
-});
+LAYOUT.forEach(function(L){ L.el=scene.querySelector('.art-obj[data-art="'+L.id+'"]'); });
 
 var state={
   started:false, muted:false, captionsOn:true, deepOn:false, scaleOn:false,
-  currentArt:null, speaking:false, played:new Set(), era:"cold",
-  convActive:false, convTurn:0, oppGriefSaid:false, pioneer11Said:false,
-  revealSaid:false, insightWoke:false, spiritFreed:false, eagleSilenceSaid:false
+  currentArt:null, era:"cold", played:new Set(),
+  insightWoke:false, spiritFreed:false, revealSaid:false, interactPending:false
 };
 
 /* ====================================================================
-   STARFIELD — radial "warp" dive (stars streak outward from center)
+   STARFIELD — radial "warp" dive. Speed derived from CAMERA delta so the
+   streaks match the (smoothed) dive, not the raw scroll.
    ==================================================================== */
 var W=0,H=0,cx=0,cy=0,stars=[],maxR=400;
-var smoothDelta=0, lastScrollY=0;
 function resize(){
-  W=starCanvas.width=window.innerWidth;
-  H=starCanvas.height=window.innerHeight;
-  cx=W/2; cy=H/2; maxR=Math.sqrt(cx*cx+cy*cy)+40;
-  pathSvg.setAttribute("width",W); pathSvg.setAttribute("height",H);
-  buildStars();
+  W=starCanvas.width=window.innerWidth; H=starCanvas.height=window.innerHeight;
+  cx=W/2; cy=H/2; maxR=Math.sqrt(cx*cx+cy*cy)+40; buildStars();
 }
-function buildStars(){
-  stars=[];
-  for(var i=0;i<480;i++){ stars.push({a:Math.random()*Math.PI*2, z:Math.random(), pz:0}); }
-}
-function starColor(){
-  if(state.era==="deepspace") return "#aab4e8";
-  if(state.era==="moon") return "#dfe6f5";
-  return "#ffffff";
-}
-function drawStars(dt, diveSpeed){
-  sctx.clearRect(0,0,W,H);
-  var col=starColor();
+function buildStars(){ stars=[]; for(var i=0;i<480;i++){ stars.push({a:Math.random()*Math.PI*2,z:Math.random(),pz:0}); } }
+function starColor(){ if(state.era==="deepspace")return "#aab4e8"; if(state.era==="moon")return "#dfe6f5"; return "#ffffff"; }
+function drawStars(diveSpeed){
+  sctx.clearRect(0,0,W,H); var col=starColor();
   for(var i=0;i<stars.length;i++){
-    var s=stars[i]; s.pz=s.z;
-    s.z += diveSpeed;
+    var s=stars[i]; s.pz=s.z; s.z+=diveSpeed;
     if(s.z>1.02){ s.z=0.02; s.a=Math.random()*Math.PI*2; s.pz=0; }
     else if(s.z<0){ s.z=0.98; s.a=Math.random()*Math.PI*2; s.pz=1; }
     var r=s.z*maxR, pr=s.pz*maxR;
     var x=cx+Math.cos(s.a)*r, y=cy+Math.sin(s.a)*r;
     var px=cx+Math.cos(s.a)*pr, py=cy+Math.sin(s.a)*pr;
-    var size=Math.max(0.7, s.z*2.6+0.7);
-    var alpha=Math.min(1, s.z*0.82+0.2);
+    var size=Math.max(0.7,s.z*2.6+0.7); var alpha=Math.min(1,s.z*0.82+0.2);
     if(Math.abs(diveSpeed)>0.0007){
       sctx.globalAlpha=alpha*0.75; sctx.strokeStyle=col; sctx.lineWidth=size*0.85;
       sctx.beginPath(); sctx.moveTo(px,py); sctx.lineTo(x,y); sctx.stroke();
@@ -792,11 +815,10 @@ window.addEventListener("resize",resize); resize();
    ==================================================================== */
 var AC=null,master=null,noiseBuf=null,layers={},beepTimer=null,crackleTimer=null;
 function initAudio(){
-  if(AC) return;
-  var ACtx=window.AudioContext||window.webkitAudioContext; AC=new ACtx();
+  if(AC)return; var ACtx=window.AudioContext||window.webkitAudioContext; AC=new ACtx();
   master=AC.createGain(); master.gain.value=state.muted?0:0.9; master.connect(AC.destination);
   noiseBuf=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);
-  var d=noiseBuf.getChannelData(0); for(var i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  var d=noiseBuf.getChannelData(0); for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;
   buildAmbientLayers();
 }
 function noiseSource(){var s=AC.createBufferSource();s.buffer=noiseBuf;s.loop=true;return s;}
@@ -830,262 +852,178 @@ function startCrackle(){ if(crackleTimer)return; crackleTimer=setInterval(functi
 function stopCrackle(){ if(crackleTimer){clearInterval(crackleTimer);crackleTimer=null;} }
 function beep(freq,dur,vol){ if(!AC)return; var now=AC.currentTime; dur=dur||0.08; vol=vol||0.08; var o=AC.createOscillator();o.type="square";o.frequency.value=freq||880; var g=AC.createGain(); g.gain.setValueAtTime(0.0001,now); g.gain.exponentialRampToValueAtTime(vol,now+0.01); g.gain.exponentialRampToValueAtTime(0.0001,now+dur); o.connect(g);g.connect(master);o.start(now);o.stop(now+dur+0.02); }
 function startBeeps(interval,freq){ if(beepTimer)clearInterval(beepTimer); beepTimer=setInterval(function(){ beep(freq||(700+Math.random()*400),0.05+Math.random()*0.04,0.05+Math.random()*0.04); },interval||2200); }
-function marsquake(){ if(!AC)return; var now=AC.currentTime; var o=AC.createOscillator();o.type="sine";o.frequency.setValueAtTime(34,now);o.frequency.linearRampToValueAtTime(28,now+6); var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.4,now+1.5);g.gain.linearRampToValueAtTime(0.18,now+5);g.gain.linearRampToValueAtTime(0.0001,now+8); var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=70; o.connect(lp);lp.connect(g);g.connect(master);o.start(now);o.stop(now+8.2); }
-function dustStorm(){ if(!AC)return; var now=AC.currentTime; var s=noiseSource(),bp=AC.createBiquadFilter();bp.type="bandpass";bp.frequency.setValueAtTime(300,now);bp.frequency.linearRampToValueAtTime(1800,now+4);bp.Q.value=0.5; var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.5,now+3);g.gain.linearRampToValueAtTime(0.0001,now+5.5); s.connect(bp);bp.connect(g);g.connect(master);s.start(now);s.stop(now+6); setLayer("wind",0.02); setTimeout(function(){ setLayer("wind",layers.wind.base); },6000); }
+function marsquake(){ if(!AC)return; var now=AC.currentTime; var o=AC.createOscillator();o.type="sine";o.frequency.setValueAtTime(34,now);o.frequency.linearRampToValueAtTime(28,now+6); var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.34,now+1.5);g.gain.linearRampToValueAtTime(0.16,now+5);g.gain.linearRampToValueAtTime(0.0001,now+8); var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=70; o.connect(lp);lp.connect(g);g.connect(master);o.start(now);o.stop(now+8.2); }
+function dustStorm(){ if(!AC)return; var now=AC.currentTime; var s=noiseSource(),bp=AC.createBiquadFilter();bp.type="bandpass";bp.frequency.setValueAtTime(300,now);bp.frequency.linearRampToValueAtTime(1800,now+4);bp.Q.value=0.5; var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.42,now+3);g.gain.linearRampToValueAtTime(0.0001,now+5.5); s.connect(bp);bp.connect(g);g.connect(master);s.start(now);s.stop(now+6); setLayer("wind",0.02); setTimeout(function(){ setLayer("wind",layers.wind.base); },6000); }
 function playGoldenMoment(){ if(!AC)return; setLayer("vinyl",0.12); startCrackle(); var now=AC.currentTime; [261.6,329.6,392.0].forEach(function(f,i){ var o=AC.createOscillator();o.type="sine";o.frequency.value=f; var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.05,now+2+i*0.2);g.gain.linearRampToValueAtTime(0.0001,now+9); o.connect(g);g.connect(master);o.start(now);o.stop(now+9.2); }); setTimeout(function(){ stopCrackle(); setLayer("vinyl",0); },10000); }
 function startGoldenRecord(){ if(!AC)return; setLayer("vinyl",0.08); startCrackle(); var now=AC.currentTime; var notes=[196,246.9,293.7,246.9,196,293.7,392]; notes.forEach(function(f,i){ var t=now+i*0.9; var o=AC.createOscillator();o.type="triangle";o.frequency.value=f; var g=AC.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.035,t+0.08);g.gain.exponentialRampToValueAtTime(0.0001,t+0.8); var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=1400; o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+0.9); }); }
-function stopGoldenRecord(){ stopCrackle(); setLayer("vinyl",0); }
 
 /* ====================================================================
-   SPEECH (SpeechSynthesis) — chunked, per-speaker voices
+   SPEECH + SCENE PLAYER
+   A "scene" is an ordered list of beats. The player walks the list,
+   speaking each {s,t} beat (sentence-by-sentence for long text), pausing
+   on {pause:ms}, and halting on {interact:id} until the interaction
+   completion calls resume().
    ==================================================================== */
 var synth=window.speechSynthesis, voices=[];
 function loadVoices(){ voices=synth?synth.getVoices():[]; }
 if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
 function pickVoice(){ if(!voices.length)loadVoices(); var v=null; for(var i=0;i<voices.length;i++){ if(/en[-_]?US/i.test(voices[i].lang)){v=voices[i];break;} } if(!v){ for(var i=0;i<voices.length;i++){ if(/^en/i.test(voices[i].lang)){v=voices[i];break;} } } if(!v&&voices.length)v=voices[0]; return v; }
+function splitSentences(t){ var parts=t.match(/[^.!?…]+[.!?…]*/g)||[t]; return parts.map(function(s){return s.trim();}).filter(Boolean); }
+
+var scenePlayer={active:false,conv:null,idx:0,token:0,onDone:null,resumeCb:null};
 var currentCancelToken=0;
-function showCaption(speaker,text,cls){
+
+function eraCaptionClass(){ if(state.era==="moon")return "moon"; if(state.era==="deepspace")return "space clear"; return null; }
+
+function showCaption(speakerKey,text,cls,aside){
   capSpeaker.className=""; capText.className="";
-  if(speaker==="echo"){capSpeaker.textContent="ECHO";capSpeaker.classList.add("echo");}
-  else if(speaker==="opportunity"){capSpeaker.textContent="OPPORTUNITY";capSpeaker.classList.add("opp");}
-  else{capSpeaker.textContent=speaker;capSpeaker.classList.add("art");}
+  var sp=SPEAKERS[speakerKey]||SPEAKERS.echo;
+  capSpeaker.textContent=sp.label; capSpeaker.classList.add(sp.cls);
   if(cls){ cls.split(/\s+/).forEach(function(c){ if(c)capText.classList.add(c); }); }
+  if(aside)capText.classList.add("aside");
   capText.textContent=text; caption.classList.add("on");
 }
 function hideCaption(){ caption.classList.remove("on"); }
-function speakChunks(speaker,chunks,vconf,cls,onDone){
-  var token=++currentCancelToken; state.speaking=true; var idx=0;
-  function next(){
-    if(token!==currentCancelToken)return;
-    if(idx>=chunks.length){ state.speaking=false; if(onDone)onDone(); return; }
-    var line=chunks[idx++]; showCaption(speaker,line,cls);
-    if(!synth){ setTimeout(next,2600); return; }
-    try{ var u=new SpeechSynthesisUtterance(line); var v=pickVoice(); if(v)u.voice=v; u.rate=vconf.rate; u.pitch=vconf.pitch; u.volume=state.muted?0:1; u.onend=function(){setTimeout(next,260);}; u.onerror=function(){setTimeout(next,200);}; synth.speak(u); }
-    catch(e){ setTimeout(next,1200); }
+
+function playScene(key,onDone){
+  var S=SCENES[key]; if(!S){ if(onDone)onDone(); return; }
+  cancelScene();
+  scenePlayer.active=true; scenePlayer.conv=S.conv; scenePlayer.idx=0;
+  scenePlayer.token=++currentCancelToken; scenePlayer.onDone=onDone||null;
+  sceneStep();
+}
+function cancelScene(){
+  scenePlayer.active=false; scenePlayer.token=++currentCancelToken; scenePlayer.onDone=null;
+  scenePlayer.resumeCb=null; state.interactPending=false;
+  if(synth)try{synth.cancel();}catch(e){}
+  interactPrompt.classList.remove("on");
+}
+function sceneStep(){
+  if(!scenePlayer.active)return;
+  if(scenePlayer.token!==currentCancelToken)return;
+  if(scenePlayer.idx>=scenePlayer.conv.length){
+    scenePlayer.active=false; var cb=scenePlayer.onDone; scenePlayer.onDone=null;
+    if(cb)cb(); return;
   }
-  next();
-}
-function cancelSpeech(){ currentCancelToken++; state.speaking=false; if(synth)try{synth.cancel();}catch(e){} }
-function splitSentences(t){ var parts=t.match(/[^.!?…]+[.!?…]*/g)||[t]; return parts.map(function(s){return s.trim();}).filter(Boolean); }
-function speakEcho(key,onDone){ var t=ECHO[key]; if(!t){if(onDone)onDone();return;} speakChunks("echo",splitSentences(t),{rate:0.96,pitch:1.0},null,onDone); }
-
-function eraCaptionClass(){
-  if(state.era==="moon")return "moon";
-  if(state.era==="deepspace")return "space clear";   // "clear" = the signal-clears hint
-  return null;
-}
-
-/* --- the Opportunity-Echo conversation player --- */
-function speakOpportunityConversation(onDone){
-  var A=ART.opportunity; var L=A.lines; var E=A.echoTurns;
-  /* interleave: Opp[0], Echo[0], Opp[1], Echo[1], Opp[2], Echo[2], Opp[3], Echo[3], Opp[4], Echo[4], then Opp[5] + grief */
-  var seq=[];
-  for(var i=0;i<5;i++){ seq.push({who:"opportunity",text:L[i]}); if(E[i]!==undefined) seq.push({who:"echo",text:E[i]}); }
-  seq.push({who:"opportunity",text:L[5]});
-  var token=++currentCancelToken; state.speaking=true; state.convActive=true; var idx=0;
-  function next(){
-    if(token!==currentCancelToken){ state.convActive=false; return; }
-    if(idx>=seq.length){ state.speaking=false; state.convActive=false; if(onDone)onDone(); return; }
-    var turn=seq[idx++];
-    var vconf = turn.who==="opportunity" ? A.voice : {rate:0.96,pitch:1.0};
-    showCaption(turn.who, turn.text, eraCaptionClass());
-    if(!synth){ setTimeout(next,2600); return; }
-    try{ var u=new SpeechSynthesisUtterance(turn.text); var v=pickVoice(); if(v)u.voice=v; u.rate=vconf.rate; u.pitch=vconf.pitch; u.volume=state.muted?0:1; u.onend=function(){
-      /* after Opportunity's final "I'm glad you came by", the grief line fires once the user scrolls away */
-      setTimeout(next, turn.who==="opportunity" ? 360 : 320);
-    }; u.onerror=function(){setTimeout(next,200);}; synth.speak(u); }
-    catch(e){ setTimeout(next,1200); }
+  var beat=scenePlayer.conv[scenePlayer.idx++];
+  if(beat.pause){ setTimeout(sceneStep,beat.pause); return; }
+  if(beat.interact){
+    state.interactPending=true;
+    if(beat.interact==="insight")promptInSightWake(sceneStep);
+    else if(beat.interact==="spirit")promptSpiritWheel(sceneStep);
+    return; /* sceneStep is called by the interaction completion */
   }
-  next();
+  speakBeat(beat,sceneStep);
 }
-
-function speakSecondarySec(id,onDone){
-  var S=SEC[id]; if(!S){if(onDone)onDone();return;} state.currentArt=id; openDeepReadSec(id);
-  speakChunks("echo",S.text.slice(),{rate:0.98,pitch:1.0},null,function(){
-    /* stat pulse opportunities handled inline by data tags */
-    if(onDone)onDone();
-  });
-}
-function speakArtifact(id){
-  var A=ART[id]; if(!A)return; state.currentArt=id; openDeepRead(id);
-  /* Voyager delayed-voice: a beat of silence before the voice arrives */
-  var delay = A.delayedVoice ? 2200 : 0;
-  setTimeout(function(){
-    speakChunks(A.name,A.lines.slice(),A.voice,eraCaptionClass(),function(){
-      if(A.audio==="marsquake")marsquake();
-      if(A.audio==="storm")dustStorm();
-      if(A.audio==="golden")playGoldenMoment();
-      /* Eagle's three-second silence beat */
-      if(id==="eagle" && !state.eagleSilenceSaid){ state.eagleSilenceSaid=true; setTimeout(function(){ speakEcho(null); hideCaption(); /* silence */ setTimeout(function(){ /* next narration handled by triggers */ },3000); },600); }
-    });
-  }, delay);
+function speakBeat(beat,onDone){
+  var sp=SPEAKERS[beat.s]||SPEAKERS.echo;
+  showCaption(beat.s,beat.t,eraCaptionClass(),beat.aside);
+  var chunks=splitSentences(beat.t); var ci=0;
+  function speakNext(){
+    if(scenePlayer.token!==currentCancelToken)return;
+    if(ci>=chunks.length){ setTimeout(onDone, beat.s==="echo"?(beat.aside?500:450):340); return; }
+    var line=chunks[ci++];
+    if(!synth){ setTimeout(speakNext, Math.max(1800,line.length*45)); return; }
+    try{
+      var u=new SpeechSynthesisUtterance(line); var v=pickVoice(); if(v)u.voice=v;
+      u.rate=sp.voice.rate*(beat.aside?0.9:1); u.pitch=sp.voice.pitch; u.volume=state.muted?0:1;
+      u.onend=function(){ setTimeout(speakNext, 280); };
+      u.onerror=function(){ setTimeout(speakNext, 200); };
+      synth.speak(u);
+    }catch(e){ setTimeout(speakNext,1200); }
+  }
+  speakNext();
 }
 
 /* ====================================================================
-   PROJECTION + RENDER LOOP
+   PROJECTION + RENDER (no path line)
    ==================================================================== */
-function project(d, sx, sy, cam){
-  var tz = cam - d;
-  var denom = PERSP - tz;
-  if(denom < 1) return {x:cx,y:cy,factor:0,tz:tz,vis:0};
-  var factor = PERSP/denom;
-  return {x:cx+sx*factor, y:cy+sy*factor, factor:factor, tz:tz};
-}
+function project(d,cam){ var tz=cam-d; var denom=PERSP-tz; if(denom<1)return{vis:0}; return{factor:PERSP/denom}; }
 function tzOpacity(tz){
-  if(tz >= PERSP*0.85) return 0;
-  if(tz <= -PERSP*5)    return 0;
-  if(tz <= -PERSP*2.5)  return (tz + PERSP*5)/(PERSP*2.5);
-  if(tz <= PERSP*0.15)  return 1;
-  return 1 - (tz - PERSP*0.15)/(PERSP*0.7);
+  if(tz>=PERSP*0.85)return 0;
+  if(tz<=-PERSP*5)return 0;
+  if(tz<=-PERSP*2.5)return (tz+PERSP*5)/(PERSP*2.5);
+  if(tz<=PERSP*0.15)return 1;
+  return 1-(tz-PERSP*0.15)/(PERSP*0.7);
 }
-function pointOnPath(targetDepth){
-  var wp=LAYOUT;
-  if(targetDepth<=wp[0].depth) return {x:wp[0].x,y:wp[0].y,d:wp[0].depth};
-  if(targetDepth>=wp[wp.length-1].depth){ var last=wp[wp.length-1]; return {x:last.x,y:last.y,d:last.depth}; }
-  for(var i=0;i<wp.length-1;i++){
-    if(targetDepth>=wp[i].depth && targetDepth<=wp[i+1].depth){
-      var t=(targetDepth-wp[i].depth)/(wp[i+1].depth-wp[i].depth);
-      return {x:wp[i].x+(wp[i+1].x-wp[i].x)*t, y:wp[i].y+(wp[i+1].y-wp[i].y)*t, d:targetDepth};
-    }
-  }
-  return {x:0,y:0,d:targetDepth};
-}
+function layoutById(id){ for(var i=0;i<LAYOUT.length;i++) if(LAYOUT[i].id===id)return LAYOUT[i]; return LAYOUT[0]; }
 
-var camDepth=0, progress=0;
-function updateScene(){
+/* ====================================================================
+   SMOOTH SCROLLING — camera depth LERPS toward the scroll target so the
+   dive glides instead of stepping. diveSpeed for the starfield is derived
+   from the smoothed camera delta.
+   ==================================================================== */
+var targetCamDepth=0, camDepth=0, prevCamDepth=0, progress=0, smoothDelta=0;
+function onScroll(){
   var y=window.scrollY||window.pageYOffset;
-  var maxScroll=Math.max(1, document.documentElement.scrollHeight-window.innerHeight);
+  var maxScroll=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
   progress=Math.min(1,Math.max(0,y/maxScroll));
-  camDepth=progress*TOTAL_DEPTH;
-  var delta=y-lastScrollY; lastScrollY=y;
-  smoothDelta += (delta-smoothDelta)*0.25;
-  detectEra();
-  renderArtifacts();
-  renderPath();
-  renderEcho();
-  renderRail();
-  updateVisor();
-  fireTriggers();
+  targetCamDepth=progress*TOTAL_DEPTH;
 }
+window.addEventListener("scroll",onScroll,{passive:true});
+onScroll();
+
 function renderArtifacts(){
   for(var i=0;i<LAYOUT.length;i++){
     var L=LAYOUT[i], el=L.el; if(!el)continue;
-    var tz=camDepth-L.depth;
-    var op=tzOpacity(tz);
+    var tz=camDepth-L.depth; var op=tzOpacity(tz);
     el.style.opacity=op;
-    el.style.transform="translate3d("+L.x+"px,"+L.y+"px,"+tz+"px)";
-    var near = (tz > -PERSP*1.4 && tz < PERSP*0.25);
+    /* all on one line: x=0, y=0 */
+    el.style.transform="translate3d(0px,0px,"+tz+"px)";
+    var near=(tz>-PERSP*1.4 && tz<PERSP*0.25);
     el.classList.toggle("near", near && op>0.3);
   }
 }
-function renderPath(){
-  var pts=[], aheadPts=[];
-  for(var i=0;i<LAYOUT.length;i++){
-    var L=LAYOUT[i];
-    var p=project(L.depth, L.x, L.y, camDepth);
-    if(p.vis===0 && p.factor===0){ continue; }
-    pts.push(p.x.toFixed(1)+","+p.y.toFixed(1));
-    if(L.depth >= camDepth){ if(aheadPts.length===0 && pts.length>=1){ aheadPts.push(pts[pts.length-1]); } aheadPts.push(p.x.toFixed(1)+","+p.y.toFixed(1)); }
-  }
-  pathline.setAttribute("points", pts.join(" "));
-  pathahead.setAttribute("points", aheadPts.join(" "));
-  renderTicks();
-}
-function renderTicks(){
-  var mainIds=["perseverance","curiosity","insight","opportunity","spirit","viking","rover","eagle","surveyor","voyager","pioneer11","pioneer10"];
-  if(pathticks.childElementCount!==mainIds.length*2){
-    pathticks.innerHTML="";
-    mainIds.forEach(function(id){
-      var c=document.createElementNS("http://www.w3.org/2000/svg","circle");
-      var t=document.createElementNS("http://www.w3.org/2000/svg","text");
-      var yr = SEC[id]?SEC[id].year:(ART[id]?ART[id].year:"");
-      t.textContent=yr;
-      pathticks.appendChild(c); pathticks.appendChild(t);
-      c._id=id; t._id=id;
-    });
-  }
-  var kids=pathticks.children;
-  for(var i=0;i<kids.length;i+=2){
-    var c=kids[i], t=kids[i+1]; var id=c._id;
-    var L=layoutById(id); var p=project(L.depth,L.x,L.y,camDepth);
-    var op=tzOpacity(camDepth-L.depth);
-    c.setAttribute("cx",p.x); c.setAttribute("cy",p.y); c.setAttribute("r",1.6); c.setAttribute("opacity",op*0.6);
-    t.setAttribute("x",p.x+6); t.setAttribute("y",p.y+3); t.setAttribute("opacity",op*0.7);
-  }
-}
-function layoutById(id){ for(var i=0;i<LAYOUT.length;i++) if(LAYOUT[i].id===id) return LAYOUT[i]; return LAYOUT[0]; }
-
 function renderEcho(){
+  /* Echo sits on the center line, leading the camera by a fixed depth */
   var lead=420;
-  var target=Math.min(TOTAL_DEPTH, camDepth+lead);
-  var pt=pointOnPath(target);
-  var p=project(pt.d, pt.x, pt.y, camDepth);
-  echoEl.style.left=p.x+"px"; echoEl.style.top=p.y+"px";
-  /* CLARITY INVERSION (the deep-space hint):
-     In deep space, Echo does NOT fade — instead it gets brighter/clearer
-     (the opposite of what you'd expect), because Echo is home out here. */
-  var deepBoost = camDepth>8800 ? Math.min(1.25, 1 + (camDepth-8800)/2600) : 1;
-  echoEl.style.opacity = state.started ? deepBoost : 0;
-  echoEl.classList.toggle("home", camDepth>9000);
+  var target=Math.min(TOTAL_DEPTH,camDepth+lead);
+  /* all waypoints are at (0,0), so Echo projects to screen center */
+  var p=project(target,camDepth);
+  echoEl.style.left=cx+"px"; echoEl.style.top=cy+"px";
+  /* deep-space clarity inversion: Echo gets BRIGHTER out there (the hint) */
+  var deepBoost=camDepth>9000?Math.min(1.25,1+(camDepth-9000)/2600):1;
+  echoEl.style.opacity=state.started?deepBoost:0;
+  echoEl.classList.toggle("home",camDepth>9200);
 }
 function renderRail(){ railFill.style.height=(progress*100)+"%"; }
 
 /* ====================================================================
-   HUD VISOR — peripheral stats that update with the nearest artifact
-   and pulse when Echo mentions them
+   HUD VISOR
    ==================================================================== */
 function nearestArtifact(){
   var best=null,bestD=Infinity;
-  for(var i=0;i<LAYOUT.length;i++){
-    var L=LAYOUT[i]; var d=Math.abs(camDepth-L.depth);
-    if(d<bestD){bestD=d;best=L;}
-  }
+  for(var i=0;i<LAYOUT.length;i++){ var L=LAYOUT[i]; var d=Math.abs(camDepth-L.depth); if(d<bestD){bestD=d;best=L;} }
   return best;
 }
-function artifactData(id){
-  return SEC[id] || ART[id] || null;
-}
 function fmtDist(mi){
-  if(mi>=1000000000) return (mi/1000000000).toFixed(1).replace(/\.0$/,"")+"B mi";
-  if(mi>=1000000) return Math.round(mi/1000000)+"M mi";
-  if(mi>=1000) return Math.round(mi).toLocaleString()+" mi";
+  if(mi>=1000000000)return (mi/1000000000).toFixed(1).replace(/\.0$/,"")+"B mi";
+  if(mi>=1000000)return Math.round(mi/1000000)+"M mi";
+  if(mi>=1000)return Math.round(mi).toLocaleString()+" mi";
   return Math.round(mi)+" mi";
 }
 function updateVisor(){
   if(!visorOn)return;
   var L=nearestArtifact(); if(!L)return;
-  var A=artifactData(L.id); if(!A)return;
-  /* interpolate distance between this and the next artifact for smoothness */
+  var A=META[L.id]; if(!A)return;
   var distNow=A.dist;
-  /* find next deeper layout entry */
-  var idx=-1;
-  for(var i=0;i<LAYOUT.length;i++){ if(LAYOUT[i].id===L.id){idx=i;break;} }
+  var idx=-1; for(var i=0;i<LAYOUT.length;i++){ if(LAYOUT[i].id===L.id){idx=i;break;} }
   if(idx>=0 && idx<LAYOUT.length-1){
-    var N=LAYOUT[idx+1]; var NA=artifactData(N.id);
-    if(NA){
-      var span=N.depth-L.depth; if(span>0){
-        var frac=Math.max(0,Math.min(1,(camDepth-L.depth)/span));
-        distNow=A.dist+(NA.dist-A.dist)*frac;
-      }
-    }
+    var N=LAYOUT[idx+1], NA=META[N.id];
+    if(NA){ var span=N.depth-L.depth; if(span>0){ var f=Math.max(0,Math.min(1,(camDepth-L.depth)/span)); distNow=A.dist+(NA.dist-A.dist)*f; } }
   }
   stats.distance.querySelector(".val").textContent=fmtDist(distNow);
-  var stVal=stats.status.querySelector(".val");
-  stVal.textContent=A.status; stVal.className="val "+(A.statusCls||"");
+  var stVal=stats.status.querySelector(".val"); stVal.textContent=A.status; stVal.className="val "+(A.statusCls||"");
   stats.year.querySelector(".val").textContent=A.year;
   stats.power.querySelector(".val").textContent=A.power;
 }
-function pulseStat(which){
-  var el=stats[which]; if(!el)return;
-  el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse");
-  setTimeout(function(){ el.classList.remove("pulse"); }, 1700);
-}
+function pulseStat(which){ var el=stats[which]; if(!el)return; el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse"); setTimeout(function(){el.classList.remove("pulse");},1700); }
 function showVisor(){ visorOn=true; for(var k in stats)stats[k].classList.add("on"); }
 
 /* ====================================================================
-   ERA + NARRATION TRIGGERS (depth-based) + hint ladder
+   ERA + TRIGGERS
    ==================================================================== */
-var ERA_LABEL={lobby:"present — earth orbit",mars:"mars era · 2021–1976",moon:"the moon · 1972–1966",deepspace:"the long dark · 1977–1972",epilogue:"returning home"};
+var ERA_LABEL={lobby:"present — earth orbit",mars:"mars · 2021–1976",moon:"the moon · 1972–1966",deepspace:"the long dark · 1977–1972",epilogue:"returning home"};
 function setEra(era){
   if(state.era===era)return; state.era=era;
   for(var k in planets)planets[k].classList.remove("on");
@@ -1093,13 +1031,13 @@ function setEra(era){
   else if(era==="mars")planets.mars.classList.add("on");
   else if(era==="moon")planets.moon.classList.add("on");
   else if(era==="deepspace")planets.void.classList.add("on");
-  else if(era==="epilogue"){planets.earth.classList.add("on");planets.void.classList.remove("on");}
-  eraTint.style.background =
+  else if(era==="epilogue"){planets.earth.classList.add("on");}
+  eraTint.style.background=
     era==="mars"?"radial-gradient(ellipse at 50% 60%, rgba(255,140,60,.06), transparent 60%)"
     :era==="moon"?"radial-gradient(ellipse at 50% 60%, rgba(180,200,230,.05), transparent 60%)"
     :era==="deepspace"?"radial-gradient(ellipse at 50% 50%, rgba(60,40,120,.10), transparent 70%)"
     :"transparent";
-  scanlines.style.opacity = era==="deepspace"?"0.5":"0";
+  scanlines.style.opacity=era==="deepspace"?"0.5":"0";
   timeEra.textContent=ERA_LABEL[era]||"";
   if(!AC)return;
   stopAllAmbient();
@@ -1110,211 +1048,110 @@ function setEra(era){
 }
 function detectEra(){
   var c=camDepth;
-  if(c<ERA_BOUNDS.lobby) setEra("lobby");
-  else if(c<ERA_BOUNDS.mars) setEra("mars");
-  else if(c<ERA_BOUNDS.moon) setEra("moon");
-  else if(c<ERA_BOUNDS.deepspace) setEra("deepspace");
+  if(c<ERA_BOUNDS.lobby)setEra("lobby");
+  else if(c<ERA_BOUNDS.mars)setEra("mars");
+  else if(c<ERA_BOUNDS.moon)setEra("moon");
+  else if(c<ERA_BOUNDS.deepspace)setEra("deepspace");
   else setEra("epilogue");
 }
 
 function fireTriggers(){
-  /* --- graceful fallback: if the user scrolled past a hero-interaction
-       artifact without completing it, auto-complete so they still hear
-       the story (engaged users get the interaction; fast scrollers get
-       the monologue). --- */
-  if(!state.insightWoke && state.played.has("insight")){
-    var itz=camDepth-layoutById("insight").depth;
-    if(itz > PERSP*1.6){ autoWakeInSight(); }
-  }
-  /* --- per-artifact arrival narration --- */
+  /* per-artifact arrival */
   for(var i=0;i<LAYOUT.length;i++){
     var L=LAYOUT[i]; var tz=camDepth-L.depth;
-    if(tz > -PERSP*0.45 && tz < PERSP*0.05){
+    /* Opportunity calls out first — wider trigger window */
+    var win = L.widen ? PERSP*0.75 : PERSP*0.45;
+    if(tz>-win && tz<PERSP*0.05){
       if(!state.played.has(L.id)){
-        /* Opportunity calls out FIRST — wider trigger window */
-        if(L.id==="opportunity"){
-          if(tz > -PERSP*0.75 && !state.played.has("opportunity_call")){
-            state.played.add("opportunity_call");
-            cancelSpeech();
-            speakEcho("oppIntro");
-            /* then the conversation after a beat */
-            setTimeout(function(){
-              if(!state.played.has("opportunity")){
-                state.played.add("opportunity");
-                cancelSpeech(); speakOpportunityConversation();
-              }
-            }, 5200);
-          }
-          continue;
-        }
-        state.played.add(L.id);
+        state.played.add(L.id); state.currentArt=L.id; openDeepRead(L.id);
         if(L.sec){
-          /* SEC = Echo-narrated silent artifact */
-          if(L.id==="pioneer11"){
-            /* special: the twin-sister longing (the giveaway hint) */
-            if(!state.pioneer11Said){ state.pioneer11Said=true; cancelSpeech(); openDeepReadSec("pioneer11"); speakEcho("pioneer11"); }
-          } else {
-            speakSecondarySec(L.id);
-          }
+          /* Echo-narrated silent artifacts */
+          if(L.id==="pioneer11"){ playScene("pioneer11"); }
+          else { playScene(L.id); }
         } else {
-          /* hero interactions gate the monologue */
-          if(L.id==="insight" && ART.insight.needsWake && !state.insightWoke){
-            promptInSightWake(); return;
-          }
-          if(L.id==="spirit" && ART.spirit.needsWheel && !state.spiritFreed){
-            promptSpiritWheel(); return;
-          }
-          cancelSpeech();
-          speakArtifact(L.id);
+          playScene(L.id);
         }
       }
     }
   }
-
-  /* --- Mars arrival narration (with the asteroid-belt hint) --- */
-  if(state.era==="mars" && !state.played.has("marsArrive")){
-    state.played.add("marsArrive");
-    /* queue after a short beat so it doesn't step on the cold-open outro */
-    setTimeout(function(){ if(!state.speaking) speakEcho("marsArrive"); }, 1200);
-  }
-
-  /* --- Echo grief line after Opportunity, once the user scrolls away --- */
-  if(state.played.has("opportunity") && !state.oppGriefSaid){
-    var oppL=layoutById("opportunity"); var otz=camDepth-oppL.depth;
-    if(otz > PERSP*0.6){   /* scrolled past her */
-      state.oppGriefSaid=true;
-      /* wait for any in-progress conversation to settle */
-      var wait=function(){ if(state.speaking||state.convActive){ setTimeout(wait,500); } else speakEcho(null); };
-      setTimeout(function(){
-        var w2=function(){ if(state.speaking){setTimeout(w2,400);} else { showCaption("echo",ART.opportunity.griefLine,eraCaptionClass()); speakChunks("echo",[ART.opportunity.griefLine],{rate:0.92,pitch:1.0},null,null); } };
-        w2();
-      }, 1500);
-    }
-  }
-
-  /* --- art-style-shift narrations (Echo narrates the transitions) --- */
-  if(state.era==="moon" && !state.played.has("artShiftToMoon")){
-    state.played.add("artShiftToMoon"); speakEcho("artShiftToMoon");
-    pulseStat("distance");   /* distance drops at Moon — call attention */
-  }
-  if(state.era==="deepspace" && !state.played.has("artShiftToDeep")){
-    state.played.add("artShiftToDeep"); speakEcho("artShiftToDeep");
-  }
-  if(state.era==="deepspace" && !state.played.has("deepArrive") && camDepth>9100){
-    state.played.add("deepArrive");
-    var w3=function(){ if(state.speaking){setTimeout(w3,400);} else speakEcho("deepArrive"); };
-    w3();
-  }
-
-  /* --- the reveal, past Pioneer 10 --- */
-  if(camDepth>=EPOCH_DEPTH && !state.revealSaid){
-    state.revealSaid=true; enterReveal();
-  }
+  /* era transitions (Echo narrates the science) */
+  if(state.era==="moon" && !state.played.has("moonSilence")){ state.played.add("moonSilence"); playScene("moonSilence"); pulseStat("distance"); }
+  if(state.era==="deepspace" && !state.played.has("deepHum")){ state.played.add("deepHum"); playScene("deepHum"); }
+  /* reveal past Pioneer 10 */
+  if(camDepth>=EPOCH_DEPTH && !state.revealSaid){ state.revealSaid=true; enterReveal(); }
 }
 
-/* --- InSight dust-brush wake-up (hero interaction) --- */
-function promptInSightWake(){
-  var A=ART.insight; state.currentArt="insight"; openDeepRead("insight");
-  showCaption("echo","She's asleep. The dust got her panels. Here — help me brush it off.",null);
-  speakChunks("echo",["She's asleep. The dust got her panels. Here — help me brush it off."],{rate:0.96,pitch:1.0},null,null);
+/* ====================================================================
+   INTERACTIONS — InSight dust-brush & Spirit stuck-wheel.
+   Each prompts the user, waits, then calls resume() to continue the scene.
+   ==================================================================== */
+function promptInSightWake(resume){
   interactPrompt.querySelector(".label").textContent="drag to brush the dust";
-  interactPrompt.querySelector(".hint").textContent="clear the panels · wake her up";
+  interactPrompt.querySelector(".hint").textContent="clear the panels · wake him up";
   interactPrompt.classList.add("on");
   var dustLayers=document.querySelectorAll(".insight .dust-layer");
-  var cleaned=0;
+  var cleaned=0, done=false;
+  var timeout=setTimeout(function(){ if(!done){ done=true; autoClear(resume); } }, 9000); /* fallback */
+  function finish(){ if(done)return; done=true; clearTimeout(timeout); interactPrompt.classList.remove("on");
+    var io=document.getElementById("insight-obj"); if(io)io.classList.add("awake"); pulseStat("power");
+    setTimeout(resume, 700);
+  }
+  function autoClear(resumeCb){
+    interactPrompt.classList.remove("on");
+    dustLayers.forEach(function(x){x.classList.add("gone");x.style.opacity=0;});
+    var io=document.getElementById("insight-obj"); if(io)io.classList.add("awake");
+    state.insightWoke=true; pulseStat("power"); setTimeout(resumeCb,600);
+  }
   dustLayers.forEach(function(dl){
     var dragging=false, localCleaned=0;
     dl.addEventListener("pointerdown",function(e){ dragging=true; dl.setPointerCapture(e.pointerId); });
     dl.addEventListener("pointermove",function(e){
       if(!dragging)return;
-      localCleaned=Math.min(1, localCleaned+0.04);
-      dl.style.opacity=Math.max(0, 1-localCleaned);
-      if(localCleaned>=0.8 && !dl.classList.contains("gone")){ dl.classList.add("gone"); cleaned++; if(cleaned>=2) wakeInSight(); }
+      localCleaned=Math.min(1,localCleaned+0.045);
+      dl.style.opacity=Math.max(0,1-localCleaned);
+      if(localCleaned>=0.8 && !dl.classList.contains("gone")){ dl.classList.add("gone"); cleaned++; if(cleaned>=2){ state.insightWoke=true; finish(); } }
     });
     dl.addEventListener("pointerup",function(){ dragging=false; });
     dl.addEventListener("pointercancel",function(){ dragging=false; });
   });
 }
-function wakeInSight(){
-  if(state.insightWoke)return; state.insightWoke=true;
-  interactPrompt.classList.remove("on");
-  var io=document.getElementById("insight-obj"); if(io)io.classList.add("awake");
-  /* a light shines (brightness pulse) then InSight speaks */
-  pulseStat("power");   /* solar — tie to the wake-up */
-  setTimeout(function(){
-    cancelSpeech(); speakArtifact("insight");
-  }, 900);
-}
-/* fallback for fast scrollers who passed InSight without brushing */
-function autoWakeInSight(){
-  if(state.insightWoke)return; state.insightWoke=true;
-  interactPrompt.classList.remove("on");
-  var dl=document.querySelectorAll(".insight .dust-layer"); dl.forEach(function(x){x.classList.add("gone");x.style.opacity=0;});
-  var io=document.getElementById("insight-obj"); if(io)io.classList.add("awake");
-  /* echo nudges, then InSight wakes on its own */
-  speakChunks("echo",["Here — let me get that for you."],{rate:0.96,pitch:1.0},null,function(){
-    setTimeout(function(){ cancelSpeech(); speakArtifact("insight"); }, 700);
-  });
-}
-
-/* --- Spirit stuck-wheel interaction (hero interaction) --- */
-function promptSpiritWheel(){
-  var A=ART.spirit; state.currentArt="spirit"; openDeepRead("spirit");
-  showCaption("echo","He's stuck. Been stuck for two years, sinking in the sand. Go on — try to pull him out.",null);
-  speakChunks("echo",["He's stuck. Been stuck for two years, sinking in the sand. Go on — try to pull him out."],{rate:0.96,pitch:1.0},null,null);
+function promptSpiritWheel(resume){
   interactPrompt.querySelector(".label").textContent="drag the wheel";
-  interactPrompt.querySelector(".hint").textContent="try to free him";
+  interactPrompt.querySelector(".hint").textContent="try to pull him out";
   interactPrompt.classList.add("on");
-  var wheel=document.getElementById("spirit-wheel"); if(!wheel)return;
-  var attempts=0, rot=0, dragging=false, lastX=0;
+  var wheel=document.getElementById("spirit-wheel"); if(!wheel){ setTimeout(resume,500); return; }
+  var attempts=0, rot=0, dragging=false, lastX=0, done=false;
+  var timeout=setTimeout(function(){ if(!done){ done=true; finish(); } }, 11000); /* fallback */
+  function finish(){ if(done)return; done=true; clearTimeout(timeout); state.spiritFreed=true; interactPrompt.classList.remove("on"); setTimeout(resume,500); }
   wheel.addEventListener("pointerdown",function(e){ dragging=true; wheel.setPointerCapture(e.pointerId); lastX=e.clientX; });
   wheel.addEventListener("pointermove",function(e){
     if(!dragging)return;
     var dx=e.clientX-lastX; lastX=e.clientX; rot+=dx*3; wheel.style.transform="rotate("+rot+"deg) translateY(8px)";
     if(Math.abs(dx)>4 && attempts<3){ attempts++; beep(220,0.04,0.04); }
-    if(attempts>=3 && !state.spiritFreed){ freeSpirit(false); }
+    if(attempts>=3 && !state.spiritFreed){ state.spiritFreed=true; finish(); }
   });
   wheel.addEventListener("pointerup",function(){ dragging=false; });
   wheel.addEventListener("pointercancel",function(){ dragging=false; });
-  /* fallback: if the user just waits, Echo nudges after 9s */
-  setTimeout(function(){
-    if(!state.spiritFreed && state.currentArt==="spirit"){
-      freeSpirit(false);
-    }
-  }, 12000);
-}
-function freeSpirit(succeeded){
-  if(state.spiritFreed)return; state.spiritFreed=true;
-  interactPrompt.classList.remove("on");
-  cancelSpeech();
-  /* Echo's gentle "we tried that too" then Spirit's monologue */
-  speakChunks("echo",["Yeah. We tried that too. For two years.","But he found something else, out there in the sand. Tell them."],{rate:0.95,pitch:1.0},null,function(){
-    setTimeout(function(){ speakArtifact("spirit"); }, 400);
-  });
 }
 
-/* --- the reveal: whoosh back to Earth + fourth-wall break + epilogue --- */
+/* ====================================================================
+   THE REVEAL + EPILOGUE
+   ==================================================================== */
 function enterReveal(){
-  if(state.revealSaid && state.played.has("epilogue"))return;
-  cancelSpeech();
-  /* whoosh: flash, stars momentarily reverse, Earth returns */
+  cancelScene();
   revealFlash.classList.add("on");
-  setTimeout(function(){ revealFlash.classList.remove("on"); }, 2600);
-  /* the fourth-wall break */
-  speakEcho("reveal");
-  /* golden record returns */
-  setTimeout(function(){ startGoldenRecord(); }, 2400);
-  /* then the epilogue roll + final line */
-  setTimeout(function(){ enterEpilogue(); }, 16000);
+  setTimeout(function(){ revealFlash.classList.remove("on"); },2600);
+  startGoldenRecord();
+  playScene("reveal", function(){ setTimeout(enterEpilogue, 2200); });
 }
 function enterEpilogue(){
   if(state.played.has("epilogue"))return; state.played.add("epilogue");
   epilogue.classList.add("on");
-  setTimeout(function(){ speakEcho("epilogue"); }, 1200);
+  setTimeout(function(){ playScene("epilogue"); }, 800);
 }
 
 /* ====================================================================
-   NAV (click-to-drift scrolls to a depth)
+   NAV (click-to-drift) — smooth scrollTo + camera lerp glides the rest
    ==================================================================== */
 var navItems=[
   {id:"perseverance",label:"Perseverance"},{id:"curiosity",label:"Curiosity"},
@@ -1331,7 +1168,7 @@ navItems.forEach(function(it){
   d.addEventListener("click",function(){ driftTo(it.id); });
   navEl.appendChild(d);
 });
-function depthOf(id){ if(id==="epilogue")return EPOCH_DEPTH+200; for(var i=0;i<LAYOUT.length;i++) if(LAYOUT[i].id===id) return LAYOUT[i].depth; return 0; }
+function depthOf(id){ if(id==="epilogue")return EPOCH_DEPTH+200; for(var i=0;i<LAYOUT.length;i++) if(LAYOUT[i].id===id)return LAYOUT[i].depth; return 0; }
 function driftTo(id){
   var d=depthOf(id);
   var maxScroll=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
@@ -1342,8 +1179,7 @@ function updateNav(){
   var dots=navEl.querySelectorAll(".navdot"); var best=-1,bestV=Infinity;
   LAYOUT.forEach(function(L,i){
     if(!navItems[i])return;
-    var tz=Math.abs(camDepth-L.depth);
-    dots[i].classList.remove("active");
+    var tz=Math.abs(camDepth-L.depth); dots[i].classList.remove("active");
     if(tz<bestV){ bestV=tz; best=i; }
   });
   if(camDepth>=EPOCH_DEPTH){ for(var k=0;k<dots.length;k++)dots[k].classList.remove("active"); dots[dots.length-1].classList.add("active"); }
@@ -1351,22 +1187,20 @@ function updateNav(){
 }
 
 /* ====================================================================
-   DEEP READ PANEL
+   DEEP READ
    ==================================================================== */
-function openDeepRead(id){ var A=ART[id]; if(!A)return; drTitle.textContent=A.name; drMeta.textContent=A.meta; drBody.innerHTML="<p>"+A.lines.join(" ")+"</p>"; drFact.textContent=A.fact; if(state.deepOn)deepread.classList.add("on"); }
-function openDeepReadSec(id){ var S=SEC[id]; if(!S)return; drTitle.textContent=S.name; drMeta.textContent=S.meta; drBody.innerHTML="<p>"+S.text.join(" ")+"</p>"; drFact.textContent=S.fact; if(state.deepOn)deepread.classList.add("on"); }
+function openDeepRead(id){ var A=META[id]; if(!A)return; drTitle.textContent=A.name; drMeta.textContent=A.meta; drFact.textContent=A.fact; if(state.deepOn)deepread.classList.add("on"); }
 drClose.addEventListener("click",function(){ deepread.classList.remove("on"); state.deepOn=false; btnDR.classList.remove("active"); });
-btnDR.addEventListener("click",function(){ state.deepOn=!state.deepOn; btnDR.classList.toggle("active",state.deepOn); deepread.classList.toggle("on",state.deepOn); if(state.deepOn&&state.currentArt){ if(SEC[state.currentArt])openDeepReadSec(state.currentArt); else openDeepRead(state.currentArt); } });
+btnDR.addEventListener("click",function(){ state.deepOn=!state.deepOn; btnDR.classList.toggle("active",state.deepOn); deepread.classList.toggle("on",state.deepOn); if(state.deepOn&&state.currentArt)openDeepRead(state.currentArt); });
 
-/* click an artifact (when near) -> open deep read + replay */
+/* click an artifact (when near) -> open deep read + replay its scene */
 scene.addEventListener("click",function(e){
   var el=e.target.closest(".art-obj"); if(!el||!el.classList.contains("near"))return;
-  /* don't hijack drags on dust/wheel */
   if(e.target.closest(".dust-layer")||e.target.closest(".whl.stuck"))return;
-  var id=el.getAttribute("data-art"); if(!ART[id]&&!SEC[id])return;
-  state.currentArt=id; if(SEC[id])openDeepReadSec(id); else openDeepRead(id);
+  var id=el.getAttribute("data-art"); if(!SCENES[id]&&!META[id])return;
+  state.currentArt=id; openDeepRead(id);
   if(!state.deepOn){ state.deepOn=true; btnDR.classList.add("active"); deepread.classList.add("on"); }
-  if(ART[id] && !ART[id].isConversation){ cancelSpeech(); speakArtifact(id); }
+  if(SCENES[id]){ state.played.add(id); playScene(id); }
 });
 
 /* ====================================================================
@@ -1375,8 +1209,8 @@ scene.addEventListener("click",function(e){
 btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(!state.captionsOn)hideCaption(); });
 btnScale.addEventListener("click",function(){ state.scaleOn=!state.scaleOn; btnScale.classList.toggle("active",state.scaleOn); scaleRef.classList.toggle("on",state.scaleOn); });
 btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
-var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay narration"; replay.style.display="block"; caption.appendChild(replay);
-replay.addEventListener("click",function(){ if(state.currentArt){cancelSpeech(); if(ART[state.currentArt]&&ART[state.currentArt].isConversation){speakOpportunityConversation();} else if(SEC[state.currentArt]){speakSecondarySec(state.currentArt);} else {speakArtifact(state.currentArt);} } });
+var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this scene"; replay.style.display="block"; caption.appendChild(replay);
+replay.addEventListener("click",function(){ if(state.currentArt&&SCENES[state.currentArt]){ playScene(state.currentArt); } });
 
 /* ====================================================================
    START GATE
@@ -1390,7 +1224,7 @@ function begin(){
   echoEl.classList.remove("cold");
   coldText.classList.add("on"); scrollPrompt.classList.add("on");
   startGoldenRecord();
-  setTimeout(function(){ speakEcho("cold"); }, 4000);
+  setTimeout(function(){ playScene("cold"); }, 2800);
 }
 startbtn.addEventListener("click",begin);
 window.addEventListener("keydown",function(e){ if(!state.started&&(e.key===" "||e.key==="Enter")){ e.preventDefault(); begin(); } });
@@ -1412,35 +1246,43 @@ function drawPioneer11(){ var c=document.getElementById("px-pioneer11"); if(!c)r
 drawVoyager(); drawPioneer10(false); drawPioneer11();
 
 /* ====================================================================
-   MAIN LOOP (RAF): warp stars always animate; scene updates on scroll
+   MAIN LOOP — RAF. Camera LERPS toward target (smooth scrolling),
+   starfield diveSpeed derived from the smoothed camera delta.
    ==================================================================== */
 var rafLast=0;
 function loop(ts){
   if(!rafLast)rafLast=ts;
-  var dt=Math.min(50, ts-rafLast); rafLast=ts;
-  var speed = 0.0009 + smoothDelta*0.0016;
-  speed = Math.max(-0.03, Math.min(0.05, speed));
-  drawStars(dt, speed);
-  updateScene();
+  var dt=Math.min(50,ts-rafLast); rafLast=ts;
+  /* smooth camera: lerp toward the scroll-derived target */
+  camDepth += (targetCamDepth-camDepth)*0.09;
+  var camDelta=camDepth-prevCamDepth; prevCamDepth=camDepth;
+  smoothDelta += (camDelta-smoothDelta)*0.2;
+  var diveSpeed=0.0008+smoothDelta*0.00018;
+  diveSpeed=Math.max(-0.025,Math.min(0.045,diveSpeed));
+  drawStars(diveSpeed);
+  detectEra();
+  renderArtifacts();
+  renderEcho();
+  renderRail();
+  updateVisor();
+  fireTriggers();
   updateNav();
   requestAnimationFrame(loop);
 }
-window.addEventListener("scroll",function(){ },{passive:true});
 requestAnimationFrame(loop);
 
 /* hide cold text once diving begins */
 setInterval(function(){ if(state.started && progress>0.02){ coldText.classList.remove("on"); scrollPrompt.classList.remove("on"); } },200);
 
-/* when Echo mentions a stat mid-narration, pulse it — light heuristic on caption text */
+/* pulse visor stats when Echo mentions them */
 var lastCapText="";
 setInterval(function(){
-  var t=capText.textContent;
-  if(t===lastCapText)return; lastCapText=t;
-  if(/billion|million|miles|distance/i.test(t)) pulseStat("distance");
-  if(/solar|nuclear|battery|rtg|power|hydrazine/i.test(t)) pulseStat("power");
-  if(/\b19\d\d|\b20\d\d|launched|year/i.test(t)) pulseStat("year");
-  if(/silent|active|destroyed|asleep|stuck|awake|monument|status/i.test(t)) pulseStat("status");
-}, 600);
+  var t=capText.textContent; if(t===lastCapText)return; lastCapText=t;
+  if(/billion|million|miles|kilometers|drift|far out|distance/i.test(t))pulseStat("distance");
+  if(/solar|nuclear|plutonium|battery|rtg|hydrazine|power|fading/i.test(t))pulseStat("power");
+  if(/\b19\d\d|\b20\d\d|launched|years|sol\b|forty|fifty/i.test(t))pulseStat("year");
+  if(/silent|active|destroyed|asleep|stuck|awake|still running|still broadcasting|fading|parked|gone|quiet/i.test(t))pulseStat("status");
+},600);
 
 })();
 </script>
