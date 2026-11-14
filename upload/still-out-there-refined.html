@@ -69,13 +69,6 @@ body{
 .art-obj .loc{font-size:.74rem;color:var(--muted);margin-top:3px}
 .secondary .nm{font-size:1rem}
 
-/* scale silhouette */
-.scale{position:absolute;right:10px;bottom:6px;display:flex;flex-direction:column;align-items:center;
-  opacity:.6;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.58rem;letter-spacing:.1em;
-  transition:opacity .3s}
-.scale svg{width:20px;height:48px}
-.scale span{margin-top:2px}
-
 /* ---------- Echo ---------- */
 #echo{
   position:fixed;z-index:6;width:12px;height:12px;border-radius:50%;
@@ -124,12 +117,6 @@ body{
 .stat .val.warn{color:var(--amber)}
 .stat .val.dead{color:#9a6a6a}
 .stat .val.live{color:#7fe6a0}
-
-#scale-ref{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:18;
-  display:none;flex-direction:column;align-items:center;pointer-events:none;
-  color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.55rem;letter-spacing:.12em}
-#scale-ref.on{display:flex}
-#scale-ref svg{width:18px;height:42px}
 
 /* ---------- caption (visor readout, bottom center) ---------- */
 #hud{position:fixed;left:0;right:0;bottom:0;z-index:20;pointer-events:none;padding:0 18px 18px}
@@ -198,14 +185,6 @@ body{
 #scroll-prompt .arrow{display:block;margin:10px auto 0;width:12px;height:20px;border-right:2px solid var(--echo);border-bottom:2px solid var(--echo);transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(3px,3px)}}
 
-/* interaction prompt */
-#interact-prompt{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);z-index:40;
-  font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.14em;color:var(--echo);
-  background:var(--hud-bg);border:1px solid rgba(120,220,255,.4);border-radius:20px;padding:8px 16px;
-  opacity:0;transition:opacity .5s ease;pointer-events:none;text-transform:uppercase;white-space:nowrap}
-#interact-prompt.on{opacity:.92}
-#interact-prompt .hint{color:var(--muted);margin-left:8px}
-
 /* epilogue overlay */
 #epilogue{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px;opacity:0;transition:opacity 2.4s ease;pointer-events:none;overflow-y:auto}
 #epilogue.on{opacity:1;pointer-events:auto}
@@ -259,13 +238,6 @@ body{
 .insight .core{position:absolute;left:70px;top:30px;width:60px;height:54px;border-radius:8px;background:linear-gradient(160deg,#d8c9a0,#8a7a52);box-shadow:inset 0 -6px 12px rgba(0,0,0,.4)}
 .insight .arm{position:absolute;left:96px;top:44px;width:60px;height:3px;background:#caa;transform-origin:left center;transform:rotate(-18deg)}
 .insight .arm::after{content:"";position:absolute;right:-6px;top:-4px;width:10px;height:10px;border-radius:50%;background:#b08}
-.insight .dust-layer{position:absolute;inset:0;border-radius:inherit;pointer-events:auto;cursor:grab;
-  background:radial-gradient(ellipse at 50% 60%, rgba(150,80,40,.78), rgba(80,40,20,.55) 70%, transparent);
-  transition:opacity .25s ease}
-.insight .dust-layer.gone{opacity:0;pointer-events:none}
-.insight .wake-glow{position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:radial-gradient(circle at 50% 50%, rgba(255,220,140,.0), transparent 60%);transition:background .8s ease}
-.insight.awake .wake-glow{background:radial-gradient(circle at 50% 50%, rgba(255,220,140,.35), transparent 60%)}
 .rover{width:150px;height:96px}
 .rover .body{position:absolute;left:18px;top:18px;width:114px;height:34px;border-radius:6px;background:linear-gradient(180deg,#c9b48a,#7a6a44);box-shadow:inset 0 -6px 10px rgba(0,0,0,.4)}
 .rover .panel{position:absolute;left:26px;top:6px;width:98px;height:14px;border-radius:3px;background:linear-gradient(180deg,#6a4a2a,#3a2614)}
@@ -277,8 +249,6 @@ body{
 .rover .dust{position:absolute;left:-6px;right:-6px;bottom:-4px;height:18px;border-radius:50%;background:radial-gradient(ellipse at center,#a4421a,#5a230c 70%,transparent)}
 .spirit .body{transform:rotate(-7deg);transform-origin:center}
 .spirit .w1{transform:translateY(8px)}
-.spirit .whl.stuck{cursor:grab;transition:none}
-.spirit .whl.stuck:active{cursor:grabbing}
 .viking{width:170px;height:120px}
 .viking .body{position:absolute;left:30px;top:24px;width:110px;height:50px;background:linear-gradient(180deg,#b8a890,#6a5f4a);border-radius:4px;box-shadow:inset 0 -6px 10px rgba(0,0,0,.4)}
 .viking .dish{position:absolute;left:60px;top:-6px;width:50px;height:24px;border-radius:50%;background:radial-gradient(ellipse at 50% 80%, #d8c8a0, #7a6a4a);transform:rotate(-12deg)}
@@ -324,7 +294,7 @@ body{
   <div class="art-obj secondary" data-art="perseverance">
     <div class="visual">
       <div class="obj percy"><div class="cable"></div><div class="body"></div><div class="leg l1"></div><div class="leg l2"></div><div class="debris d1"></div><div class="debris d2"></div></div>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">2021 · mars</div><div class="nm">Perseverance Descent Stage</div><div class="loc">Jezero Crater — the sky crane</div></div>
   </div>
@@ -332,15 +302,15 @@ body{
   <div class="art-obj" data-art="curiosity">
     <div class="visual">
       <div class="obj curiosity"><div class="rtg"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl" style="left:8px"></div><div class="whl" style="left:32px"></div><div class="whl" style="left:56px"></div></div>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">2012–present · mars</div><div class="nm">Curiosity</div><div class="loc">the trendsetter · Gale Crater</div></div>
   </div>
 
   <div class="art-obj" data-art="insight">
     <div class="visual">
-      <div class="obj insight" id="insight-obj"><div class="wake-glow"></div><div class="panel pl"><div class="dust-layer" data-dust="pl"></div></div><div class="panel pr"><div class="dust-layer" data-dust="pr"></div></div><div class="core"></div><div class="arm"></div></div>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+      <div class="obj insight"><div class="panel pl"></div><div class="panel pr"></div><div class="core"></div><div class="arm"></div></div>
+
     </div>
     <div class="nameplate"><div class="yr">2018–2022 · mars</div><div class="nm">InSight</div><div class="loc">the listener — Elysium Planitia</div></div>
   </div>
@@ -348,15 +318,15 @@ body{
   <div class="art-obj" data-art="opportunity">
     <div class="visual">
       <div class="obj rover"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">2004–2018 · mars</div><div class="nm">Opportunity</div><div class="loc">"Oppy" — Endeavour Crater</div></div>
   </div>
 
   <div class="art-obj" data-art="spirit">
     <div class="visual">
-      <div class="obj rover spirit"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2 stuck" id="spirit-wheel"></div><div class="whl w3"></div><div class="dust"></div></div>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+      <div class="obj rover spirit"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
+
     </div>
     <div class="nameplate"><div class="yr">2004–2010 · mars</div><div class="nm">Spirit</div><div class="loc">stuck at Troy</div></div>
   </div>
@@ -364,7 +334,7 @@ body{
   <div class="art-obj secondary" data-art="viking">
     <div class="visual">
       <div class="obj viking"><div class="dish"></div><div class="body"></div><div class="leg g1"></div><div class="leg g2"></div><div class="leg g3"></div></div>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">1976–1982 · mars</div><div class="nm">Viking 1</div><div class="loc">asked the first question</div></div>
   </div>
@@ -384,7 +354,7 @@ body{
         <line x1="240" y1="60" x2="262" y2="34" stroke="#cfd8e6" stroke-width="1.4"/><circle cx="262" cy="34" r="4" fill="none" stroke="#cfd8e6" stroke-width="1.2"/>
         <g stroke="#6a7080" stroke-width="1" opacity=".5"><line x1="110" y1="140" x2="250" y2="140"/><line x1="110" y1="150" x2="250" y2="150"/></g>
       </svg>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">1972–present · the moon</div><div class="nm">Apollo 17 Lunar Rover</div><div class="loc">the last car on the Moon</div></div>
   </div>
@@ -400,7 +370,7 @@ body{
         <g stroke="#9aa3b2" stroke-width="2" fill="none"><line x1="110" y1="118" x2="80" y2="150"/><circle cx="80" cy="150" r="4" fill="#cfd8e6"/><line x1="250" y1="118" x2="280" y2="150"/><circle cx="280" cy="150" r="4" fill="#cfd8e6"/><line x1="180" y1="120" x2="180" y2="158"/><circle cx="180" cy="158" r="4" fill="#cfd8e6"/></g>
         <g fill="#0a0c12" opacity=".7"><ellipse cx="60" cy="165" rx="4" ry="6"/><ellipse cx="68" cy="172" rx="4" ry="6"/><ellipse cx="54" cy="178" rx="4" ry="6"/><ellipse cx="62" cy="185" rx="4" ry="6"/><ellipse cx="300" cy="166" rx="4" ry="6"/><ellipse cx="308" cy="173" rx="4" ry="6"/></g>
       </svg>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">1969–present · the moon</div><div class="nm">Apollo 11 Eagle</div><div class="loc">the first footprint's foundation</div></div>
   </div>
@@ -415,28 +385,28 @@ body{
         <g stroke="#9aa3b2" stroke-width="1.6" fill="none"><line x1="155" y1="100" x2="140" y2="160"/><line x1="205" y1="100" x2="220" y2="160"/><line x1="180" y1="100" x2="180" y2="165"/></g>
         <circle cx="140" cy="160" r="3" fill="#cfd8e6"/><circle cx="220" cy="160" r="3" fill="#cfd8e6"/><circle cx="180" cy="165" r="3" fill="#cfd8e6"/>
       </svg>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">1966–present · the moon</div><div class="nm">Surveyor 1</div><div class="loc">proved the ground was safe</div></div>
   </div>
 
   <div class="art-obj" data-art="voyager">
     <div class="visual pixel-wrap"><div class="golden-glow"></div><canvas id="px-voyager" width="180" height="120"></canvas>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">1977–present · interstellar</div><div class="nm">Voyager 1</div><div class="loc">carrying Earth's mixtape</div></div>
   </div>
 
   <div class="art-obj secondary" data-art="pioneer11">
     <div class="visual pixel-wrap"><canvas id="px-pioneer11" width="180" height="120"></canvas>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">1973–1995 · deep space</div><div class="nm">Pioneer 11</div><div class="loc">the scenic route — toward Aquila</div></div>
   </div>
 
   <div class="art-obj" data-art="pioneer10">
     <div class="visual pixel-wrap"><canvas id="px-pioneer10" width="180" height="120"></canvas>
-      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
     </div>
     <div class="nameplate"><div class="yr">1972–2003 · deep space</div><div class="nm">Pioneer 10</div><div class="loc">the first to leave — toward Aldebaran</div></div>
   </div>
@@ -453,13 +423,12 @@ body{
   <div class="stat bl" id="stat-year"><span class="lbl">launched</span><span class="val">—</span></div>
   <div class="stat br" id="stat-power"><span class="lbl">power</span><span class="val">—</span></div>
 </div>
-<div id="scale-ref"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+
 
 <div id="topbar">
   <div id="brand">Still&nbsp;Out&nbsp;There</div>
   <div id="controls">
     <button class="ctrl" id="btn-captions">CC&nbsp;ON</button>
-    <button class="ctrl" id="btn-scale">SCALE</button>
     <button class="ctrl" id="btn-deepread">DEEP&nbsp;READ</button>
     <button class="ctrl" id="btn-mute">SND&nbsp;ON</button>
   </div>
@@ -472,7 +441,7 @@ body{
   <div id="caption"><div id="cap-speaker">—</div><div id="cap-text">—</div></div>
 </div>
 
-<div id="interact-prompt"><span class="label">drag to brush the dust</span><span class="hint">clear the panels · wake him up</span></div>
+
 
 <aside id="deepread">
   <span class="close" id="dr-close">CLOSE X</span>
@@ -550,7 +519,7 @@ var SPEAKERS={
 
 /* ====================================================================
    THE SCRIPT — scenes as ordered beats.
-   Each beat: {s:"speaker", t:"text"} | {pause:ms} | {interact:"id"} | {aside:true}
+   Each beat: {s:"speaker", t:"text"} | {pause:ms} | {aside:true}
    ==================================================================== */
 var SCENES={
   cold:{ conv:[
@@ -583,14 +552,14 @@ var SCENES={
   ]},
 
   insight:{ conv:[
-    {s:"echo", t:"This one's quiet. InSight. Solar panels are completely buried in dust so he can't really — hang on. Try brushing some of that off?"},
-    {interact:"insight"},
-    {s:"echo", t:"There. Might be enough for a minute. InSight?"},
+    {s:"echo", t:"This one's quiet. InSight. Solar panels completely buried in dust."},
+    {pause:1100},
+    {s:"echo", t:"InSight?"},
     {s:"insight", t:"…Oh. Hey."},
     {s:"echo", t:"You okay?"},
     {s:"insight", t:"I'm good. I just… can't move. Never could, actually. Landed, unfolded my arms, pressed my seismometer into the dirt. That was the whole job."},
     {s:"echo", t:"What were you listening for?"},
-    {s:"insight", t:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundred of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does. But thanks for the light. Even a little bit."}
+    {s:"insight", t:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundred of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does."}
   ]},
 
   opportunity:{ conv:[
@@ -618,9 +587,7 @@ var SCENES={
     {s:"echo", t:"Spirit. Oppy's twin. Same launch, same everything."},
     {s:"spirit", t:"I know what it looks like."},
     {s:"echo", t:"I wasn't gonna say anything."},
-    {s:"spirit", t:"You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. Go ahead, try pulling me out."},
-    {interact:"spirit"},
-    {s:"spirit", t:"Yeah. You and NASA have that in common. Two years they spent on it. Built a replica of my sand trap back on Earth, practiced with a copy of me. Nothing."},
+    {s:"spirit", t:"You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. NASA spent two years trying to free me. Built a replica of my sand trap back on Earth, practiced with a copy of me. Nothing worked."},
     {s:"echo", t:"So you just… stayed?"},
     {s:"spirit", t:"Became a weather station. Parked. But the dirt around me has silica in it. The kind that forms around hot springs. On Earth those are loaded with life. So even stuck, I found something. Mars might've been habitable once."},
     {s:"echo", t:"That's not nothing."},
@@ -764,18 +731,16 @@ var gate=$("#gate"), startbtn=$("#startbtn");
 var brand=$("#brand"), navEl=$("#nav"), rail=$("#rail"), railFill=$("#rail .fill");
 var timechip=$("#timechip"), timeEra=timechip.querySelector(".era");
 var deepread=$("#deepread"), drTitle=$("#dr-title"), drMeta=$("#dr-meta"), drFact=$("#dr-fact"), drClose=$("#dr-close");
-var btnCap=$("#btn-captions"), btnDR=$("#btn-deepread"), btnMute=$("#btn-mute"), btnScale=$("#btn-scale");
+var btnCap=$("#btn-captions"), btnDR=$("#btn-deepread"), btnMute=$("#btn-mute");
 var coldText=$("#cold-text"), scrollPrompt=$("#scroll-prompt"), epilogue=$("#epilogue"), revealFlash=$("#reveal-flash");
-var interactPrompt=$("#interact-prompt");
 var visorOn=false, stats={distance:$("#stat-distance"),status:$("#stat-status"),year:$("#stat-year"),power:$("#stat-power")};
-var scaleRef=$("#scale-ref");
 
 LAYOUT.forEach(function(L){ L.el=scene.querySelector('.art-obj[data-art="'+L.id+'"]'); });
 
 var state={
-  started:false, muted:false, captionsOn:true, deepOn:false, scaleOn:false,
+  started:false, muted:false, captionsOn:true, deepOn:false,
   currentArt:null, era:"cold", played:new Set(),
-  insightWoke:false, spiritFreed:false, revealSaid:false, interactPending:false
+  revealSaid:false
 };
 
 /* ====================================================================
@@ -860,9 +825,8 @@ function startGoldenRecord(){ if(!AC)return; setLayer("vinyl",0.08); startCrackl
 /* ====================================================================
    SPEECH + SCENE PLAYER
    A "scene" is an ordered list of beats. The player walks the list,
-   speaking each {s,t} beat (sentence-by-sentence for long text), pausing
-   on {pause:ms}, and halting on {interact:id} until the interaction
-   completion calls resume().
+   speaking each {s,t} beat (sentence-by-sentence for long text) and
+   pausing on {pause:ms}.
    ==================================================================== */
 var synth=window.speechSynthesis, voices=[];
 function loadVoices(){ voices=synth?synth.getVoices():[]; }
@@ -870,7 +834,7 @@ if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
 function pickVoice(){ if(!voices.length)loadVoices(); var v=null; for(var i=0;i<voices.length;i++){ if(/en[-_]?US/i.test(voices[i].lang)){v=voices[i];break;} } if(!v){ for(var i=0;i<voices.length;i++){ if(/^en/i.test(voices[i].lang)){v=voices[i];break;} } } if(!v&&voices.length)v=voices[0]; return v; }
 function splitSentences(t){ var parts=t.match(/[^.!?…]+[.!?…]*/g)||[t]; return parts.map(function(s){return s.trim();}).filter(Boolean); }
 
-var scenePlayer={active:false,conv:null,idx:0,token:0,onDone:null,resumeCb:null};
+var scenePlayer={active:false,conv:null,idx:0,token:0,onDone:null};
 var currentCancelToken=0;
 
 function eraCaptionClass(){ if(state.era==="moon")return "moon"; if(state.era==="deepspace")return "space clear"; return null; }
@@ -894,9 +858,7 @@ function playScene(key,onDone){
 }
 function cancelScene(){
   scenePlayer.active=false; scenePlayer.token=++currentCancelToken; scenePlayer.onDone=null;
-  scenePlayer.resumeCb=null; state.interactPending=false;
   if(synth)try{synth.cancel();}catch(e){}
-  interactPrompt.classList.remove("on");
 }
 function sceneStep(){
   if(!scenePlayer.active)return;
@@ -907,12 +869,6 @@ function sceneStep(){
   }
   var beat=scenePlayer.conv[scenePlayer.idx++];
   if(beat.pause){ setTimeout(sceneStep,beat.pause); return; }
-  if(beat.interact){
-    state.interactPending=true;
-    if(beat.interact==="insight")promptInSightWake(sceneStep);
-    else if(beat.interact==="spirit")promptSpiritWheel(sceneStep);
-    return; /* sceneStep is called by the interaction completion */
-  }
   speakBeat(beat,sceneStep);
 }
 function speakBeat(beat,onDone){
@@ -1093,59 +1049,6 @@ function fireTriggers(){
 }
 
 /* ====================================================================
-   INTERACTIONS — InSight dust-brush & Spirit stuck-wheel.
-   Each prompts the user, waits, then calls resume() to continue the scene.
-   ==================================================================== */
-function promptInSightWake(resume){
-  interactPrompt.querySelector(".label").textContent="drag to brush the dust";
-  interactPrompt.querySelector(".hint").textContent="clear the panels · wake him up";
-  interactPrompt.classList.add("on");
-  var dustLayers=document.querySelectorAll(".insight .dust-layer");
-  var cleaned=0, done=false;
-  var timeout=setTimeout(function(){ if(!done){ done=true; autoClear(resume); } }, 9000); /* fallback */
-  function finish(){ if(done)return; done=true; clearTimeout(timeout); interactPrompt.classList.remove("on");
-    var io=document.getElementById("insight-obj"); if(io)io.classList.add("awake"); pulseStat("power");
-    setTimeout(resume, 700);
-  }
-  function autoClear(resumeCb){
-    interactPrompt.classList.remove("on");
-    dustLayers.forEach(function(x){x.classList.add("gone");x.style.opacity=0;});
-    var io=document.getElementById("insight-obj"); if(io)io.classList.add("awake");
-    state.insightWoke=true; pulseStat("power"); setTimeout(resumeCb,600);
-  }
-  dustLayers.forEach(function(dl){
-    var dragging=false, localCleaned=0;
-    dl.addEventListener("pointerdown",function(e){ dragging=true; dl.setPointerCapture(e.pointerId); });
-    dl.addEventListener("pointermove",function(e){
-      if(!dragging)return;
-      localCleaned=Math.min(1,localCleaned+0.045);
-      dl.style.opacity=Math.max(0,1-localCleaned);
-      if(localCleaned>=0.8 && !dl.classList.contains("gone")){ dl.classList.add("gone"); cleaned++; if(cleaned>=2){ state.insightWoke=true; finish(); } }
-    });
-    dl.addEventListener("pointerup",function(){ dragging=false; });
-    dl.addEventListener("pointercancel",function(){ dragging=false; });
-  });
-}
-function promptSpiritWheel(resume){
-  interactPrompt.querySelector(".label").textContent="drag the wheel";
-  interactPrompt.querySelector(".hint").textContent="try to pull him out";
-  interactPrompt.classList.add("on");
-  var wheel=document.getElementById("spirit-wheel"); if(!wheel){ setTimeout(resume,500); return; }
-  var attempts=0, rot=0, dragging=false, lastX=0, done=false;
-  var timeout=setTimeout(function(){ if(!done){ done=true; finish(); } }, 11000); /* fallback */
-  function finish(){ if(done)return; done=true; clearTimeout(timeout); state.spiritFreed=true; interactPrompt.classList.remove("on"); setTimeout(resume,500); }
-  wheel.addEventListener("pointerdown",function(e){ dragging=true; wheel.setPointerCapture(e.pointerId); lastX=e.clientX; });
-  wheel.addEventListener("pointermove",function(e){
-    if(!dragging)return;
-    var dx=e.clientX-lastX; lastX=e.clientX; rot+=dx*3; wheel.style.transform="rotate("+rot+"deg) translateY(8px)";
-    if(Math.abs(dx)>4 && attempts<3){ attempts++; beep(220,0.04,0.04); }
-    if(attempts>=3 && !state.spiritFreed){ state.spiritFreed=true; finish(); }
-  });
-  wheel.addEventListener("pointerup",function(){ dragging=false; });
-  wheel.addEventListener("pointercancel",function(){ dragging=false; });
-}
-
-/* ====================================================================
    THE REVEAL + EPILOGUE
    ==================================================================== */
 function enterReveal(){
@@ -1207,7 +1110,6 @@ btnDR.addEventListener("click",function(){ state.deepOn=!state.deepOn; btnDR.cla
 /* click an artifact (when near) -> open deep read + replay its scene */
 scene.addEventListener("click",function(e){
   var el=e.target.closest(".art-obj"); if(!el||!el.classList.contains("near"))return;
-  if(e.target.closest(".dust-layer")||e.target.closest(".whl.stuck"))return;
   var id=el.getAttribute("data-art"); if(!SCENES[id]&&!META[id])return;
   state.currentArt=id; openDeepRead(id);
   if(!state.deepOn){ state.deepOn=true; btnDR.classList.add("active"); deepread.classList.add("on"); }
@@ -1218,7 +1120,6 @@ scene.addEventListener("click",function(e){
    CONTROLS
    ==================================================================== */
 btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(!state.captionsOn)hideCaption(); });
-btnScale.addEventListener("click",function(){ state.scaleOn=!state.scaleOn; btnScale.classList.toggle("active",state.scaleOn); scaleRef.classList.toggle("on",state.scaleOn); });
 btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
 var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this scene"; replay.style.display="block"; caption.appendChild(replay);
 replay.addEventListener("click",function(){ if(state.currentArt&&SCENES[state.currentArt]){ playScene(state.currentArt); } });
