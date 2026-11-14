@@ -933,9 +933,15 @@ function handleSceneEntry(sk){
 }
 
 /* detect per-zone audio + transcript files (HEAD check only; HTML5 audio decodes on load) */
+/* embedded fallback for the cold transcript (used if the JSON fetch fails) */
+var COLD_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"Wait. You can hear that?"},
+  {t:4.2,speaker:"echo",text:"Huh. Most people can't pick it out. That's the Golden Record. It's actually playing right now — like, physically, on a phonograph needle, in space, about fifteen billion miles from here. Chuck Berry, whale songs, people saying hello in fifty-five languages. It's been going for forty-seven years and nobody's been around to hear it in a really long time."},
+  {t:27.3,speaker:"echo",text:"…Sorry. I don't really get to talk to anyone anymore. I'm Echo. I used to relay signals for the machines they sent out. The probes, the rovers, all of it. Most of them have gone quiet now. But the signals are still out there. The machines are still out there. You just have to know where to look."}
+]};
 function detectAssets(){
-  ASSETS.cold={audio:null,transcript:null};
-  fetch("audio/cold.mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS.cold.audio="audio/cold.mp3"; }).catch(function(){});
+  /* cold open: audio URL is known; transcript fetched with an embedded fallback */
+  ASSETS.cold={audio:"audio/cold.mp3",transcript:COLD_FALLBACK};
   fetch("transcripts/cold.json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS.cold.transcript=j; }).catch(function(){});
   ZONES.forEach(function(z){
     var id=z.id; ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
@@ -1184,9 +1190,11 @@ replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZone
 /* ====================================================================
    START GATE
    ==================================================================== */
-function startColdOpen(){
+function startColdOpen(retries){
+  retries=retries||0;
   if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){ startAudioMode("cold"); }
-  else { playScene("cold", function(){ state.coldOpenDone=true; }); }
+  else if(retries<30){ setTimeout(function(){startColdOpen(retries+1);},200); }
+  else { playScene("cold", function(){state.coldOpenDone=true;}); }
 }
 function begin(){
   if(state.started)return; state.started=true;
@@ -1214,7 +1222,9 @@ document.addEventListener("touchstart",resumeAC);
 var beginTime=0;
 playIntro.addEventListener("click",function(){
   if(AC&&AC.state!=="running")AC.resume();
-  stopAudioMode(); startAudioMode("cold");
+  cancelSpeech();
+  stopAudioMode();
+  if(ASSETS.cold&&ASSETS.cold.audio&&ASSETS.cold.transcript){ startAudioMode("cold"); }
 });
 /* show the play button if the audio hasn't started within 4s of Begin */
 setInterval(function(){
