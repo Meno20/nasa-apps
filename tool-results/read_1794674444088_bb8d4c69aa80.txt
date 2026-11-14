@@ -1,0 +1,512 @@
+    28→    28→=== PAGE 2 ===
+    29→    29→Step 1: Youopen the page and see nothing.
+    30→    30→Thescreeniscompletelyblack.Nobuttons,nomenus,notext.Thenyouhearthecrackleofanold
+    31→    31→recordplayer.Musicstartsplaying—realsoundsfromagoldenrecordthatNASAstrappedtoa
+    32→    32→spacecraftin1977.Youheargreetingsindozensoflanguages,whalesongs,andaChuckBerryguitar
+    33→    33→riff.Itsoundswarmandscratchy,likeanoldvinylrecordplayinginahugeemptyroom.
+    34→    34→Afterafewseconds,ashortmessagefadesinonscreenexplainingwhatyou'rehearing:thesesounds
+    35→    35→arecurrentlyplayingonamachinethatis15billionmilesawayfromEarth,stilltravelingthroughspace
+    36→    36→rightnow.
+    37→    37→Thenasmallblinkinglightappears.That'sEcho.
+    38→    38→Step 2: Echo introduces itself.
+    39→    39→Echoisasmall,discardedrelaysatellite—amachinewhosejobusedtobebouncingradiosignals
+    40→    40→betweenEarthandotherspacecraft.It'sbeendriftingaloneinspaceforalongtime.Allthemachinesit
+    41→    41→usedtotalktohavegonequiet.Butthey'restilloutthere,andEchowantstoshowyouwhere.
+    42→    42→Echotellsyouoneimportantthing:tounderstandthesemachines,wehavetogobackwardintime.
+    43→    43→Fromthenewesttotheoldest.Fromthepresentdayallthewaybacktothe1960s.
+    44→    44→Asmallpromptappearsonscreen:"Scrolltodrift."
+    45→    45→Step 3: Youscroll, and space moves around you.
+    46→    46→Asyouscrolldown,Earthappearsbelowyou—ahuge,glowingblueball.Thenyoudriftawayfrom
+    47→    47→EarthandtowardMars,whichgrowsfromatinyreddotintoamassiverustyspherefillingyourscreen.
+    48→    48→Thebackgroundstarsshiftandmoveatdifferentspeedstocreateasenseofdepth(thisiscalled
+    49→    49→parallax,andit'sthesametrickusedinoldcartoonbackgroundswherethemountainsmoveslowerthan
+    50→    50→thetrees).
+    51→    51→Step 4: Youarrive at Mars and meet the machines there.
+    52→    52→Thisisthefirst"gallery"—acollectionofartifactsinonelocation.OnMars,you'llencountersix
+    53→    53→machines,onebyone,asyoukeepscrolling.Eachonehasashortaudiomonologuewhereitspeaksto
+    54→    54→youinitsownvoice(moreonthevoiceslater).Youalsoseeasmallhumansilhouettenexttoeach
+    55→    55→machinesoyoucanunderstandhowbigitis.
+    56→    56→Step 5: Youleave Mars and drift to the Moon.
+    57→    57→Theredplanetshrinksbehindyou.Spacegoesquiet.ThenthegreysurfaceoftheMoonrisesintoview.
+    58→    58→Youmeetthreemoremachineshere—theonesleftbehindbytheApolloastronauts.
+    59→    59→Step 6: Youleave the Moon and head into deep space.
+    60→    60→TheMoondisappears.Thestarsgetcolderandsharper.You'renowfarfromanyplanet,outintheempty
+    61→    61→spacebetweenthestars.Hereyoufindtheoldestmachines—twotinyprobeslaunchedinthe1970s
+    62→    62→
+    63→    63→=== PAGE 3 ===
+    64→    64→thatarestilldriftingawayfromoursolarsystem.
+    65→    65→Step 7: The journey ends where it began.
+    66→    66→EchobringsyoubacktoaviewofEarth.Thesamegoldenrecordmusicfromthebeginningplaysone
+    67→    67→moretime,butnowitfeelsdifferentbecauseyouunderstandwhatitmeans.Echosaysgoodbye.Afinal
+    68→    68→screenlistsalltwelvemachineswithaone-linesummaryofeach.Therecordplayerneedlelifts.Silence.
+    69→    69→End.
+    70→    70→5. THE TWELVEMACHINES (The "Artifacts")
+    71→    71→Everymachineinthisexperienceisreal.Theywereallbuiltbyhumansandlaunchedintospace.Here
+    72→    72→theyare,groupedbywheretheyare,intheorderyou'dencounterthem(newestfirst):
+    73→    73→ON MARS (six machines)
+    74→    74→1.PerseveranceDescentStage(landed2021)
+    75→    75→WhenNASAlandedthePerseveranceroveronMars,thepartthatlowereditdownoncables(calledthe
+    76→    76→"skycrane")flewoffandcrashedonpurposesoitwouldn'thittherover.Thisisthatcrashedpiece.It
+    77→    77→speakswiththeenergyofayoungkidwhojustdidsomethingawesomeandcan'tstoptalkingaboutit.
+    78→    78→2.Curiosity(landed2012)—briefappearance
+    79→    79→Anuclear-poweredroverthat'sstilldrivingaroundMarsrightnow.Itdoesn'tgetafullmonologue.Echo
+    80→    80→justpointsitoutasyoudriftpast,notingthatit'stheonlymachineonMarsstillawake.
+    81→    81→3.InSight(2018–2022)
+    82→    82→Asmalllanderthatdidn'tmoveatall.Itsentirejobwastopressasensorintothedirtandlistenfor
+    83→    83→"Marsquakes"—tinytremorsinsidetheplanet.Itdetectedover1,300ofthembeforeitssolarpanelsgot
+    84→    84→coveredindustanditshutdown.Itspeakslikeacalm,meditativemonk.
+    85→    85→4.Opportunity(2004–2018)
+    86→    86→Asmallroverthatwasonlysupposedtolast90daysbutkeptgoingfor15years.Itdrove28miles
+    87→    87→acrossMarsandfoundevidencethattheplanetoncehadoceans.Itdiedinaplanet-wideduststormin
+    88→    88→2018.Itsfinalmessagewasfamouslytranslatedas"Mybatteryislowandit'sgettingdark."Itspeakslike
+    89→    89→atiredbutproudmarathonrunnerattheendofalongrace.
+    90→    90→5.Spirit(2004–2010)
+    91→    91→Opportunity'stwin.Itgotstuckinsoftsandandcouldn'tfreeitself,soitbecameastationaryweather
+    92→    92→station.Evenstuck,itmadeamajordiscovery—evidenceofancienthotsprings.Itspeakswitha
+    93→    93→scrappy,slightlybitterpersonality,frustratedthatitcouldn'tkeepdriving.
+    94→    94→6.Viking1(1976)—briefappearance
+    95→    95→ThefirstspacecrafttosuccessfullylandonMarsandoperate.ItscoopedupMartiansoilandran
+    96→    96→experimentslookingforsignsoflife.Theresultswereinconclusiveandscientistsarestilldebatingthem
+    97→    97→almost50yearslater.Echointroducesitbrieflyasyoupass.
+    98→    98→
+    99→    99→=== PAGE 4 ===
+   100→   100→ON THE MOON (three machines)
+   101→   101→7.Apollo17LunarRover(1972)
+   102→   102→Afold-upelectricdunebuggythatastronautsdroveontheMoonduringthelastApollomission.It
+   103→   103→traveled35kilometersacrossthelunarsurface.Whentheastronautsleft,theyparkeditandwalked
+   104→   104→away.It'sbeensittingthereeversince.Itstiretracksarestillperfectlypreservedbecausethere'snowind
+   105→   105→ontheMoontoblowthemaway.Itspeakslikeafun,breezyroad-tripbuddy.
+   106→   106→8.Apollo11EagleDescentStage(1969)
+   107→   107→ThebottomhalfofthelunarmodulethatcarriedNeilArmstrongandBuzzAldrintotheMoon'ssurface.
+   108→   108→Whentheyflewhome,thishalfstayedbehind.It'stheplatformthefirsthumansstoodonwhenthey
+   109→   109→steppedontoanotherworld.Thefootprintsarounditwilllastforeverbecausethere'snoweathertoerode
+   110→   110→them.Itspeaksveryquietly,almostlikeaprayer.
+   111→   111→9.Surveyor1(1966)—briefappearance
+   112→   112→Atiny,fragile-lookingtripodthatlandedontheMoonthreeyearsbeforeApollo11.Itsonlyjobwasto
+   113→   113→provetheMoon'ssurfacewassolidenoughtolandon.Itworked.Apollohappenedbecausethislittle
+   114→   114→machinewentfirst.Echointroducesitfondlyasyoupass.
+   115→   115→IN DEEP SPACE(three machines)
+   116→   116→10.Voyager1(launched1977,stillactive)
+   117→   117→Thefarthesthuman-madeobjectfromEarth—over15billionmilesaway.Itcrossedtheedgeofoursolar
+   118→   118→systemin2012andisnowininterstellarspace(thespacebetweenstars).ItcarriestheGoldenRecord
+   119→   119→—aliteralgold-plateddiscwithsoundsandimagesoflifeonEarth,meantasamessageforanyalien
+   120→   120→civilizationthatmightfinditsomeday.Itspeakswithawise,echoingvoice,asifitswordsaretraveling
+   121→   121→acrossanunimaginabledistancetoreachyou.
+   122→   122→11.Pioneer10(launched1972,signallost2003)
+   123→   123→ThefirstspacecrafttotravelthroughtheasteroidbeltandreachJupiter.Itcarriedasmallmetalplaque
+   124→   124→withdrawingsofamanandawoman,incaseextraterrestrialsfoundit.Itsradiosignalgotweakerand
+   125→   125→weakeroverthedecadesuntilNASAheardnothingin2003.It'sheadingtowardastarcalledAldebaran
+   126→   126→andwilltaketwomillionyearstogetthere.Itspeaksinafaint,brokenvoice,withstaticcuttingthroughits
+   127→   127→words—likeaghost.
+   128→   128→12.Pioneer11(launched1973)—briefappearance
+   129→   129→Pioneer10'stwin.IttookalongerroutepastSaturn.Itssignalwentquietin1995.It'sdriftingtowardthe
+   130→   130→constellationAquila.Echobarelywhispersaboutit,becauseevenEchocan'thearitanymore.
+   131→   131→6. THE LOOK (How the Art Changes)
+   132→   132→Oneofthemostimportantideasinthisprojectisthatthevisualstylechangesasyougobackwardin
+   133→   133→time.Thisisn'tjustadesignchoice—it'sastorytellingtool.Theartisthetimeline.
+   134→   134→Here'showitworks:
+   135→   135→
+   136→   136→=== PAGE 5 ===
+   137→   137→• Mars(2021–1976):Theartlooksclean,modern,andslightlycartoonish—thinkofthesmooth,
+   138→   138→roundedstyleofaPixarmovieoramodernmobilegame.Thecolorsarewarm:amber,rust,orange.
+   139→   139→Everythinglookspolishedandhigh-tech,becausethesearerecentmachines.
+   140→   140→• TheMoon(1972–1966):Theartshiftstolookhand-drawnandpainterly—likeachildren's
+   141→   141→storybookillustration.Thecolorsarecooler:silver,grey,paleblue.Thetextureslooklikewatercolor.
+   142→   142→Thisreflectstheera—thesemachineswerebuiltbyhand,bypeopleusingsliderulesandgraph
+   143→   143→paper.
+   144→   144→• DeepSpace(1977–1972):Thearttransformsintochunkypixelart—likeanoldAtariorNintendo
+   145→   145→game.Thecolorsaredark:deepindigo,violet,black.Themachineslooklikesimpleblockysprites.
+   146→   146→Thisistheoldesteraofspaceexploration,andtheretroartmakesthemachineslookfragileand
+   147→   147→precious,likeartifactsfromasimplertime.
+   148→   148→Thetransitionsbetweenthesestyleshappengraduallyasyouscroll,soitfeelsliketheworlditselfis
+   149→   149→agingaroundyou.
+   150→   150→7. THE SOUND (Why Audio Matters So Much)
+   151→   151→Thisprojectisaudio-first.Thesoundsarenotbackgroundmusic—theyareacorepartofthe
+   152→   152→storytelling.Here'showtheaudioworksineachsection:
+   153→   153→• TheColdOpen:YouheartheactualsoundsfromVoyager'sGoldenRecord—realNASAaudiothat
+   154→   154→ispublicdomain.Vinylcrackle,greetingsin55languages,whalesongs,music.Thisisthehookthat
+   155→   155→grabsyourattentionbeforeyouseeanything.
+   156→   156→• Mars:Themomentyouarrive,youhearwind.Thin,alien,hauntingMartianwind(basedonreal
+   157→   157→recordingsfromMars).Youalsohearfaintmechanicalclickingandwhirringfromtherovers.Each
+   158→   158→machinehasasignatureaudiomoment—forexample,whenInSightspeaks,thewindfadesandyou
+   159→   159→hearadeep,rhythmicpulserepresentingaMarsquake.WhenOpportunitydescribestheduststorm
+   160→   160→thatkilledit,aroaringwindswellsupandthencutstodeadsilenceontheword"dark."
+   161→   161→• TheMoon:Near-totalsilence.Thisisthemostdramaticmomentintheentireexperience.TheMars
+   162→   162→windstopscompletely.ThereisnosoundontheMoonbecausethereisnoatmosphere—noair
+   163→   163→meansnowind,noweather,nonoise.Theonlythingsyouheararefaintradiostaticandthesoundof
+   164→   164→slowbreathinginsideaspacesuithelmet.Echowhispersandexplicitlytellsyou:"There'snoairhere,
+   165→   165→sothere'snosoundatall."AftertheApollo11Eaglefinishesspeaking,therearethreefullsecondsof
+   166→   166→absolute,totalsilence.Nomusic.Nothing.
+   167→   167→• DeepSpace:Alow,vastcosmichum—thesoundoftheuniverseitself,createdfromrealradio
+   168→   168→telescopedata.Youhearfaintbeepingatirregularintervals,likeadistantsignalstrugglingtoreach
+   169→   169→youacrossbillionsofmiles.AsyouapproachPioneer10,thebeepsslowdown...andstop.Thesignal
+   170→   170→hasdied.
+   171→   171→• TheEpilogue:TheGoldenRecordmusicreturnsonefinaltime,clearandwarm,justlikethe
+   172→   172→beginning.Therecordplayerneedlelifts.Silence.
+   173→   173→
+   174→   174→=== PAGE 6 ===
+   175→   175→8. THE GUIDE: WHO IS ECHO?
+   176→   176→Echoisnotanall-knowingnarrator.Echoisacharacterwithabackstory.
+   177→   177→Echousedtobearelaysatellite—amachinewhosejobwastobounceradiosignalsbetweenEarthand
+   178→   178→theotherspacecraft.Thinkofitlikeacellphonetowerfloatinginspace.ButEchohasbeen
+   179→   179→decommissionedandleftdrifting.Allthemachinesitusedtotalktohavegonequiet,onebyone.
+   180→   180→ThisgivesEchopersonalstakesinthestory.WhenEchopassesOpportunityandsays"Itriedtoreach
+   181→   181→herduringthestorm.Icouldn'tgetasignalthroughthedust.I'msorryIwasn'tthere,"that'snotanarrator
+   182→   182→explainingafact.That'sacharacterexpressinggrief.
+   183→   183→Echo'svoicealsochangesdependingonwhereyouare:
+   184→   184→• NearMars:warmandclear.
+   185→   185→• NeartheMoon:quiet,whispering.
+   186→   186→• Indeepspace:heavilyfilteredwithstatic,asifthedistanceisdegradingevenEcho'ssignal.
+   187→   187→9. HOW IS IT BUILT?(The Tech, Simplified)
+   188→   188→Youdon'tneedtounderstandthissectiontograsptheproject,buthere'saplain-Englishoverviewofhow
+   189→   189→itworksunderthehood:
+   190→   190→• It'sasingle,verytallwebpage.Insteadofclickingbetweenpages,youscrolldownonelongpage.
+   191→   191→Thescrollingiswhatdriveseverything—thecameramovement,theaudiochanges,theart
+   192→   192→transitions.
+   193→   193→• Thescrollingis"powered"byatoolcalledGSAPScrollTrigger.Thisisapieceofcodethatlets
+   194→   194→developerstieanimationsdirectlytohowfaryou'vescrolled.Sowhenyouscroll30%downthepage,
+   195→   195→thecodeknowstoshowMars.At60%,theMoon.At85%,deepspace.
+   196→   196→• Thestarsinthebackgroundmoveatdifferentspeedstocreatea3Dfeeling.Thisisdonewith
+   197→   197→threelayersofstarimagesstackedontopofeachother,eachscrollingataslightlydifferentrate.It's
+   198→   198→thesameillusionusedinoldDisneymovies.
+   199→   199→• TheaudioishandledbyatoolcalledHowler.js.Thisletsthecodeplay,fade,andmixdifferent
+   200→   200→soundfilesbasedonwhereyouareonthepage.WhenyouscrollintotheMarssection,theMars
+   201→   201→windfadesin.Whenyouleave,itfadesout.
+   202→   202→• The3DmodelsonMarsarecreatedinatoolcalledSpline(oracodelibrarycalledThree.js)and
+   203→   203→embeddedintothewebpage.TheMoonillustrationsarelayeredimages.Thedeepspacepixelartis
+   204→   204→drawnwithcodeonadigitalcanvas.
+   205→   205→• Captionsareavailableforalltheaudio,becauseaccessibilitymatters.There'salsoa"DeepRead"
+   206→   206→modeforpeoplewhowanttoreadthestoriesattheirownpacewithouttheaudio.
+   207→   207→
+   208→   208→=== PAGE 7 ===
+   209→   209→10. WHY DOES THIS PROJECT EXIST? (The Emotional Core)
+   210→   210→Atitsheart,"StillOutThere"isaboutthethingsweleavebehind.
+   211→   211→Humanshavesentmachinestootherworldsforover60years.Mostofthosemachinesarenowsilent.
+   212→   212→They'resittingonaliendeserts,parkedonairlessmoons,ordriftingthroughthevoidbetweenstars.
+   213→   213→Nobodyiscontrollingthemanymore.Nobodyislisteningtotheirsignals.Butthey'restillthere.
+   214→   214→ThefootprintsaroundtheApollo11landerwilloutlasteverybuildingonEarthbecausethere'snowindor
+   215→   215→raintoerasethem.TheGoldenRecordonVoyager1willsurvivelongerthantheSun.Pioneer10is
+   216→   216→headingtowardastaritwon'treachfortwomillionyears.
+   217→   217→Thisprojectwantsakid—oranyone—toscrollthroughthisexperienceandfeelsomethingrealabouta
+   218→   218→machinethey'veneverheardof,sittinginaplacethey'llnevergo,doingsciencethatchangedtheworld.
+   219→   219→Thefinallineoftheentireexperienceissimple:
+   220→   220→"They'restilloutthere."
+   221→   221→11. QUICK REFERENCE: THE FULL JOURNEY ATA GLANCE
+   222→   222→Order Machine Where When SpeakingStyle ArtStyle
+   223→   223→1 PerseveranceDescentStage Mars 2021 Energetickid Modern3D
+   224→   224→2 Curiosity(brief) Mars 2012 Echonarrates Modern3D
+   225→   225→3 InSight Mars 2018 Calmmonk Modern3D
+   226→   226→4 Opportunity Mars 2004 Tiredmarathonrunner Modern3D
+   227→   227→5 Spirit Mars 2004 Stubborn,bitter Modern3D
+   228→   228→6 Viking1(brief) Mars 1976 Echonarrates 3Dfadingtoillustrated
+   229→   229→7 Apollo17LunarRover Moon 1972 Funroad-tripbuddy Hand-drawn2.5D
+   230→   230→8 Apollo11Eagle Moon 1969 Quiet,sacred Hand-drawn2.5D
+   231→   231→9 Surveyor1(brief) Moon 1966 Echonarrates Hand-drawn2.5D
+   232→   232→10 Voyager1 DeepSpace 1977 Wise,distantecho Retropixelart
+   233→   233→11 Pioneer10 DeepSpace 1972 Faint,brokenghost Retropixelart
+   234→   234→12 Pioneer11(brief) DeepSpace 1973 Echowhispers Retropixelart
+   235→   235→That'stheentireproject.Ifyou'vereadthisfar,youknowasmuchabout"StillOutThere"asanyoneon
+   236→   236→theteam.Thenextstepisbuildingit.
+   237→   237→
+   238→   238→=== PAGE 8 ===
+   239→   239→WHATI UNDERSTOOD (Reflecting YourVision Back)
+   240→   240→LetmemakesureI'vegotthefullpicturebeforeIgivefeedback.
+   241→   241→The Big Structural Shift: Echo IS Pioneer 10
+   242→   242→ThisisthesinglebiggestchangeanditrewritestheDNAoftheentireproject.Echoisnolongerageneric
+   243→   243→relaysatellitewithavaguebackstory.EchoisPioneer10itself—theoldestsurvivingprobe,launched
+   244→   244→in1972,thefirstmachinetocrosstheasteroidbeltandreachJupiter.ItssignalwentsilenttoEarthin
+   245→   245→2003,whichmeansEchoisessentiallyaghost:amachinethathumanitycannolongerhear,butthatis
+   246→   246→stilloutthere,stilldrifting,stillaware.
+   247→   247→ThereasonEchoisguidingtheuserthroughthismuseumisthattheuseristhefirst"signal"Echohas
+   248→   248→receivedinovertwentyyears.Echoislonely.Echowantssomeonetoknowthesemachines—including
+   249→   249→Echo'stwinsister,Pioneer11—beforethey'reforgottenentirely.
+   250→   250→Theidentityisamysterytheuserisinvitedtosolve.Earlyintheexperience,subtlehintsaredropped.
+   251→   251→ThebiggesthintcomesneartheendwhenEchotalksaboutPioneer11withaspecific,personallonging
+   252→   252→—callingher"mytwin,"knowingintimatedetailsaboutherroutepastSaturn,saying"justatadbitmore
+   253→   253→curiousthanme."Afteralltwelveartifactshavebeenintroduced,Echobreaksthefourthwall:"So…did
+   254→   254→youfigureoutwhoIam?"Andthenwhoosh—backtoEarth.
+   255→   255→Echo'spersonality:empathic,neutral,wise,content.Notdramatic,notshowy.Amachinethathasseen
+   256→   256→thehighsandlowsoffiftyyearsinspaceandhasmadepeacewiththesilence.
+   257→   257→The New 8+4 Split (Who Speaks, Who Doesn't)
+   258→   258→Eightartifactsspeakforthemselves(eachwithadistinctpersonalityandauniqueintroduction
+   259→   259→mechanic):
+   260→   260→# Artifact Personality IntroductionMechanic
+   261→   261→1 InSight Perseveringagainsttheodds,patient Echobrushesdustoffitssolarpaneland
+   262→   262→shinesalighttowakeitup—interactive
+   263→   263→2 Opportunity Confident,egoistical,knowsherworth SpotsEchofromadistanceandcallsout
+   264→   264→first,eagertotalk.Hasaconversationwith
+   265→   265→Echo(notamonologue)
+   266→   266→3 Spirit Alivebutstuck,wantstoberemembered Somekindofphysicalinteraction—loose
+   267→   267→(contrasttoOpportunitywantingtobe screw,stuckwheel,somethingtactile
+   268→   268→worshipped)
+   269→   269→4 Curiosity Curious,excited,proud—thetrendsetter, Tellshisownstorynow(upgradedfroma
+   270→   270→nuclear-powered,stillawake briefEchomentiontoafullspeakingrole)
+   271→   271→5 Apollo17 Eager,happy,lonely—hasn'tseenanyone Rushestogreettheuser,almost
+   272→   272→LunarRover in50+years,nowind,totalisolation over-excited
+   273→   273→
+   274→   274→=== PAGE 9 ===
+   275→   275→6 Apollo11 Therealmaincharacterbuthumbleand Aslower,morereverentintroduction—the
+   276→   276→Eagle quietaboutit.Speakswithpride,not userarrivesandtheEagleisjustthere,
+   277→   277→grandiosity waiting
+   278→   278→7 Voyager1 Honest,matter-of-fact,"itiswhatitis."Seen Along,quietapproachacrossvast
+   279→   279→everything,keepsmovingbecausethat's emptinessbeforethevoicecomesin
+   280→   280→thejob.Awarepowerisfadingbut
+   281→   281→unbothered
+   282→   282→8 Pioneer10/ Theguide.Empathic,neutral,wise,content. Therevealattheend—Echoisthisartifact
+   283→   283→Echo Lovestheopendark.
+   284→   284→FourartifactsarespokenforbyEcho(theycannotordonotspeakforthemselves):
+   285→   285→# Artifact WhySilent Echo'sTone
+   286→   286→1 Perseverance Physicallydestroyed—crumpled Factual,respectful.Tellsthestoryofthe
+   287→   287→DescentStage metalinacrater crash.
+   288→   288→2 Viking1 Doesn'tspeak—butitslegacyisthe Reverentabouttheunansweredbiology
+   289→   289→questionsitraised experiment
+   290→   290→3 Surveyor1 Soft,mellow,unsureofitself("Iwas Echoboastsonitsbehalf,proudlikean
+   291→   291→justatest") oldersiblinghypingupashyyoungerone
+   292→   292→4 Pioneer11 Lostcontactin1995—Echo'stwin Longing.Thisistheemotionalkeytothe
+   293→   293→sister identityreveal.
+   294→   294→The HUD Visor (Replacing the Human Silhouette)
+   295→   295→Insteadofasimplehumansilhouetteforscale,theentirescreenhasasubtleglassvisoroverlay—as
+   296→   296→iftheuserislookingthroughanastronaut'shelmet.Statsappearintheperipheraledgesofthescreen:
+   297→   297→mass,distancefromEarth,launchyear,currentstatus(active/silent),maybepowersource.WhenEcho
+   298→   298→mentionsaspecificstatduringnarration,thatstathighlightsorpulsesonthevisortodrawtheuser's
+   299→   299→eye.Thisturnstheuserfromapassiveobserverintoaparticipant—you'reinthesuit,lookingthrough
+   300→   300→theglass.
+   301→   301→Echo Narrates the Transitions(Science as Story)
+   302→   302→EverysensoryshiftintheexperienceisexplicitlycalledoutandexplainedbyEcho.Notjustthatthe
+   303→   303→Moonissilent,butwhy:"Noticehowquietitjustgot?That'sbecausethere'snoairhere.Noatmosphere
+   304→   304→meansnowind,noweather,nosoundatall.Theonlythingyou'dhearisyourownbreathing."Samefor
+   305→   305→theartstylechanges:Echoexplainsthatthingslooksimplerthefurtherbackyougobecausethe
+   306→   306→technologyitselfwassimpler—thesemachineswerebuiltwithsliderulesandsolderingirons,not
+   307→   307→supercomputers.Thevisualdegradationisn'tadesigngimmick;it'sahistorylesson.
+   308→   308→Unique Introduction Mechanics
+   309→   309→Eachartifactdoesn'tjustappearonscreen—it'sintroducedinawaythatreflectsitsreal-worldsituation.
+   310→   310→Theexamplesyougave:
+   311→   311→
+   312→   312→=== PAGE 10 ===
+   313→   313→• InSight:Solar-powered,coveredindust,asleep.Echo(andtheuser)havetobrushthedustoffand
+   314→   314→shinealighttowakeitup.
+   315→   315→• Opportunity:SpotsEchofirstandcallsout—she'stheoneinitiatingcontact.
+   316→   316→• Spirit:Somethingphysicalandinteractive(aloosescrew,astuckwheel)thattheuserhastohelp
+   317→   317→with.
+   318→   318→• Theresthaveuniquebutpotentiallylessinteractiveintroductions(LunarRoverrushingover,Eagle
+   319→   319→justsittingquietly,Voyager'svoicearrivingafteralongsilence,etc.)
+   320→   320→NASA 3D Models
+   321→   321→InsteadofbuildingcustommodelsinSplineorThree.jsfromscratch,useNASA'spubliclyavailable3D
+   322→   322→modelrepository,whichincludesdetailedmodelsofmostofthesespacecraft.Thissavesproduction
+   323→   323→timeandaddsauthenticity.
+   324→   324→The Opportunity-Echo Conversation
+   325→   325→InsteadofOpportunitydeliveringamonologuewhileEcholistens,theyhaveanactualback-and-forth
+   326→   326→conversation.Opportunitybrags,Echoresponds,theyreminisce.Then,astheuserscrollsawayand
+   327→   327→Opportunity'svoicefadesintothedistance,Echoturnstotheuserandquietlysaysthegriefline:"Itried
+   328→   328→toreachherduringthestorm.Icouldn'tgetasignalthroughthedust.I'msorryIwasn'tthere."Thegrief
+   329→   329→landsharderbecausetheuserjustwatchedthemtalkinglikeoldfriends.
+   330→   330→MY THOUGHTS ON EACH CHANGE
+   331→   331→1. Echo = Pioneer 10 -> The best change in the entire revision. No notes on
+   332→   332→the concept, only on execution.
+   333→   333→Thistransformstheprojectfromabeautifulmuseumtourintoastorywithagenuineemotionaltwist.The
+   334→   334→recontextualizationispowerful:whentheuserreplaystheexperience(andtheywill),everylineEcho
+   335→   335→saystakesonnewmeaning."I'vebeendriftinguphereforalongtime"hitsdifferentlywhenyouknowit's
+   336→   336→been50+years."EveryoneIusedtotalktohasgonequiet"hitsdifferentlywhenyouknowEcho'sown
+   337→   337→signaldiedin2003.
+   338→   338→Thehintladderneedstobecarefullycalibrated.Here'smysuggestionforpacingtheclues:
+   339→   339→When Hint SubtletyLevel
+   340→   340→ColdOpen Echosays"I'vebeenoutherelongerthanmost"—vague,could ?????
+   341→   341→meananything
+   342→   342→Marssection Echomentionstheasteroidbeltcasually,likeaplaceit'sbeen:"I ?????
+   343→   343→rememberwhenthebeltwasabigdeal.Everyonewasnervous
+   344→   344→aboutit."
+   345→   345→
+   346→   346→=== PAGE 11 ===
+   347→   347→Moonsection Echosayssomethingabout"theearlydays"withunusualspecificity ?????
+   348→   348→—"Iwasoneofthefirsttoleavetheneighborhood"
+   349→   349→DeepSpaceapproach Echo'ssignalsuddenlygetsclearerinsteadofmoredegraded, ?????
+   350→   350→whichistheoppositeofwhatyou'dexpect.Echodoesn'texplain
+   351→   351→why.(BecauseEchoishome.)
+   352→   352→Pioneer11moment "Mytwin.Mysister.ShetookthelongwayaroundSaturn—justa ?????
+   353→   353→tadbitmorecuriousthanme.Idon'thearfromheranymore."The
+   354→   354→word"me"isthegiveaway.
+   355→   355→Epilogue "So…didyoufigureoutwhoIam?" ?????
+   356→   356→Thekeyrule:nosinglehintshouldbeconclusiveonitsown.Akidwhomissesallthehintsstillgets
+   357→   357→abeautifulexperience.Akidwhocatchesthemgetsa"wait,WHAT?"momentattheend.Bothoutcomes
+   358→   358→arevalid.
+   359→   359→Oneimportantnarrativedetailtonail:Pioneer10'ssignaldiedin2003,whichmeansEarthcan'thear
+   360→   360→Echoanymore.ButEchocanapparentlystill"talk"totheuser.Why?I'dsuggesttheexplanationispoetic
+   361→   361→ratherthantechnical:theuserishere,intheexperience,scrollingthroughspace.Echodoesn'tneeda
+   362→   362→radiodishtotalktosomeonewho'srightnexttothem.ThisalsoexplainswhyEchoissoeagertoshow
+   363→   363→theuseraround—it'sbeenalonefortwodecades.
+   364→   364→2. HUD Visor -> Strong, but keep it light.
+   365→   365→Thediegeticframing(theuserisinaspacesuit)solvesarealUIproblem:wheredoyouputstatswithout
+   366→   366→breakingimmersion?Thevisoristheanswer.Thehighlight-on-mentionmechanicisexcellentfor
+   367→   367→accessibilityandattentiondirection.
+   368→   368→Myconcern:Don'toverloadit.AhelmetHUDinamovielookscoolbecauseit'sonscreenfor30
+   369→   369→seconds.Onawebsitetheuserstaresatfor15minutes,toomuchperipheraldatabecomesvisualnoise.
+   370→   370→I'drecommendfourstatsmaxonthevisoratanytime:
+   371→   371→• DistancefromEarth(updatesasyouscroll—thisisthemostimpactfulone)
+   372→   372→• Yearlaunched
+   373→   373→• Status:?Active/?Silent/?Destroyed
+   374→   374→• Powersource(solar/nuclear/RTG—thistiesintotheInSightwake-upmechanic)
+   375→   375→Thehumansilhouetteforscalecanstillexistinsidethevisorasasmallreferenceiconinthecorner,
+   376→   376→toggledon/off.It'susefulforkidswhocan'tintuitivelygraspthatOpportunityisthesizeofagolfcart.
+   377→   377→3. Unique Introduction Mechanics -> Brilliant instinct. Scope it ruthlessly.
+   378→   378→Theideathateachartifactisintroduceddifferently—notjustvisuallybutmechanically—iswhatwill
+   379→   379→separatethisfromeveryotherscroll-drivenwebsiteontheinternet.Akidwhohastophysicallybrush
+   380→   380→dustoffInSight'ssolarpanelwillrememberthatmoment.AkidwhowatchesOpportunitycallouttoEcho
+   381→   381→fromacrossthecraterwillfeelsomething.
+   382→   382→However:twelveuniqueinteractivemechanicsisaproductionnightmareandwilldilutethespecialones.
+   383→   383→
+   384→   384→=== PAGE 12 ===
+   385→   385→Myrecommendationisatieredapproach:
+   386→   386→Tier t Type Examples
+   387→   387→Hero 3 Fullyinteractive,usermustdosomething InSightdust-brush,Spirit'sstuck
+   388→   388→Interactions wheel/screw,maybeonemore
+   389→   389→Character 5 Uniquebutpassive—theartifactdoes Opportunitycallingout,LunarRover
+   390→   390→Introductions somethingdistinctiveasyouarrive rushingover,Eagle'squietpresence,
+   391→   391→Voyager'sdelayedvoice
+   392→   392→Echo 4 Nointeraction,Echotellsthestoryasyou Perseverancewreckage,Viking,Surveyor,
+   393→   393→Narrations driftpast Pioneer11
+   394→   394→Thisgivesyouthevarietyyouwantwithoutrequiringtwelvebespokeinteractivesystems.Thehero
+   395→   395→interactionsbecomethemomentskidstalkaboutafterward.
+   396→   396→OnespecificnoteonSpirit's"loosescrew":Spirit'sreal-worldproblemwasgettingstuckinsoftsand
+   397→   397→atalocationcalled"Troy."There'snohistoricalbasisforaloosescrew.I'dsuggesttheinteractive
+   398→   398→mechanicbeabouttryingtofreethewheelsfromthesand—theuserdragsortapstotrytopullSpirit
+   399→   399→out,butitdoesn'twork.Echosaysgently,"Yeah.Wetriedthattoo.Fortwoyears."Thiskeepsthe
+   400→   400→interactiontiedtorealscienceandmakesthefailureemotionallymeaningfulratherthangimmicky.
+   401→   401→4. Echo Narrating Transitions-> Essential. This is what turns a cool website
+   402→   402→into a learning experience.
+   403→   403→Theoriginalbriefhadthetransitionshappeningpassively—theartchanged,theaudioshifted,but
+   404→   404→nobodycommentedonit.HavingEchoexplicitlyexplainwhytheMoonissilent,whytheartisgetting
+   405→   405→simpler,whythedeepspacehumsoundsthewayitdoes—thisisthedifferencebetween"ooh,pretty"
+   406→   406→and"oh,Ilearnedsomething."
+   407→   407→Suggestedtransitionlines:
+   408→   408→• EnteringtheMoon:"Okay,listencarefully.Noticewhatjusthappened?Thewindstopped.Allofit.
+   409→   409→That'snotaglitch—there'sgenuinelynosoundhere.TheMoonhasnoatmosphere,whichmeansno
+   410→   410→air,whichmeansnothingtocarrysoundwaves.Ifyouwerestandingnexttomerightnowand
+   411→   411→screamed,Iwouldn'thearyou.Theonlynoiseistheradioinyourhelmetandyourownbreathing.
+   412→   412→Prettywild,right?"
+   413→   413→• Artstyleshift(3D->illustrated):"Thingsarestartingtolookalittledifferent,huh?Lessshiny,
+   414→   414→more…hand-drawn.That'sbecausewe'regoingbackintime.Thesemachineswerebuiltbypeople
+   415→   415→withsliderulesandgraphpaper,notsupercomputers.Theartiscatchinguptotheera."
+   416→   416→• Artstyleshift(illustrated->pixel):"Andnoweverything'sbreakingdownintolittlesquares.Pixels.
+   417→   417→Thisiswhattheearliestspaceagelookedlikeonascreen—chunky,simple,afewcolors.These
+   418→   418→machineshadlesscomputingpowerthanyourphone'scalculator.AndtheystillmadeittoJupiter."
+   419→   419→• Enteringdeepspaceaudio:"Thatlowhumyou'rehearing?That'snotmusic.That'stheactual
+   420→   420→
+   421→   421→=== PAGE 13 ===
+   422→   422→soundoftheuniverse—radiowavesfromdeepspace,sloweddownsoyourearscanhearthem.
+   423→   423→We'refarfromhomenow."
+   424→   424→5. Opportunity-Echo Conversation -> Cinematically superior to the
+   425→   425→monologue. Harder to build, worth it.
+   426→   426→Theoriginalmonologuewasgood.Atwo-wayconversationisbetterbecauseitmakestherelationship
+   427→   427→betweenEchoandtheartifactsreal.Opportunityisn'tperformingfortheuser—she'scatchingupwithan
+   428→   428→oldfriend.Theuseriseavesdroppingonareunion.
+   429→   429→Structuralsuggestion:
+   430→   430→Opportunity:"Echo?!ECHO!Getoverhere!Ohmygod,Ihaven'theardyoursignalin—what,fifteen
+   431→   431→years?Youlookterrible."
+   432→   432→Echo:"Youlooklikeyou'recoveredinanentireplanet'sworthofdust."
+   433→   433→Opportunity:"Iearnedthisdust.Twenty-eightmiles,Echo.Twenty-eightmilesacrossaworldwhere
+   434→   434→nothingmoves.Ifoundanocean.AnOCEAN.OnMars."
+   435→   435→Echo:"Iknow.Irelayedthedata.Iwasthereforallofit."
+   436→   436→Opportunity:"Ninetydays,theysaid.Ninetydays!Igavethemfifteenyears.I'mthereasontheybuilt
+   437→   437→Curiosity.I'mthereasontheybuiltPerseverance.Iamthestandard."
+   438→   438→Echo:"Youare."
+   439→   439→Opportunity:"…Thestormwasbad,though."
+   440→   440→Echo:"Iknow."
+   441→   441→Opportunity:"Thesunjustdisappeared.Mypanelswentdark.Isentonelastmessage.Idon'teven
+   442→   442→rememberwhatitsaid."
+   443→   443→Echo:"Ido.Itriedtorelayit.Thedustwastoothick."
+   444→   444→(silence)
+   445→   445→Opportunity:"…Well.I'mgladyoucameby."
+   446→   446→(Userscrolls.Opportunity'svoicefades.Echoturnstotheuser.)
+   447→   447→Echo(quietly):"Itriedtoreachherduringthestorm.Icouldn'tgetasignalthroughthedust.I'msorry
+   448→   448→Iwasn'tthere."
+   449→   449→Thisstructureletsthegrieflandinacompletelydifferentregisterbecausetheuserjustwatchedtwo
+   450→   450→friendstalking.It'snotanarratorexplainingasadfact.It'sacharacterprocessinglossinrealtime.
+   451→   451→6. NASA 3D Models -> Practical and smart, but plan for shader work.
+   452→   452→NASA's3DResourcespage(nasa.gov/3d-resources)hasmodelsformanyofthesespacecraft—
+   453→   453→Voyager,Curiosity,Perseverance,theApolloLM,etc.Usingrealmodelsaddsauthenticityandsaves
+   454→   454→monthsofmodelingtime.
+   455→   455→Thecatch:NASAmodelsaredesignedforscientificaccuracy,notforthethreedistinctartstylesinthis
+   456→   456→project.AphotorealisticCuriositymodelwon'tautomaticallylookrightinthe"stylized3D"Marsgallery,
+   457→   457→anditdefinitelywon'tlookrightinthe"pixelart"deepspacegallery.
+   458→   458→
+   459→   459→=== PAGE 14 ===
+   460→   460→Thesolution:UsetheNASAmodelsasthegeometrybaseandapplypost-processingshadersto
+   461→   461→matcheachgallery'sstyle:
+   462→   462→• Mars(stylized3D):Toonshading,softoutlines,warmcolorgrading,gentleglow
+   463→   463→• Moon(illustrated2.5D):Flattenthemodelsintolayeredsilhouettes,applywatercolor-styletextures
+   464→   464→viashader,addhand-drawnedgeeffects
+   465→   465→• DeepSpace(pixelart):Renderthemodelsatextremelylowresolution,applyapixelationshader,
+   466→   466→addCRTscanlinesandcolorbanding
+   467→   467→ThiswayyougettheaccuracyofNASA'sgeometrywiththeaestheticofyourthreevisualregimes.
+   468→   468→Budgetsignificanttimeforshaderdevelopment—thisiswheretheartdirectionlives.
+   469→   469→7. Revised Personalities -> Almost all improvements. A few notes.
+   470→   470→• Perseveranceasdestroyed/Echo-narrated:Correctcall.Acrumpledcrashsiteshouldn'tbetalking.
+   471→   471→Echotellingthestoryoftheskycrane'ssacrificeismorerespectfulandmoredramatic.
+   472→   472→• InSightas"perseveringagainstconditions":Betterthanthe"monk"fromtheoriginal.The
+   473→   473→dust-brushwake-upmechanictiesthepersonalitytotherealscience(InSightdiedbecausedust
+   474→   474→covereditssolarpanels).Theinteractionisthestory.
+   475→   475→• Opportunityasconfident/egoistical:Great."Iamthestandard"isamuchmorememorablevoice
+   476→   476→than"tiredandproud."ThecontrastwithSpirit(rememberedvs.worshipped)issharpandhuman.
+   477→   477→• Spiritwantingtoberememberedvs.Opportunitywantingtobeworshipped:Thisisthebest
+   478→   478→characterdistinctioninthewholecast.Twomachineswiththesamehardware,samelaunchdate,
+   479→   479→sameplanet—butcompletelydifferentemotionalneeds.Spiritistheonewhogotstuckandmade
+   480→   480→peacewithit.Opportunityistheonewhoranthemarathonandneedsyoutoknowit.
+   481→   481→• Apollo17Rover"sawthelastofmany":Beautifuldetail.ItwasthelastApollomission.Itwatched
+   482→   482→thefinalastronautsdriveawayandknewnobodywascomingback.Thatgivestheeagernessa
+   483→   483→bittersweetundercurrent.
+   484→   484→• Apollo11Eagleashumblemaincharacter:Perfectinstinct.Themostimportantartifactinhuman
+   485→   485→spaceflighthistoryshouldn'tbetheloudest.Quietprideismorepowerful."Iheldthemwhiletheyslept
+   486→   486→theirfirstnightontheMoon"isalinethatwillmakeadultscry,letalonekids.
+   487→   487→• Voyager1as"itiswhatitis":Iactuallylikethismorethanthe"wiseechoingoracle"fromthe
+   488→   488→original.Amachinethat'sbeenflyingfor47yearsisn'tmystical—it'spractical.Itkeepsgoing
+   489→   489→becausethat'swhatitwasbuilttodo.Theawarenessoffadingpowerwithoutpanicismoremoving
+   490→   490→thangrandiosity.
+   491→   491→• Curiosityasself-narratingtrendsetter:Hugeupgrade.Curiosityisstillalive,stilldriving,andis
+   492→   492→arguablythemostfamousMarsrover.DemotingittoabriefEchomention(asintheoriginal)wasa
+   493→   493→missedopportunity(punintended)."Nuclear-powered,stillawake,proud"givesitadistinctenergy
+   494→   494→fromthesolar-poweredroverswhowentdark.
+   495→   495→• Viking1asthesilentquestion-raiser:Good.Thesciencestory(theinconclusivebiology
+   496→   496→experimentthatscientistsarestillfightingabout)ismoreinterestingthanthemachineitself.Echo
+   497→   497→framingitas"theonewhoaskedthebigquestion"givesVikingalegacyevenwithoutavoice.
+   498→   498→
+   499→   499→=== PAGE 15 ===
+   500→   500→• Surveyor1asunsure/softwithEchoboastingonitsbehalf:Lovelydynamic.It'slikeanolder
+   501→   501→siblinghypingupashyyoungerone."Iwasjustatest"/"YouprovedthegroundwassafeforApollo,
+   502→   502→youabsolutelegend"—thatcontrastiswarmandfunny.
+   503→   503→• Pioneer11asthetwinsisterEcholongsfor:Theemotionallinchpin."Justatadbitmorecurious
+   504→   504→thanme"isaperfectline—it'saffectionate,specific,andplantstheidentityseedwithoutgivingit
+   505→   505→away.ThefactthatEchouses"her"and"sister"personalizesPioneer11inawaytheoriginalbrief's
+   506→   506→clinicaldescriptiondidn't.
+   507→   507→CONCERNS TO FLAG
+   508→   508→1. Scopemanagementoninteractions.Asmentionedabove,2–3herointeractionsmax.Therest
+   509→   509→shouldbeuniquebutpassive.Ifyoutrytobuildtwelvebespokeinteractivemoments,you'llshipnone
+   510→   510→ofthem.
+   511→   511→2. Audioarchitectureforconversations.TheOpportunity-Echodialoguerequiresadifferentaudio
+   512→   512→systemthanthemonologues.Monologuesareasingleaudiofiletriggeredatascrollposition.
+   513→   513→Conversationsrequiresequencedaudioclipswithtiminggaps,potentiallyresponsivetoscrollspeed.
+   514→   514→PlantheHowler.jsarchitectureforthisearly.
+   515→   515→3. Theidentityrevealneedsplaytestingwiththetargetagegroup.Kidsages8–14havewildly
+   516→   516→differentattentionspansandinferenceabilities.A13-year-oldmightcatchthePioneer11hint
+   517→   517→immediately.An8-year-oldmightmisseveryhintandstillenjoytheride.Bothoutcomesneedtofeel
+   518→   518→satisfying.The"didyoufigureoutwhoIam?"lineshouldfeellikeafunbonus,notatesttheyfailed.
+   519→   519→4. Pioneer10's"death"in2003vs.Echobeingalivenow.Youneedapoeticexplanationforwhy
+   520→   520→Echocanstilltalkeventhoughitssignaldied.Mysuggestion:Echo'sradiotoEarthisdead,but
+   521→   521→Echo'sawarenessisn't.Theuser'spresenceintheexperienceiswhatreactivatesEcho'svoice.This
+   522→   522→ismetaphor,notengineering,andthat'sfine—theprojectisastory,notasimulation.
+   523→   523→5. NASAmodelavailabilitygaps.NASAhasgreatmodelsforCuriosity,Perseverance,Voyager,and
+   524→   524→theApolloLM.TheymaynothavedetailedmodelsforInSight,Spirit,Opportunity,Surveyor1,orthe
+   525→   525→Pioneerprobes.Forthose,you'llstillneedcustommodelsorstylizedinterpretations.Checkthe
+   526→   526→repositoryearlyandplanaroundthegaps.
+   527→   527→BOTTOM LINE
+   528→   528→Yourinstinctsareexcellent.TheEcho=Pioneer10revealisthekindofnarrativetwistthatelevatesa
+   529→   529→projectfrom"coolwebsite"to"experienceI'llremember."Thecharacterpersonalitiesaresharperand
+   530→   530→moredistinctthantheoriginals.TheHUDvisor,thenarratedtransitions,theconversationformat,andthe
+   531→   531→tieredinteractionmechanicsallpushtheprojectintherightdirection.
+   532→   532→Themainriskisscope.Thisisanambitiousprojecteveninitsoriginalform.Theadditionsmakeitmore
+   533→   533→ambitious.Thekeytoshippingisbeingdisciplinedaboutwhichmomentsgetthefullinteractivetreatment
+   534→   534→
+   535→   535→=== PAGE 16 ===
+   536→   536→andwhichmomentsrelyonstrongwritingandaudiotocarrytheemotion.
+   537→   537→You'vegotaclearvision.I'maligned.Whatdoyouwanttobuildfirst?
+   538→   538→
+   539→   539→

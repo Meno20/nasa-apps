@@ -1,0 +1,402 @@
+     1→<!DOCTYPE html>
+     2→<html lang="en">
+     3→<head>
+     4→<meta charset="UTF-8">
+     5→<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6→<title>Still Out There</title>
+     7→<style>
+     8→:root{
+     9→  --bg:#03030a;
+    10→  --text:#d7e2ff;
+    11→  --muted:#7a86a8;
+    12→  --amber:#ffb066;
+    13→  --rust:#c5552e;
+    14→  --silver:#cfd8e6;
+    15→  --indigo:#2a2a5a;
+    16→  --gold:#e8c873;
+    17→  --echo:#9fe8ff;
+    18→  --hud-bg:rgba(8,10,22,.62);
+    19→  --hud-border:rgba(160,180,230,.18);
+    20→}
+    21→*{box-sizing:border-box;margin:0;padding:0}
+    22→html{scroll-behavior:auto}
+    23→body{
+    24→  background:var(--bg);
+    25→  color:var(--text);
+    26→  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    27→  overflow-x:hidden;
+    28→  line-height:1.55;
+    29→  -webkit-font-smoothing:antialiased;
+    30→}
+    31→/* scroll spacer — provides the dive's scroll range; visuals live in fixed layers */
+    32→#spacer{position:relative;z-index:0;width:100%;height:15000px}
+    33→
+    34→/* ---------- fixed background layers ---------- */
+    35→#stars{position:fixed;inset:0;z-index:0;display:block}
+    36→#planets{position:fixed;inset:0;z-index:1;pointer-events:none}
+    37→.planet{
+    38→  position:absolute;inset:-10% 0 -10% 0;
+    39→  opacity:0;transition:opacity 1.6s ease;
+    40→}
+    41→.planet.on{opacity:1}
+    42→.planet.earth{background:radial-gradient(circle at 50% 130%, #2f6bd6 0%, #1a3f8a 22%, #0a1c44 42%, transparent 60%);}
+    43→.planet.mars{background:radial-gradient(circle at 50% 135%, #e0894a 0%, #b25323 18%, #6e2c14 36%, #2a1108 55%, transparent 68%);}
+    44→.planet.moon{background:radial-gradient(circle at 50% 140%, #d9dde6 0%, #9aa3b2 16%, #565d6b 33%, #20242c 52%, transparent 66%);}
+    45→.planet.void{background:radial-gradient(ellipse at 50% 50%, #1a1838 0%, #0c0a20 45%, #03030a 75%);}
+    46→#era-tint{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity 1.2s ease;mix-blend-mode:screen}
+    47→#scanlines{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity 1.2s ease;
+    48→  background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.18) 2px 3px);}
+    49→
+    50→/* ---------- the dive scene (perspective) ---------- */
+    51→#scene{position:fixed;inset:0;z-index:4;pointer-events:none;
+    52→  perspective:620px;perspective-origin:50% 50%;transform-style:preserve-3d}
+    53→
+    54→/* an artifact floating at depth */
+    55→.art-obj{
+    56→  position:absolute;left:50%;top:50%;
+    57→  width:340px;height:380px;margin-left:-170px;margin-top:-190px;
+    58→  display:flex;flex-direction:column;align-items:center;justify-content:center;
+    59→  transform-style:preserve-3d;will-change:transform,opacity;
+    60→  opacity:0;pointer-events:none;
+    61→}
+    62→.art-obj .visual{position:relative;width:100%;height:230px;display:flex;align-items:center;justify-content:center}
+    63→.art-obj.near{pointer-events:auto}
+    64→.art-obj .nameplate{margin-top:14px;opacity:0;transition:opacity .6s ease;text-align:center}
+    65→.art-obj.near .nameplate{opacity:1}
+    66→.art-obj .yr{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.7rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+    67→.art-obj .nm{font-size:1.25rem;color:#eef3ff;margin-top:3px;letter-spacing:.02em}
+    68→.art-obj .loc{font-size:.74rem;color:var(--muted);margin-top:3px}
+    69→.secondary .nm{font-size:1rem}
+    70→
+    71→/* scale silhouette */
+    72→.scale{position:absolute;right:10px;bottom:6px;display:flex;flex-direction:column;align-items:center;
+    73→  opacity:.65;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.58rem;letter-spacing:.1em}
+    74→.scale svg{width:20px;height:48px}
+    75→.scale span{margin-top:2px}
+    76→
+    77→/* ---------- Echo path line ---------- */
+    78→#path{position:fixed;inset:0;z-index:5;pointer-events:none;width:100%;height:100%}
+    79→#pathline{fill:none;stroke:rgba(255,255,255,.18);stroke-width:1;stroke-linecap:round;stroke-linejoin:round}
+    80→#pathahead{fill:none;stroke:rgba(159,232,255,.42);stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+    81→#pathticks text{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10px;fill:rgba(200,215,255,.5);letter-spacing:.1em}
+    82→#pathticks circle{fill:rgba(159,232,255,.5)}
+    83→
+    84→/* ---------- Echo ---------- */
+    85→#echo{
+    86→  position:fixed;z-index:6;width:12px;height:12px;border-radius:50%;
+    87→  background:radial-gradient(circle, #eaffff 0%, var(--echo) 40%, rgba(60,180,220,0) 72%);
+    88→  box-shadow:0 0 14px 4px rgba(120,220,255,.7),0 0 36px 9px rgba(80,160,220,.3);
+    89→  left:50%;top:50%;transform:translate(-50%,-50%);
+    90→  transition:opacity .8s ease;pointer-events:none;
+    91→}
+    92→#echo::after{content:"";position:absolute;inset:-9px;border-radius:50%;
+    93→  border:1px solid rgba(160,232,255,.25);animation:epulse 2.6s ease-in-out infinite}
+    94→@keyframes epulse{0%,100%{transform:scale(.7);opacity:.5}50%{transform:scale(1.6);opacity:0}}
+    95→#echo.cold{opacity:0}
+    96→
+    97→/* ---------- HUD ---------- */
+    98→#hud{position:fixed;left:0;right:0;bottom:0;z-index:20;pointer-events:none;padding:0 18px 18px}
+    99→#caption{pointer-events:auto;max-width:760px;margin:0 auto;background:var(--hud-bg);
+   100→  border:1px solid var(--hud-border);border-radius:12px;backdrop-filter:blur(6px);
+   101→  padding:14px 18px;min-height:74px;display:flex;flex-direction:column;gap:6px;
+   102→  opacity:0;transform:translateY(10px);transition:opacity .4s ease,transform .4s ease}
+   103→#caption.on{opacity:1;transform:translateY(0)}
+   104→#cap-speaker{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--echo);font-family:ui-monospace,Menlo,monospace}
+   105→#cap-speaker.art{color:var(--amber)}
+   106→#cap-text{font-size:1.02rem;color:#eef3ff;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+   107→#cap-text.moon{color:#eaf0fb}
+   108→#cap-text.space{color:#cfd6f5;font-family:ui-monospace,Menlo,monospace;font-size:.92rem}
+   109→
+   110→/* top bar */
+   111→#topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;pointer-events:none}
+   112→#brand{pointer-events:auto;font-size:.82rem;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);font-family:ui-monospace,Menlo,monospace;opacity:0;transition:opacity 1s ease}
+   113→#brand.on{opacity:.8}
+   114→#controls{pointer-events:auto;display:flex;gap:8px}
+   115→.ctrl{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.1em;color:var(--muted);background:var(--hud-bg);border:1px solid var(--hud-border);border-radius:20px;padding:7px 12px;cursor:pointer;backdrop-filter:blur(6px);transition:color .2s,border-color .2s}
+   116→.ctrl:hover{color:#eef3ff;border-color:rgba(160,180,230,.4)}
+   117→.ctrl.active{color:var(--echo);border-color:rgba(120,220,255,.5)}
+   118→
+   119→/* era / time chip */
+   120→#timechip{position:fixed;top:46px;left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;
+   121→  font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+   122→  color:var(--muted);opacity:0;transition:opacity 1s ease;text-align:center;white-space:nowrap}
+   123→#timechip.on{opacity:.8}
+   124→#timechip .arrow{color:var(--echo);margin-right:6px}
+   125→#timechip .era{color:#eef3ff}
+   126→
+   127→/* side nav */
+   128→#nav{position:fixed;top:50%;right:14px;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;gap:9px;pointer-events:auto;opacity:0;transition:opacity .8s ease}
+   129→#nav.on{opacity:.85}
+   130→.navdot{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.66rem;justify-content:flex-end}
+   131→.navdot .pip{width:7px;height:7px;border-radius:50%;background:#39425a;transition:all .25s}
+   132→.navdot:hover .pip{background:#7a8aad;transform:scale(1.4)}
+   133→.navdot.active .pip{background:var(--echo);box-shadow:0 0 8px var(--echo);transform:scale(1.5)}
+   134→.navdot .lbl{opacity:0;transition:opacity .2s;white-space:nowrap}
+   135→.navdot:hover .lbl{opacity:.9}
+   136→
+   137→/* depth rail */
+   138→#rail{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:30;width:2px;height:46vh;background:rgba(80,90,120,.18);border-radius:2px;opacity:0;transition:opacity .8s}
+   139→#rail.on{opacity:.7}
+   140→#rail .fill{position:absolute;top:0;left:0;width:100%;height:0;background:linear-gradient(var(--echo),var(--amber));border-radius:2px;box-shadow:0 0 8px var(--echo)}
+   141→
+   142→/* start gate */
+   143→#gate{position:fixed;inset:0;z-index:60;background:#03030a;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:opacity 1.2s ease}
+   144→#gate.gone{opacity:0;pointer-events:none}
+   145→#gate h1{font-size:clamp(1.8rem,5vw,3.4rem);font-weight:400;letter-spacing:.04em;color:#eef3ff;margin-bottom:10px}
+   146→#gate p{color:var(--muted);max-width:540px;padding:0 24px;font-size:.98rem}
+   147→#startbtn{margin-top:30px;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;letter-spacing:.18em;text-transform:uppercase;color:var(--echo);background:transparent;border:1px solid rgba(120,220,255,.4);border-radius:30px;padding:14px 30px;cursor:pointer;transition:all .25s;animation:gbreathe 3s ease-in-out infinite}
+   148→#startbtn:hover{background:rgba(120,220,255,.08);border-color:var(--echo);box-shadow:0 0 24px rgba(120,220,255,.3)}
+   149→@keyframes gbreathe{0%,100%{box-shadow:0 0 0 rgba(120,220,255,0)}50%{box-shadow:0 0 22px rgba(120,220,255,.25)}}
+   150→#audio-note{margin-top:16px;font-size:.72rem;color:#525c78;font-family:ui-monospace,Menlo,monospace}
+   151→
+   152→/* cold open text */
+   153→#cold-text{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:55;max-width:560px;padding:0 24px;color:#cdd6ee;font-size:1.05rem;text-align:center;opacity:0;transition:opacity 2s ease;pointer-events:none}
+   154→#cold-text.on{opacity:.9}
+   155→#cold-text small{display:block;margin-top:18px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.18em}
+   156→#scroll-prompt{position:fixed;bottom:9vh;left:50%;transform:translateX(-50%);z-index:55;text-align:center;color:var(--echo);font-family:ui-monospace,Menlo,monospace;font-size:.74rem;letter-spacing:.2em;opacity:0;transition:opacity 1.4s ease;pointer-events:none}
+   157→#scroll-prompt.on{opacity:.85}
+   158→#scroll-prompt .arrow{display:block;margin:10px auto 0;width:12px;height:20px;border-right:2px solid var(--echo);border-bottom:2px solid var(--echo);transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
+   159→@keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(3px,3px)}}
+   160→
+   161→/* epilogue overlay (fades in at the deepest point) */
+   162→#epilogue{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px;opacity:0;transition:opacity 2s ease;pointer-events:none;overflow-y:auto}
+   163→#epilogue.on{opacity:1;pointer-events:auto}
+   164→#epilogue h2{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:400;color:#eef3ff;margin-bottom:6px}
+   165→#epilogue .sub{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.74rem;letter-spacing:.18em;margin-bottom:34px}
+   166→#roll{list-style:none;max-width:680px;margin:0 auto;text-align:left;display:flex;flex-direction:column;gap:10px}
+   167→#roll li{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:baseline;border-bottom:1px solid rgba(120,140,190,.1);padding-bottom:8px}
+   168→#roll li .ep-name{color:#eef3ff;font-size:.98rem}
+   169→#roll li .ep-name small{display:block;color:var(--amber);font-size:.8rem;font-style:italic;margin-top:2px}
+   170→#roll li .ep-meta{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.7rem;white-space:nowrap}
+   171→#final-line{margin-top:42px;font-size:1.5rem;color:var(--echo);font-style:italic;letter-spacing:.04em}
+   172→
+   173→/* deep read panel */
+   174→#deepread{position:fixed;top:56px;right:0;height:calc(100vh - 56px);width:min(440px,92vw);z-index:45;background:rgba(8,10,22,.94);border-left:1px solid var(--hud-border);backdrop-filter:blur(10px);transform:translateX(105%);transition:transform .4s ease;padding:24px 26px 30px;overflow-y:auto}
+   175→#deepread.on{transform:translateX(0)}
+   176→#deepread h3{color:#eef3ff;font-weight:400;font-size:1.2rem;margin-bottom:2px}
+   177→#deepread .meta{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.14em;margin-bottom:18px}
+   178→#deepread .body{color:#cdd6ee;font-size:.92rem;line-height:1.7}
+   179→#deepread .body p{margin-bottom:14px}
+   180→#deepread .fact{margin-top:18px;padding:14px;border-radius:10px;background:rgba(120,220,255,.06);border:1px solid rgba(120,220,255,.16);font-size:.84rem;color:#bcd6ee}
+   181→#deepread .close{position:absolute;top:14px;right:18px;cursor:pointer;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.8rem}
+   182→#deepread .close:hover{color:#eef3ff}
+   183→
+   184→.replaybtn{pointer-events:auto;margin-top:12px;align-self:center;font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.12em;color:var(--muted);background:transparent;border:1px solid var(--hud-border);border-radius:20px;padding:6px 14px;cursor:pointer;transition:all .2s}
+   185→.replaybtn:hover{color:#eef3ff;border-color:rgba(160,180,230,.4)}
+   186→
+   187→/* ===== Mars stylized 3D (CSS shapes, reused) ===== */
+   188→.obj{position:relative;transform-style:preserve-3d}
+   189→.percy{width:160px;height:120px}
+   190→.percy .body{position:absolute;left:20px;top:30px;width:120px;height:54px;border-radius:10px;background:linear-gradient(160deg,#d6cfc2,#8a8276 60%,#5a544a);transform:perspective(280px) rotateX(22deg) rotateZ(-8deg);box-shadow:inset 0 -8px 16px rgba(0,0,0,.4)}
+   191→.percy .body::after{content:"";position:absolute;left:14px;top:8px;width:50px;height:10px;border-radius:4px;background:#3a3a3a}
+   192→.percy .leg{position:absolute;width:46px;height:5px;background:#4a4640;border-radius:3px;transform-origin:left center}
+   193→.percy .l1{left:30px;top:84px;transform:rotate(28deg)}
+   194→.percy .l2{left:90px;top:84px;transform:rotate(-28deg)}
+   195→.percy .debris{position:absolute;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid #6b6457}
+   196→.percy .d1{left:6px;top:96px;transform:rotate(-18deg)}
+   197→.percy .d2{left:140px;top:98px;transform:rotate(22deg) scale(.8)}
+   198→.percy .cable{position:absolute;left:80px;top:60px;width:2px;height:50px;background:rgba(220,200,150,.5);transform:rotate(6deg)}
+   199→.curiosity{width:70px;height:48px;filter:drop-shadow(0 0 10px rgba(255,180,90,.5))}
+   200→.curiosity .body{position:absolute;left:8px;top:14px;width:54px;height:18px;border-radius:4px;background:linear-gradient(180deg,#c9b48a,#7a6a44)}
+   201→.curiosity .mast{position:absolute;left:28px;top:2px;width:3px;height:16px;background:#9a8a5a}
+   202→.curiosity .head{position:absolute;left:24px;top:-2px;width:11px;height:7px;border-radius:2px;background:#b0a070}
+   203→.curiosity .whl{position:absolute;bottom:0;width:10px;height:10px;border-radius:50%;background:#4a3f28}
+   204→.insight{width:200px;height:130px}
+   205→.insight .panel{position:absolute;top:54px;width:80px;height:48px;border-radius:50%/30%;background:linear-gradient(180deg,#5a3a78,#3a2350);box-shadow:inset 0 0 18px rgba(0,0,0,.5)}
+   206→.insight .panel::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse at 40% 30%, rgba(200,120,70,.55), rgba(120,60,30,.85) 70%)}
+   207→.insight .pl{left:10px;transform:rotate(-6deg)}
+   208→.insight .pr{right:10px;transform:rotate(6deg)}
+   209→.insight .core{position:absolute;left:70px;top:30px;width:60px;height:54px;border-radius:8px;background:linear-gradient(160deg,#d8c9a0,#8a7a52);box-shadow:inset 0 -6px 12px rgba(0,0,0,.4)}
+   210→.insight .arm{position:absolute;left:96px;top:44px;width:60px;height:3px;background:#caa;transform-origin:left center;transform:rotate(-18deg)}
+   211→.insight .arm::after{content:"";position:absolute;right:-6px;top:-4px;width:10px;height:10px;border-radius:50%;background:#b08}
+   212→.rover{width:150px;height:96px}
+   213→.rover .body{position:absolute;left:18px;top:18px;width:114px;height:34px;border-radius:6px;background:linear-gradient(180deg,#c9b48a,#7a6a44);box-shadow:inset 0 -6px 10px rgba(0,0,0,.4)}
+   214→.rover .panel{position:absolute;left:26px;top:6px;width:98px;height:14px;border-radius:3px;background:linear-gradient(180deg,#6a4a2a,#3a2614)}
+   215→.rover .panel::after{content:"";position:absolute;inset:0;border-radius:3px;background:linear-gradient(180deg, rgba(200,90,40,.7), rgba(120,50,20,.9))}
+   216→.rover .mast{position:absolute;left:66px;top:-12px;width:4px;height:20px;background:#8a7a52}
+   217→.rover .head{position:absolute;left:60px;top:-18px;width:16px;height:9px;border-radius:2px;background:#b0a070}
+   218→.rover .whl{position:absolute;bottom:0;width:20px;height:20px;border-radius:50%;background:#2a2418;border:3px solid #4a3f28}
+   219→.rover .w1{left:14px}.rover .w2{left:64px}.rover .w3{left:114px}
+   220→.rover .dust{position:absolute;left:-6px;right:-6px;bottom:-4px;height:18px;border-radius:50%;background:radial-gradient(ellipse at center,#a4421a,#5a230c 70%,transparent)}
+   221→.spirit .body{transform:rotate(-7deg);transform-origin:center}
+   222→.spirit .w1{transform:translateY(8px)}
+   223→.viking{width:170px;height:120px}
+   224→.viking .body{position:absolute;left:30px;top:24px;width:110px;height:50px;background:linear-gradient(180deg,#b8a890,#6a5f4a);border-radius:4px;box-shadow:inset 0 -6px 10px rgba(0,0,0,.4)}
+   225→.viking .dish{position:absolute;left:60px;top:-6px;width:50px;height:24px;border-radius:50%;background:radial-gradient(ellipse at 50% 80%, #d8c8a0, #7a6a4a);transform:rotate(-12deg)}
+   226→.viking .leg{position:absolute;width:3px;height:46px;background:#5a4f3a;transform-origin:top center}
+   227→.viking .g1{left:38px;top:70px;transform:rotate(20deg)}
+   228→.viking .g2{left:84px;top:70px}
+   229→.viking .g3{left:130px;top:70px;transform:rotate(-20deg)}
+   230→.moon-art{filter:saturate(.7) brightness(1.05)}
+   231→.moon-art svg{width:100%;height:100%;overflow:visible}
+   232→.earth-in-sky{position:absolute;top:-30px;right:24px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #7fb4ff, #2f6bd6 45%, #0a2a5a 80%);box-shadow:0 0 16px rgba(80,140,255,.5)}
+   233→.pixel-wrap{image-rendering:pixelated}
+   234→.pixel-wrap canvas{image-rendering:pixelated;width:180px;height:120px}
+   235→.golden-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%, rgba(232,200,115,.12), transparent 60%)}
+   236→
+   237→@media (max-width:640px){
+   238→  #nav,#rail{display:none}
+   239→  .art-obj{width:280px;margin-left:-140px}
+   240→}
+   241→</style>
+   242→</head>
+   243→<body>
+   244→
+   245→<canvas id="stars"></canvas>
+   246→<div id="planets">
+   247→  <div class="planet earth"></div>
+   248→  <div class="planet mars"></div>
+   249→  <div class="planet moon"></div>
+   250→  <div class="planet void"></div>
+   251→</div>
+   252→<div id="era-tint"></div>
+   253→<div id="scanlines"></div>
+   254→
+   255→<!-- the dive scene: 12 artifacts floating at depth, scattered -->
+   256→<div id="scene">
+   257→  <!-- 1 Perseverance (2021) shallowest -->
+   258→  <div class="art-obj" data-art="perseverance">
+   259→    <div class="visual">
+   260→      <div class="obj percy"><div class="cable"></div><div class="body"></div><div class="leg l1"></div><div class="leg l2"></div><div class="debris d1"></div><div class="debris d2"></div></div>
+   261→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   262→    </div>
+   263→    <div class="nameplate"><div class="yr">2021 · mars</div><div class="nm">Perseverance Descent Stage</div><div class="loc">Jezero Crater — the sky crane</div></div>
+   264→  </div>
+   265→
+   266→  <!-- S1 Curiosity (2012) -->
+   267→  <div class="art-obj secondary" data-art="curiosity">
+   268→    <div class="visual">
+   269→      <div class="obj curiosity"><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl" style="left:6px"></div><div class="whl" style="left:28px"></div><div class="whl" style="left:50px"></div></div>
+   270→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   271→    </div>
+   272→    <div class="nameplate"><div class="yr">2012–present · mars</div><div class="nm">Curiosity</div><div class="loc">still awake · Gale Crater</div></div>
+   273→  </div>
+   274→
+   275→  <!-- 2 InSight (2018) -->
+   276→  <div class="art-obj" data-art="insight">
+   277→    <div class="visual">
+   278→      <div class="obj insight"><div class="panel pl"></div><div class="panel pr"></div><div class="core"></div><div class="arm"></div></div>
+   279→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   280→    </div>
+   281→    <div class="nameplate"><div class="yr">2018–2022 · mars</div><div class="nm">InSight</div><div class="loc">the listener — Elysium Planitia</div></div>
+   282→  </div>
+   283→
+   284→  <!-- 3 Opportunity (2004) -->
+   285→  <div class="art-obj" data-art="opportunity">
+   286→    <div class="visual">
+   287→      <div class="obj rover"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
+   288→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   289→    </div>
+   290→    <div class="nameplate"><div class="yr">2004–2018 · mars</div><div class="nm">Opportunity</div><div class="loc">the marathon runner</div></div>
+   291→  </div>
+   292→
+   293→  <!-- 4 Spirit (2004) -->
+   294→  <div class="art-obj" data-art="spirit">
+   295→    <div class="visual">
+   296→      <div class="obj rover spirit"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
+   297→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   298→    </div>
+   299→    <div class="nameplate"><div class="yr">2004–2010 · mars</div><div class="nm">Spirit</div><div class="loc">stuck but not silent</div></div>
+   300→  </div>
+   301→
+   302→  <!-- S2 Viking 1 (1976) -->
+   303→  <div class="art-obj secondary" data-art="viking">
+   304→    <div class="visual">
+   305→      <div class="obj viking"><div class="dish"></div><div class="body"></div><div class="leg g1"></div><div class="leg g2"></div><div class="leg g3"></div></div>
+   306→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   307→    </div>
+   308→    <div class="nameplate"><div class="yr">1976–1982 · mars</div><div class="nm">Viking 1</div><div class="loc">asked the big question</div></div>
+   309→  </div>
+   310→
+   311→  <!-- 5 Apollo 17 Lunar Rover (1972) -->
+   312→  <div class="art-obj" data-art="rover">
+   313→    <div class="visual moon-art">
+   314→      <div class="earth-in-sky"></div>
+   315→      <svg viewBox="0 0 360 220">
+   316→        <defs><radialGradient id="rg" cx="50%" cy="20%" r="80%"><stop offset="0%" stop-color="#3a3f4d"/><stop offset="100%" stop-color="#15181f"/></radialGradient><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8c873"/><stop offset="100%" stop-color="#9a7a3a"/></linearGradient></defs>
+   317→        <rect x="0" y="120" width="360" height="100" fill="url(#rg)" opacity=".6"/>
+   318→        <rect x="120" y="78" width="120" height="26" rx="4" fill="#cfd8e6" opacity=".9"/>
+   319→        <rect x="130" y="60" width="100" height="20" rx="3" fill="#aeb8c8"/>
+   320→        <rect x="150" y="44" width="60" height="18" rx="3" fill="#8a94a6"/>
+   321→        <rect x="150" y="48" width="22" height="14" rx="3" fill="#5a6478"/><rect x="188" y="48" width="22" height="14" rx="3" fill="#5a6478"/>
+   322→        <g stroke="#cfd8e6" stroke-width="1.4" fill="none"><circle cx="140" cy="112" r="16"/><circle cx="140" cy="112" r="10"/><circle cx="220" cy="112" r="16"/><circle cx="220" cy="112" r="10"/></g>
+   323→        <g stroke="#7a8298" stroke-width=".8"><line x1="124" y1="112" x2="156" y2="112"/><line x1="140" y1="96" x2="140" y2="128"/><line x1="204" y1="112" x2="236" y2="112"/><line x1="220" y1="96" x2="220" y2="128"/></g>
+   324→        <line x1="240" y1="60" x2="262" y2="34" stroke="#cfd8e6" stroke-width="1.4"/><circle cx="262" cy="34" r="4" fill="none" stroke="#cfd8e6" stroke-width="1.2"/>
+   325→        <g stroke="#6a7080" stroke-width="1" opacity=".5"><line x1="110" y1="140" x2="250" y2="140"/><line x1="110" y1="150" x2="250" y2="150"/></g>
+   326→      </svg>
+   327→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   328→    </div>
+   329→    <div class="nameplate"><div class="yr">1972–present · the moon</div><div class="nm">Apollo 17 Lunar Rover</div><div class="loc">the last car on the Moon</div></div>
+   330→  </div>
+   331→
+   332→  <!-- 6 Eagle (1969) -->
+   333→  <div class="art-obj" data-art="eagle">
+   334→    <div class="visual moon-art">
+   335→      <svg viewBox="0 0 360 220">
+   336→        <rect x="0" y="150" width="360" height="70" fill="#15181f" opacity=".7"/>
+   337→        <polygon points="120,80 240,80 260,120 100,120" fill="url(#gold)" opacity=".95"/>
+   338→        <polygon points="120,80 240,80 260,120 100,120" fill="none" stroke="#7a5a2a" stroke-width="1"/>
+   339→        <g stroke="#7a5a2a" stroke-width=".8" opacity=".6"><line x1="140" y1="82" x2="140" y2="118"/><line x1="170" y1="82" x2="170" y2="118"/><line x1="200" y1="82" x2="200" y2="118"/><line x1="225" y1="82" x2="225" y2="118"/></g>
+   340→        <rect x="150" y="60" width="60" height="22" rx="2" fill="#cfd8e6" opacity=".8"/><rect x="165" y="44" width="30" height="18" rx="2" fill="#aeb8c8"/>
+   341→        <g stroke="#9aa3b2" stroke-width="2" fill="none"><line x1="110" y1="118" x2="80" y2="150"/><circle cx="80" cy="150" r="4" fill="#cfd8e6"/><line x1="250" y1="118" x2="280" y2="150"/><circle cx="280" cy="150" r="4" fill="#cfd8e6"/><line x1="180" y1="120" x2="180" y2="158"/><circle cx="180" cy="158" r="4" fill="#cfd8e6"/></g>
+   342→        <g fill="#0a0c12" opacity=".7"><ellipse cx="60" cy="165" rx="4" ry="6"/><ellipse cx="68" cy="172" rx="4" ry="6"/><ellipse cx="54" cy="178" rx="4" ry="6"/><ellipse cx="62" cy="185" rx="4" ry="6"/><ellipse cx="300" cy="166" rx="4" ry="6"/><ellipse cx="308" cy="173" rx="4" ry="6"/></g>
+   343→      </svg>
+   344→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   345→    </div>
+   346→    <div class="nameplate"><div class="yr">1969–present · the moon</div><div class="nm">Apollo 11 Eagle</div><div class="loc">the first footprint's foundation</div></div>
+   347→  </div>
+   348→
+   349→  <!-- S3 Surveyor 1 (1966) -->
+   350→  <div class="art-obj secondary" data-art="surveyor">
+   351→    <div class="visual moon-art">
+   352→      <svg viewBox="0 0 360 220">
+   353→        <rect x="0" y="160" width="360" height="60" fill="#15181f" opacity=".6"/>
+   354→        <polygon points="160,70 200,70 210,100 150,100" fill="#aeb8c8"/>
+   355→        <rect x="120" y="74" width="40" height="16" fill="#3a4258" stroke="#5a6478"/><rect x="200" y="74" width="40" height="16" fill="#3a4258" stroke="#5a6478"/>
+   356→        <ellipse cx="180" cy="58" rx="18" ry="7" fill="#cfd8e6"/>
+   357→        <g stroke="#9aa3b2" stroke-width="1.6" fill="none"><line x1="155" y1="100" x2="140" y2="160"/><line x1="205" y1="100" x2="220" y2="160"/><line x1="180" y1="100" x2="180" y2="165"/></g>
+   358→        <circle cx="140" cy="160" r="3" fill="#cfd8e6"/><circle cx="220" cy="160" r="3" fill="#cfd8e6"/><circle cx="180" cy="165" r="3" fill="#cfd8e6"/>
+   359→      </svg>
+   360→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   361→    </div>
+   362→    <div class="nameplate"><div class="yr">1966–present · the moon</div><div class="nm">Surveyor 1</div><div class="loc">proved the ground was safe</div></div>
+   363→  </div>
+   364→
+   365→  <!-- 7 Voyager 1 (1977) -->
+   366→  <div class="art-obj" data-art="voyager">
+   367→    <div class="visual pixel-wrap"><div class="golden-glow"></div><canvas id="px-voyager" width="180" height="120"></canvas>
+   368→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   369→    </div>
+   370→    <div class="nameplate"><div class="yr">1977–present · interstellar</div><div class="nm">Voyager 1</div><div class="loc">carrying Earth's mixtape</div></div>
+   371→  </div>
+   372→
+   373→  <!-- S4 Pioneer 11 (1973) -->
+   374→  <div class="art-obj secondary" data-art="pioneer11">
+   375→    <div class="visual pixel-wrap"><canvas id="px-pioneer11" width="180" height="120"></canvas>
+   376→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   377→    </div>
+   378→    <div class="nameplate"><div class="yr">1973–1995 · deep space</div><div class="nm">Pioneer 11</div><div class="loc">the scenic route — toward Aquila</div></div>
+   379→  </div>
+   380→
+   381→  <!-- 8 Pioneer 10 (1972) — DEEPEST / OLDEST -->
+   382→  <div class="art-obj" data-art="pioneer10">
+   383→    <div class="visual pixel-wrap"><canvas id="px-pioneer10" width="180" height="120"></canvas>
+   384→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   385→    </div>
+   386→    <div class="nameplate"><div class="yr">1972–2003 · deep space</div><div class="nm">Pioneer 10</div><div class="loc">the first to leave — toward Aldebaran</div></div>
+   387→  </div>
+   388→</div>
+   389→
+   390→<!-- Echo's path line (projected through the waypoints) -->
+   391→<svg id="path"><polyline id="pathline"/><polyline id="pathahead"/><g id="pathticks"></g></svg>
+   392→<div id="echo" class="cold"></div>
+   393→
+   394→<div id="topbar">
+   395→  <div id="brand">Still&nbsp;Out&nbsp;There</div>
+   396→  <div id="controls">
+   397→    <button class="ctrl" id="btn-captions">CC&nbsp;ON</button>
+   398→    <button class="ctrl" id="btn-deepread">DEEP&nbsp;READ</button>
+   399→    <button class="ctrl" id="btn-mute">♪&nbsp;ON</button>
+   400→  </div>
+
+[showing lines 1-400 of 988; use offset=401 with limit to continue reading]

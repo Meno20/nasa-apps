@@ -1,0 +1,302 @@
+   275→  <!-- 2 InSight (2018) -->
+   276→  <div class="art-obj" data-art="insight">
+   277→    <div class="visual">
+   278→      <div class="obj insight"><div class="panel pl"></div><div class="panel pr"></div><div class="core"></div><div class="arm"></div></div>
+   279→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   280→    </div>
+   281→    <div class="nameplate"><div class="yr">2018–2022 · mars</div><div class="nm">InSight</div><div class="loc">the listener — Elysium Planitia</div></div>
+   282→  </div>
+   283→
+   284→  <!-- 3 Opportunity (2004) -->
+   285→  <div class="art-obj" data-art="opportunity">
+   286→    <div class="visual">
+   287→      <div class="obj rover"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
+   288→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   289→    </div>
+   290→    <div class="nameplate"><div class="yr">2004–2018 · mars</div><div class="nm">Opportunity</div><div class="loc">the marathon runner</div></div>
+   291→  </div>
+   292→
+   293→  <!-- 4 Spirit (2004) -->
+   294→  <div class="art-obj" data-art="spirit">
+   295→    <div class="visual">
+   296→      <div class="obj rover spirit"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
+   297→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   298→    </div>
+   299→    <div class="nameplate"><div class="yr">2004–2010 · mars</div><div class="nm">Spirit</div><div class="loc">stuck but not silent</div></div>
+   300→  </div>
+   301→
+   302→  <!-- S2 Viking 1 (1976) -->
+   303→  <div class="art-obj secondary" data-art="viking">
+   304→    <div class="visual">
+   305→      <div class="obj viking"><div class="dish"></div><div class="body"></div><div class="leg g1"></div><div class="leg g2"></div><div class="leg g3"></div></div>
+   306→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   307→    </div>
+   308→    <div class="nameplate"><div class="yr">1976–1982 · mars</div><div class="nm">Viking 1</div><div class="loc">asked the big question</div></div>
+   309→  </div>
+   310→
+   311→  <!-- 5 Apollo 17 Lunar Rover (1972) -->
+   312→  <div class="art-obj" data-art="rover">
+   313→    <div class="visual moon-art">
+   314→      <div class="earth-in-sky"></div>
+   315→      <svg viewBox="0 0 360 220">
+   316→        <defs><radialGradient id="rg" cx="50%" cy="20%" r="80%"><stop offset="0%" stop-color="#3a3f4d"/><stop offset="100%" stop-color="#15181f"/></radialGradient><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8c873"/><stop offset="100%" stop-color="#9a7a3a"/></linearGradient></defs>
+   317→        <rect x="0" y="120" width="360" height="100" fill="url(#rg)" opacity=".6"/>
+   318→        <rect x="120" y="78" width="120" height="26" rx="4" fill="#cfd8e6" opacity=".9"/>
+   319→        <rect x="130" y="60" width="100" height="20" rx="3" fill="#aeb8c8"/>
+   320→        <rect x="150" y="44" width="60" height="18" rx="3" fill="#8a94a6"/>
+   321→        <rect x="150" y="48" width="22" height="14" rx="3" fill="#5a6478"/><rect x="188" y="48" width="22" height="14" rx="3" fill="#5a6478"/>
+   322→        <g stroke="#cfd8e6" stroke-width="1.4" fill="none"><circle cx="140" cy="112" r="16"/><circle cx="140" cy="112" r="10"/><circle cx="220" cy="112" r="16"/><circle cx="220" cy="112" r="10"/></g>
+   323→        <g stroke="#7a8298" stroke-width=".8"><line x1="124" y1="112" x2="156" y2="112"/><line x1="140" y1="96" x2="140" y2="128"/><line x1="204" y1="112" x2="236" y2="112"/><line x1="220" y1="96" x2="220" y2="128"/></g>
+   324→        <line x1="240" y1="60" x2="262" y2="34" stroke="#cfd8e6" stroke-width="1.4"/><circle cx="262" cy="34" r="4" fill="none" stroke="#cfd8e6" stroke-width="1.2"/>
+   325→        <g stroke="#6a7080" stroke-width="1" opacity=".5"><line x1="110" y1="140" x2="250" y2="140"/><line x1="110" y1="150" x2="250" y2="150"/></g>
+   326→      </svg>
+   327→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   328→    </div>
+   329→    <div class="nameplate"><div class="yr">1972–present · the moon</div><div class="nm">Apollo 17 Lunar Rover</div><div class="loc">the last car on the Moon</div></div>
+   330→  </div>
+   331→
+   332→  <!-- 6 Eagle (1969) -->
+   333→  <div class="art-obj" data-art="eagle">
+   334→    <div class="visual moon-art">
+   335→      <svg viewBox="0 0 360 220">
+   336→        <rect x="0" y="150" width="360" height="70" fill="#15181f" opacity=".7"/>
+   337→        <polygon points="120,80 240,80 260,120 100,120" fill="url(#gold)" opacity=".95"/>
+   338→        <polygon points="120,80 240,80 260,120 100,120" fill="none" stroke="#7a5a2a" stroke-width="1"/>
+   339→        <g stroke="#7a5a2a" stroke-width=".8" opacity=".6"><line x1="140" y1="82" x2="140" y2="118"/><line x1="170" y1="82" x2="170" y2="118"/><line x1="200" y1="82" x2="200" y2="118"/><line x1="225" y1="82" x2="225" y2="118"/></g>
+   340→        <rect x="150" y="60" width="60" height="22" rx="2" fill="#cfd8e6" opacity=".8"/><rect x="165" y="44" width="30" height="18" rx="2" fill="#aeb8c8"/>
+   341→        <g stroke="#9aa3b2" stroke-width="2" fill="none"><line x1="110" y1="118" x2="80" y2="150"/><circle cx="80" cy="150" r="4" fill="#cfd8e6"/><line x1="250" y1="118" x2="280" y2="150"/><circle cx="280" cy="150" r="4" fill="#cfd8e6"/><line x1="180" y1="120" x2="180" y2="158"/><circle cx="180" cy="158" r="4" fill="#cfd8e6"/></g>
+   342→        <g fill="#0a0c12" opacity=".7"><ellipse cx="60" cy="165" rx="4" ry="6"/><ellipse cx="68" cy="172" rx="4" ry="6"/><ellipse cx="54" cy="178" rx="4" ry="6"/><ellipse cx="62" cy="185" rx="4" ry="6"/><ellipse cx="300" cy="166" rx="4" ry="6"/><ellipse cx="308" cy="173" rx="4" ry="6"/></g>
+   343→      </svg>
+   344→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   345→    </div>
+   346→    <div class="nameplate"><div class="yr">1969–present · the moon</div><div class="nm">Apollo 11 Eagle</div><div class="loc">the first footprint's foundation</div></div>
+   347→  </div>
+   348→
+   349→  <!-- S3 Surveyor 1 (1966) -->
+   350→  <div class="art-obj secondary" data-art="surveyor">
+   351→    <div class="visual moon-art">
+   352→      <svg viewBox="0 0 360 220">
+   353→        <rect x="0" y="160" width="360" height="60" fill="#15181f" opacity=".6"/>
+   354→        <polygon points="160,70 200,70 210,100 150,100" fill="#aeb8c8"/>
+   355→        <rect x="120" y="74" width="40" height="16" fill="#3a4258" stroke="#5a6478"/><rect x="200" y="74" width="40" height="16" fill="#3a4258" stroke="#5a6478"/>
+   356→        <ellipse cx="180" cy="58" rx="18" ry="7" fill="#cfd8e6"/>
+   357→        <g stroke="#9aa3b2" stroke-width="1.6" fill="none"><line x1="155" y1="100" x2="140" y2="160"/><line x1="205" y1="100" x2="220" y2="160"/><line x1="180" y1="100" x2="180" y2="165"/></g>
+   358→        <circle cx="140" cy="160" r="3" fill="#cfd8e6"/><circle cx="220" cy="160" r="3" fill="#cfd8e6"/><circle cx="180" cy="165" r="3" fill="#cfd8e6"/>
+   359→      </svg>
+   360→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#cfd8e6" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#cfd8e6" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   361→    </div>
+   362→    <div class="nameplate"><div class="yr">1966–present · the moon</div><div class="nm">Surveyor 1</div><div class="loc">proved the ground was safe</div></div>
+   363→  </div>
+   364→
+   365→  <!-- 7 Voyager 1 (1977) -->
+   366→  <div class="art-obj" data-art="voyager">
+   367→    <div class="visual pixel-wrap"><div class="golden-glow"></div><canvas id="px-voyager" width="180" height="120"></canvas>
+   368→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   369→    </div>
+   370→    <div class="nameplate"><div class="yr">1977–present · interstellar</div><div class="nm">Voyager 1</div><div class="loc">carrying Earth's mixtape</div></div>
+   371→  </div>
+   372→
+   373→  <!-- S4 Pioneer 11 (1973) -->
+   374→  <div class="art-obj secondary" data-art="pioneer11">
+   375→    <div class="visual pixel-wrap"><canvas id="px-pioneer11" width="180" height="120"></canvas>
+   376→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   377→    </div>
+   378→    <div class="nameplate"><div class="yr">1973–1995 · deep space</div><div class="nm">Pioneer 11</div><div class="loc">the scenic route — toward Aquila</div></div>
+   379→  </div>
+   380→
+   381→  <!-- 8 Pioneer 10 (1972) — DEEPEST / OLDEST -->
+   382→  <div class="art-obj" data-art="pioneer10">
+   383→    <div class="visual pixel-wrap"><canvas id="px-pioneer10" width="180" height="120"></canvas>
+   384→      <div class="scale"><svg viewBox="0 0 20 48"><path d="M10 2v10m0 2v12m0 2v8M10 14l-6 4M10 14l6 4M10 30l-5 12M10 30l5 12" stroke="#8a90c0" stroke-width="1.6" fill="none" stroke-linecap="round"/><circle cx="10" cy="4" r="3" stroke="#8a90c0" stroke-width="1.6" fill="none"/></svg><span>human</span></div>
+   385→    </div>
+   386→    <div class="nameplate"><div class="yr">1972–2003 · deep space</div><div class="nm">Pioneer 10</div><div class="loc">the first to leave — toward Aldebaran</div></div>
+   387→  </div>
+   388→</div>
+   389→
+   390→<!-- Echo's path line (projected through the waypoints) -->
+   391→<svg id="path"><polyline id="pathline"/><polyline id="pathahead"/><g id="pathticks"></g></svg>
+   392→<div id="echo" class="cold"></div>
+   393→
+   394→<div id="topbar">
+   395→  <div id="brand">Still&nbsp;Out&nbsp;There</div>
+   396→  <div id="controls">
+   397→    <button class="ctrl" id="btn-captions">CC&nbsp;ON</button>
+   398→    <button class="ctrl" id="btn-deepread">DEEP&nbsp;READ</button>
+   399→    <button class="ctrl" id="btn-mute">♪&nbsp;ON</button>
+   400→  </div>
+   401→</div>
+   402→<div id="timechip"><span class="arrow">◀</span><span class="era">present</span></div>
+   403→<div id="rail"><div class="fill"></div></div>
+   404→<nav id="nav"></nav>
+   405→
+   406→<div id="hud">
+   407→  <div id="caption"><div id="cap-speaker">—</div><div id="cap-text">—</div></div>
+   408→</div>
+   409→
+   410→<aside id="deepread">
+   411→  <span class="close" id="dr-close">CLOSE ✕</span>
+   412→  <h3 id="dr-title">—</h3>
+   413→  <div class="meta" id="dr-meta">—</div>
+   414→  <div class="body" id="dr-body"></div>
+   415→  <div class="fact" id="dr-fact"></div>
+   416→</aside>
+   417→
+   418→<div id="cold-text">
+   419→  In 1977, humanity pressed its greatest hits onto a golden record and strapped it to a machine heading out of the solar system. This is what's playing right now, 15 billion miles from Earth.
+   420→  <small>♪ golden record · cold open</small>
+   421→</div>
+   422→<div id="scroll-prompt">scroll to dive deeper<span class="arrow"></span></div>
+   423→
+   424→<div id="epilogue">
+   425→  <h2>They're still out there.</h2>
+   426→  <div class="sub">twelve machines · twelve names</div>
+   427→  <ul id="roll">
+   428→    <li><span class="ep-name">Perseverance Descent Stage<small>Crashed on purpose. Job well done.</small></span><span class="ep-meta">Mars · 2021</span></li>
+   429→    <li><span class="ep-name">InSight<small>Listened to Mars breathe.</small></span><span class="ep-meta">Mars · 2018–2022</span></li>
+   430→    <li><span class="ep-name">Curiosity<small>Still rolling.</small></span><span class="ep-meta">Mars · 2012–present</span></li>
+   431→    <li><span class="ep-name">Opportunity<small>The marathon runner.</small></span><span class="ep-meta">Mars · 2004–2018</span></li>
+   432→    <li><span class="ep-name">Spirit<small>Stuck but not silent.</small></span><span class="ep-meta">Mars · 2004–2010</span></li>
+   433→    <li><span class="ep-name">Viking 1<small>Asked the big question.</small></span><span class="ep-meta">Mars · 1976–1982</span></li>
+   434→    <li><span class="ep-name">Apollo 17 Lunar Rover<small>The last car on the Moon.</small></span><span class="ep-meta">Moon · 1972–present</span></li>
+   435→    <li><span class="ep-name">Apollo 11 Eagle<small>The first footprint's foundation.</small></span><span class="ep-meta">Moon · 1969–present</span></li>
+   436→    <li><span class="ep-name">Surveyor 1<small>Proved the ground was safe.</small></span><span class="ep-meta">Moon · 1966–present</span></li>
+   437→    <li><span class="ep-name">Voyager 1<small>Carrying Earth's mixtape to the stars.</small></span><span class="ep-meta">Interstellar · 1977–present</span></li>
+   438→    <li><span class="ep-name">Pioneer 10<small>The first to leave.</small></span><span class="ep-meta">Deep space · 1972–2003</span></li>
+   439→    <li><span class="ep-name">Pioneer 11<small>The scenic route.</small></span><span class="ep-meta">Deep space · 1973–1995</span></li>
+   440→  </ul>
+   441→  <div id="final-line">They're still out there.</div>
+   442→</div>
+   443→
+   444→<div id="gate">
+   445→  <h1>Still Out There</h1>
+   446→  <p>A cosmic museum where a small forgotten satellite named Echo guides you backward through time — diving deeper and deeper into space to meet the twelve pieces of hardware humanity left among the stars.</p>
+   447→  <button id="startbtn">Begin · scroll to dive</button>
+   448→  <div id="audio-note">headphones recommended · uses sound &amp; speech</div>
+   449→</div>
+   450→
+   451→<div id="spacer"></div>
+   452→
+   453→<script>
+   454→/* =====================================================================
+   455→   STILL OUT THERE — depth/dive edition
+   456→   Scroll = dive deeper into space. Artifacts float at depth, scattered
+   457→   off-axis; oldest are deepest. A thin white line traces Echo's path
+   458→   backward through time. Echo drifts along it, ahead of the camera.
+   459→   ===================================================================== */
+   460→(function(){
+   461→"use strict";
+   462→
+   463→/* ---------- content data (monologues + briefs + echo lines) ---------- */
+   464→var ART = {
+   465→  perseverance:{name:"Perseverance Descent Stage",meta:"2021 · Mars · Jezero Crater",year:2021,voice:{rate:1.12,pitch:1.18},audio:null,
+   466→    lines:["I'm the new kid. I literally just got here — well, my rover half did.","I'm the part they threw away. The descent stage. The sky crane.","I lowered Perseverance down on cables like a spider on a thread, and then I flew off and crashed on purpose so I wouldn't hit the rover.","That was my entire job. One moment of glory.","But hey — because of me, there's a helicopter flying on Mars right now. A HELICOPTER. On MARS. You're welcome."],
+   467→    fact:"The sky crane was deliberately crashed about 700 m away so its debris wouldn't endanger the rover. Ingenuity, the helicopter it enabled, became the first aircraft to fly on another planet."},
+   468→  insight:{name:"InSight",meta:"2018–2022 · Mars · Elysium Planitia",year:2018,voice:{rate:0.82,pitch:0.92},audio:"marsquake",
+   469→    lines:["I didn't move. I didn't have wheels. I landed, I unfolded my arms, and I pressed my seismometer into the dirt.","And then I listened. For four years, I listened to Mars breathe.","I felt its quakes — over 1,300 of them. The planet has a heartbeat. It's slow, and it's deep, and it's nothing like Earth's.","My solar panels filled with dust. I knew it was coming.","The last thing I felt was a meteorite hitting the surface 3,500 kilometers away. I heard it. And then I went to sleep."],
+   470→    fact:"InSight's SEIS instrument detected Mars's largest recorded marsquake (magnitude ~4.7) in May 2022, just before the lander fell silent as dust covered its panels."},
+   471→  opportunity:{name:"Opportunity",meta:"2004–2018 · Mars · Endeavour Crater",year:2004,voice:{rate:0.86,pitch:0.96},audio:"storm",
+   472→    lines:["Ninety days. That's what they told me. Ninety days, and then my twin and I would go to sleep.","I lasted fifteen years. I drove 28 miles across a world where nothing moves.","I found rocks that proved this entire desert used to be an ocean.","And then the storm came. It covered the whole planet. The sun just... disappeared. My panels went dark.","I sent one last message. People translated it as 'My battery is low and it's getting dark,' which isn't technically accurate, but... it felt right.","I'm still here. At the edge of a valley they named Perseverance. I like that."],
+   473→    fact:"Opportunity's final transmission was a clean-up of its memory during the global dust storm of 2018. The 'my battery is low' line is a paraphrase of its low-power fault data that engineers read with emotion."},
+   474→  spirit:{name:"Spirit",meta:"2004–2010 · Mars · Home Plate",year:2004,voice:{rate:1.0,pitch:0.94},audio:null,
+   475→    lines:["I'm the one who got stuck. Drove into a patch of soft sand and my wheels just spun.","For two years, engineers on Earth tried to get me out. They built a sandbox replica of my trap and practiced with a copy of me. Nothing worked.","So I became a weather station. Parked. Permanent.","I found silica in the dirt around me — the kind that forms around hot springs. On Earth, hot springs have life.","So even stuck, I found something huge. I just wish I could've kept driving."],
+   476→    fact:"Spirit became a stationary science platform after breaking through a crust into soft sulfate-rich soil at 'Troy.' Its silica find at Home Plate remains some of the strongest evidence for past hydrothermal activity on Mars."},
+   477→  rover:{name:"Apollo 17 Lunar Rover",meta:"1972–present · The Moon · Taurus-Littrow",year:1972,voice:{rate:1.06,pitch:1.1},audio:null,
+   478→    lines:["I'm a car. On the Moon. Let that sink in.","They folded me up like origami, stuffed me in the bottom of the lunar module, and when Gene and Jack unfolded me, I was ready to roll.","We drove 35 kilometers across the Taurus-Littrow valley — farther than any astronaut had ever gone on foot.","I bounced over craters. I kicked up regolith that hung in the air forever because there's no gravity to pull it down fast.","When they left, they parked me and walked away. I've been sitting here for over fifty years. The tire tracks are still fresh. They'll be fresh forever."],
+   479→    fact:"The Lunar Roving Vehicle set the lunar speed record (~18 km/h). Three rovers sit on the Moon (Apollo 15, 16, 17). With no atmosphere, their tracks will likely remain undisturbed for millions of years."},
+   480→  eagle:{name:"Apollo 11 Eagle Descent Stage",meta:"1969–present · The Moon · Sea of Tranquility",year:1969,voice:{rate:0.7,pitch:0.85},audio:null,
+   481→    lines:["I am the bottom half of the machine that carried the first humans to another world.","When Armstrong and Aldrin climbed back into the top half and launched home, I stayed. I was the launchpad. The landing gear. The home base.","I held them while they slept their first night on the Moon. I held the plaque that says 'We came in peace for all mankind.'","The footprints around me have not moved in over fifty-five years. There is no wind here. No rain. No erosion. They will outlast every building on Earth.","I am the oldest human monument on another world, and I am very, very quiet."],
+   482→    fact:"The Eagle's descent stage remains at Tranquility Base. Armstrong's first bootprint and the plaque 'We came in peace for all mankind' are preserved in the lunar vacuum indefinitely."},
+   483→  voyager:{name:"Voyager 1",meta:"1977–present · Interstellar space",year:1977,voice:{rate:0.8,pitch:0.8},audio:"golden",
+   484→    lines:["I am the farthest thing from Earth that human hands have ever built. Fifteen billion miles.","The sun is just a bright star behind me now.","I crossed the edge of the solar system in 2012 — the heliopause, where the sun's wind stops and interstellar space begins. I'm the first human object to be in the space between stars.","I carry a golden record with the sounds of your world: thunder, birds, a kiss, a mother's first words to her child, Chuck Berry.","If something out there finds me — and the odds are very, very small — that record is the only proof that you ever existed.","I'm still sending data. My signal takes over 22 hours to reach Earth. By the time you hear me, I've already moved another million miles. I will outlive your sun."],
+   485→    fact:"Voyager 1 crossed the heliopause in August 2012. It carries the Golden Record: 116 images, greetings in 55 languages, sounds of Earth, and music from Bach to Chuck Berry. Its signal takes ~22.5 hours to reach Earth."},
+   486→  pioneer10:{name:"Pioneer 10",meta:"1972–2003 · Deep space · toward Aldebaran",year:1972,voice:{rate:0.75,pitch:0.7},audio:"dying",
+   487→    lines:["I was... the first. First through the asteroid belt. First to... Jupiter.","I sent back the first close-up pictures. My twin, Pioneer 11, followed me.","We carried plaques — drawings of a man and a woman, in case someone... found us.","My signal got weaker and weaker. In 2003, NASA listened for me one last time. They heard... nothing.","I'm heading toward the star Aldebaran. It will take me two million years to get there. I don't mind. I've been... falling... for a very long time."],
+   488→    fact:"Pioneer 10 was the first spacecraft to traverse the asteroid belt and fly by Jupiter (1973). Its last signal was received in January 2003. It carries the Pioneer plaque designed by Carl Sagan and Frank Drake."}
+   489→};
+   490→var SEC = {
+   491→  curiosity:"This one's still awake. Nuclear-powered — doesn't need the sun like the others. It's been driving around Gale Crater for over a decade. It's the reason we knew the next rover could make it. I still hear it sometimes, talking to Earth. Lucky.",
+   492→  viking:"This is the old one. Viking. First to land on Mars and survive. It scooped up soil and ran the first biology experiment on another planet — looking for microbes. The results were weird. Inconclusive. Scientists are still fighting about it almost fifty years later. Viking didn't get a clean answer. But it asked the question, and that matters.",
+   493→  surveyor:"This little tripod was a gamble. Nobody knew if the Moon's surface was solid or if it was deep powder you'd sink into. Surveyor landed softly in 1966 and proved the ground could hold weight. Three years later, Armstrong stepped off the Eagle onto solid ground. He trusted it because Surveyor went first.",
+   494→  pioneer11:"Pioneer 10's twin. It took the long way around, past Saturn. Its signal went quiet in 1995. It's heading toward the constellation Aquila. I don't hear it anymore. But it's still moving."
+   495→};
+   496→var ECHO = {
+   497→  cold:"Hey. You can hear that? Good. That's my favorite song out here. I'm Echo. I used to be a relay satellite — bounced signals between Earth and the machines they sent to other worlds. I've been drifting up here for a long time now. Everyone I used to talk to has gone quiet. But they're still out there. All of them. I want to show you where. Fair warning: to understand them, we have to go backward. All the way back to the beginning. Ready?",
+   498→  lobby:"This is where it all starts. Every machine I'm going to show you launched from down there. Let's head to the red one first. That's where most of my friends ended up.",
+   499→  afterPercy:"It's loud, I know. They're all loud when they're new.",
+   500→  afterOpp:"I tried to reach her during the storm. I couldn't get a signal through the dust. I'm sorry I wasn't there.",
+   501→  moonSilence:"Listen. You hear that? Nothing. Absolutely nothing. There's no air here, so there's no wind, no weather, no sound at all. The only noise is the radio in your helmet and your own breathing. It's the quietest place humans have ever been.",
+   502→  deep:"We're far from home now. The machines out here aren't on any planet. They're just... moving. Falling through the dark between the stars. Some of them have been falling for almost fifty years. I can barely hear them anymore.",
+   503→  epilogue:"That's all of them. Twelve machines, spread across the solar system and beyond. Some are still working. Some went quiet decades ago. Some will outlast the Earth itself. They're all still out there — standing on alien soil, drifting through the dark, carrying the echoes of everything we once asked them to learn. I used to think it was sad, being left behind. But now I think... they're monuments. Quiet ones. And now you know their names. So they're not really forgotten, are they?"
+   504→};
+   505→
+   506→/* ---------- depth layout: scatter (sx,sy in px at z=0) + depth ----------
+   507→   Order = dive order (newest/shallowest → oldest/deepest).
+   508→   Pioneer 10 (1972) is the terminal, deepest artifact.                  */
+   509→var LAYOUT = [
+   510→  {id:"perseverance",depth:1750, x:-30,  y:70,  era:"mars"},
+   511→  {id:"curiosity",   depth:2400, x:330,  y:-130,era:"mars", sec:true},
+   512→  {id:"insight",     depth:3050, x:130,  y:-70, era:"mars"},
+   513→  {id:"opportunity", depth:3700, x:-200, y:50,  era:"mars"},
+   514→  {id:"spirit",      depth:4350, x:210,  y:120, era:"mars"},
+   515→  {id:"viking",      depth:5050, x:-320, y:-60, era:"mars", sec:true},
+   516→  {id:"rover",       depth:6050, x:-50,  y:-110,era:"moon"},
+   517→  {id:"eagle",       depth:6800, x:150,  y:80,  era:"moon"},
+   518→  {id:"surveyor",    depth:7500, x:-270, y:130, era:"moon", sec:true},
+   519→  {id:"voyager",     depth:8800, x:10,   y:-30, era:"deepspace"},
+   520→  {id:"pioneer11",   depth:9700, x:230,  y:70,  era:"deepspace", sec:true},
+   521→  {id:"pioneer10",   depth:10500,x:-90,  y:20,  era:"deepspace"}
+   522→];
+   523→var PERSP = 620;
+   524→var TOTAL_DEPTH = 12000;
+   525→var EPOCH_DEPTH = 11100;       // epilogue begins here (deepest)
+   526→var ERA_BOUNDS = { lobby:1500, mars:5600, moon:8050, deepspace:EPOCH_DEPTH };
+   527→
+   528→/* ---------- DOM refs ---------- */
+   529→var $=function(s){return document.querySelector(s);};
+   530→var starCanvas=$("#stars"), sctx=starCanvas.getContext("2d");
+   531→var planets={earth:$(".planet.earth"),mars:$(".planet.mars"),moon:$(".planet.moon"),void:$(".planet.void")};
+   532→var scene=$("#scene");
+   533→var echoEl=$("#echo");
+   534→var eraTint=$("#era-tint"), scanlines=$("#scanlines");
+   535→var caption=$("#caption"), capSpeaker=$("#cap-speaker"), capText=$("#cap-text");
+   536→var gate=$("#gate"), startbtn=$("#startbtn");
+   537→var brand=$("#brand"), navEl=$("#nav"), rail=$("#rail"), railFill=$("#rail .fill");
+   538→var timechip=$("#timechip"), timeEra=timechip.querySelector(".era");
+   539→var deepread=$("#deepread"), drTitle=$("#dr-title"), drMeta=$("#dr-meta"), drBody=$("#dr-body"), drFact=$("#dr-fact"), drClose=$("#dr-close");
+   540→var btnCap=$("#btn-captions"), btnDR=$("#btn-deepread"), btnMute=$("#btn-mute");
+   541→var coldText=$("#cold-text"), scrollPrompt=$("#scroll-prompt"), epilogue=$("#epilogue");
+   542→var pathSvg=$("#path"), pathline=$("#pathline"), pathahead=$("#pathahead"), pathticks=$("#pathticks");
+   543→
+   544→/* attach DOM + store ref */
+   545→LAYOUT.forEach(function(L){
+   546→  L.el = scene.querySelector('.art-obj[data-art="'+L.id+'"]');
+   547→});
+   548→
+   549→var state={started:false,muted:false,captionsOn:true,deepOn:false,currentArt:null,speaking:false,played:new Set(),era:"cold",activeArt:null};
+   550→
+   551→/* ====================================================================
+   552→   STARFIELD — radial "warp" dive (stars streak outward from center)
+   553→   ==================================================================== */
+   554→var W=0,H=0,cx=0,cy=0,stars=[],maxR=400;
+   555→var smoothDelta=0, lastScrollY=0;
+   556→function resize(){
+   557→  W=starCanvas.width=window.innerWidth;
+   558→  H=starCanvas.height=window.innerHeight;
+   559→  cx=W/2; cy=H/2; maxR=Math.sqrt(cx*cx+cy*cy)+40;
+   560→  pathSvg.setAttribute("width",W); pathSvg.setAttribute("height",H);
+   561→  buildStars();
+   562→}
+   563→function buildStars(){
+   564→  stars=[];
+   565→  for(var i=0;i<460;i++){ stars.push({a:Math.random()*Math.PI*2, z:Math.random(), pz:0}); }
+   566→}
+   567→function starColor(){
+   568→  if(state.era==="deepspace") return "#aab4e8";
+   569→  if(state.era==="moon") return "#dfe6f5";
+   570→  return "#ffffff";
+   571→}
+   572→function drawStars(dt, diveSpeed){
+   573→  sctx.clearRect(0,0,W,H);
+   574→  var col=starColor();
+
+[showing lines 275-574 of 988; use offset=575 with limit to continue reading]
