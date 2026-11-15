@@ -220,24 +220,6 @@ body{
 
 /* ===== Mars stylized 3D (CSS shapes) ===== */
 .obj{position:relative;transform-style:preserve-3d}
-.percy{width:160px;height:120px}
-.percy .body{position:absolute;left:20px;top:30px;width:120px;height:54px;border-radius:10px;background:linear-gradient(160deg,#d6cfc2,#8a8276 60%,#5a544a);transform:perspective(280px) rotateX(22deg) rotateZ(-8deg);box-shadow:inset 0 -8px 16px rgba(0,0,0,.4)}
-.percy .body::after{content:"";position:absolute;left:14px;top:8px;width:50px;height:10px;border-radius:4px;background:#3a3a3a}
-.percy .leg{position:absolute;width:46px;height:5px;background:#4a4640;border-radius:3px;transform-origin:left center}
-.percy .l1{left:30px;top:84px;transform:rotate(28deg)}
-.percy .l2{left:90px;top:84px;transform:rotate(-28deg)}
-.percy .debris{position:absolute;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid #6b6457}
-.percy .d1{left:6px;top:96px;transform:rotate(-18deg)}
-.percy .d2{left:140px;top:98px;transform:rotate(22deg) scale(.8)}
-.percy .cable{position:absolute;left:80px;top:60px;width:2px;height:50px;background:rgba(220,200,150,.5);transform:rotate(6deg)}
-.insight{width:200px;height:130px}
-.insight .panel{position:absolute;top:54px;width:80px;height:48px;border-radius:50%/30%;background:linear-gradient(180deg,#5a3a78,#3a2350);box-shadow:inset 0 0 18px rgba(0,0,0,.5)}
-.insight .panel::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse at 40% 30%, rgba(200,120,70,.55), rgba(120,60,30,.85) 70%)}
-.insight .pl{left:10px;transform:rotate(-6deg)}
-.insight .pr{right:10px;transform:rotate(6deg)}
-.insight .core{position:absolute;left:70px;top:30px;width:60px;height:54px;border-radius:8px;background:linear-gradient(160deg,#d8c9a0,#8a7a52);box-shadow:inset 0 -6px 12px rgba(0,0,0,.4)}
-.insight .arm{position:absolute;left:96px;top:44px;width:60px;height:3px;background:#caa;transform-origin:left center;transform:rotate(-18deg)}
-.insight .arm::after{content:"";position:absolute;right:-6px;top:-4px;width:10px;height:10px;border-radius:50%;background:#b08}
 .rover{width:150px;height:96px}
 .rover .body{position:absolute;left:18px;top:18px;width:114px;height:34px;border-radius:6px;background:linear-gradient(180deg,#c9b48a,#7a6a44);box-shadow:inset 0 -6px 10px rgba(0,0,0,.4)}
 .rover .panel{position:absolute;left:26px;top:6px;width:98px;height:14px;border-radius:3px;background:linear-gradient(180deg,#6a4a2a,#3a2614)}
@@ -296,24 +278,18 @@ body{
 <div id="scene">
   <div class="art-obj secondary" data-art="perseverance">
     <div class="visual">
-      <div class="obj percy"><div class="cable"></div><div class="body"></div><div class="leg l1"></div><div class="leg l2"></div><div class="debris d1"></div><div class="debris d2"></div></div>
-
     </div>
     <div class="nameplate"><div class="yr">2021 · mars</div><div class="nm">Perseverance Descent Stage</div><div class="loc">Jezero Crater — the sky crane</div></div>
   </div>
 
   <div class="art-obj" data-art="insight">
     <div class="visual">
-      <div class="obj insight"><div class="panel pl"></div><div class="panel pr"></div><div class="core"></div><div class="arm"></div></div>
-
     </div>
     <div class="nameplate"><div class="yr">2018–2022 · mars</div><div class="nm">InSight</div><div class="loc">the listener — Elysium Planitia</div></div>
   </div>
 
   <div class="art-obj" data-art="opportunity">
     <div class="visual">
-      <div class="obj rover"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
-
     </div>
     <div class="nameplate"><div class="yr">2004–2018 · mars</div><div class="nm">Opportunity</div><div class="loc">"Oppy" — Endeavour Crater</div></div>
   </div>
@@ -959,7 +935,12 @@ function syncAudioCaption(){
   var nextT=(si+1<segs.length)?segs[si+1].t:(narrAudio.duration||seg.t+5);
   var segDur=Math.max(0.6,nextT-seg.t);
   var chunks=splitChunks(seg.text||"",8);
-  var ci=Math.min(chunks.length-1,Math.floor((t-seg.t)/segDur*chunks.length));
+  /* distribute chunks proportionally to character count (matches speech rhythm) */
+  var totalChars=0; chunks.forEach(function(c){totalChars+=c.length;}); totalChars=Math.max(1,totalChars);
+  var charsAtNow=(t-seg.t)/segDur*totalChars;
+  var ci=0, acc=0;
+  for(var j=0;j<chunks.length;j++){ acc+=chunks[j].length; if(acc>=charsAtNow){ci=j;break;} ci=j; }
+  ci=Math.min(ci,chunks.length-1);
   var key=audioZoneId+":"+si+":"+ci;
   if(key!==currentNarrationKey){
     currentNarrationKey=key;
