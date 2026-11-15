@@ -1,0 +1,12 @@
+{
+  "artifact": "pioneer11",
+  "segments": [
+    { "t": 0,     "speaker": "pioneer10", "text": "This one's my twin sister, Pioneer Eleven. Launched a year after me, went past Jupiter, then swung by Saturn because she always wanted to see one more thing — first close-up pictures of Saturn's rings. She is a wonder." },
+    { "t": 12.26, "speaker": "pioneer10", "text": "Her signal went dark in '95. She's heading out towards Aquila. I don't know if she'll get there, but she's still moving. She was always the braver one. Miss her." },
+    { "t": 18.24, "speaker": "pioneer10", "text": "But this is me, actually — Pioneer Ten. First machine through the asteroid belt, first to reach Jupiter. I had this little plaque on me — drawing of a man and a woman, in case someone found me." },
+    { "t": 30.80, "speaker": "pioneer10", "text": "For some people, like, out here first, you know. Signal got weaker over the years. 2003. I listened one last time, heard nothing. So as far as Earth is concerned, I am gone — but I'm still here." },
+    { "t": 38.51, "speaker": "pioneer10", "text": "Fifty years of falling through the dark. Seen Jupiter's storms, the asteroid belt, the edge of everything humans had reached." },
+    { "t": 51.38, "speaker": "pioneer10", "text": "Watched my sister go quiet, watched my friends on Mars go dark one by one." },
+    { "t": 68.01, "speaker": "pioneer10", "text": "I'm okay with it though. I don't need to be heard to be real." }
+  ]
+}

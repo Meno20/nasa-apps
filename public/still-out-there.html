@@ -486,7 +486,8 @@ var SPEAKERS={
   rover:      {label:"LUNAR ROVER",  cls:"art",  voice:{rate:1.1,pitch:1.12}},
   eagle:      {label:"EAGLE",        cls:"art",  voice:{rate:0.68,pitch:0.82}},
   surveyor:   {label:"SURVEYOR 1",   cls:"art",  voice:{rate:0.95,pitch:1.02}},
-  voyager:    {label:"VOYAGER 1",    cls:"art",  voice:{rate:0.78,pitch:0.78}}
+  voyager:    {label:"VOYAGER 1",    cls:"art",  voice:{rate:0.78,pitch:0.78}},
+  pioneer10:  {label:"PIONEER 10",   cls:"art",  voice:{rate:0.82,pitch:0.8}}
 };
 
 /* ====================================================================
@@ -967,14 +968,27 @@ var VOYAGER_FALLBACK={segments:[
   {t:39.83,speaker:"voyager",text:"Space is really big and really empty, and there's nothing out here to stop me."},
   {t:45.69,speaker:"voyager",text:"Same record you heard at the start, just a lot further away now."}
 ]};
+/* Pioneer 11 zone — Pioneer 10 narrates about its twin sister (Pioneer 11:
+   Saturn flyby, signal dark in '95, heading to Aquila) and then itself (Pioneer
+   10: first through the asteroid belt, the plaque, gone silent in 2003). The
+   Pioneer 11 3D model shows while Pioneer 10 speaks. */
+var PIONEER11_FALLBACK={segments:[
+  {t:0,speaker:"pioneer10",text:"This one's my twin sister, Pioneer Eleven. Launched a year after me, went past Jupiter, then swung by Saturn because she always wanted to see one more thing — first close-up pictures of Saturn's rings. She is a wonder."},
+  {t:12.26,speaker:"pioneer10",text:"Her signal went dark in '95. She's heading out towards Aquila. I don't know if she'll get there, but she's still moving. She was always the braver one. Miss her."},
+  {t:18.24,speaker:"pioneer10",text:"But this is me, actually — Pioneer Ten. First machine through the asteroid belt, first to reach Jupiter. I had this little plaque on me — drawing of a man and a woman, in case someone found me."},
+  {t:30.80,speaker:"pioneer10",text:"For some people, like, out here first, you know. Signal got weaker over the years. 2003. I listened one last time, heard nothing. So as far as Earth is concerned, I am gone — but I'm still here."},
+  {t:38.51,speaker:"pioneer10",text:"Fifty years of falling through the dark. Seen Jupiter's storms, the asteroid belt, the edge of everything humans had reached."},
+  {t:51.38,speaker:"pioneer10",text:"Watched my sister go quiet, watched my friends on Mars go dark one by one."},
+  {t:68.01,speaker:"pioneer10",text:"I'm okay with it though. I don't need to be heard to be real."}
+]};
 /* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones).
    The moonSilence zone (mars→moon transition) carries the "…the wind stopped…
    Moon has no atmosphere…" intro narration. The deepHum zone (moon→deepspace
    transition) carries the "hum is radio waves from deep space" intro. The ROVER
    zone carries the rover's own dialogue (Echo meets the Lunar Rover). All play
    with captions. */
-var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3",surveyor:"/audio/surveyor.mp3",deepHum:"/audio/deepHum.mp3",voyager:"/audio/voyager.mp3"};
-var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,rover:ROVER_FALLBACK,eagle:EAGLE_FALLBACK,surveyor:SURVEYOR_FALLBACK,deepHum:DEEPHUM_FALLBACK,voyager:VOYAGER_FALLBACK};
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3",surveyor:"/audio/surveyor.mp3",deepHum:"/audio/deepHum.mp3",voyager:"/audio/voyager.mp3",pioneer11:"/audio/pioneer11.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,rover:ROVER_FALLBACK,eagle:EAGLE_FALLBACK,surveyor:SURVEYOR_FALLBACK,deepHum:DEEPHUM_FALLBACK,voyager:VOYAGER_FALLBACK,pioneer11:PIONEER11_FALLBACK};
 function detectAssets(){
   for(var kid in KNOWN_AUDIO){
     ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
@@ -1111,7 +1125,7 @@ onScroll();
    when its zone is active. Drop a model at public/models/<id>.glb and add it
    to MODEL_ZONES to use it.
    ==================================================================== */
-var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insight.glb", opportunity:"/models/opportunity.glb", spirit:"/models/spirit.glb", viking:"/models/viking.glb", rover:"/models/rover.glb", eagle:"/models/eagle.glb", voyager:"/models/voyager.glb" };
+var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insight.glb", opportunity:"/models/opportunity.glb", spirit:"/models/spirit.glb", viking:"/models/viking.glb", rover:"/models/rover.glb", eagle:"/models/eagle.glb", voyager:"/models/voyager.glb", pioneer11:"/models/pioneer11.glb" };
 var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, threeReady=false;
 
 function zoneById(id){ for(var i=0;i<ZONES.length;i++){ if(ZONES[i].id===id)return ZONES[i]; } return null; }
