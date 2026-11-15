@@ -1,0 +1,22 @@
+{
+  "artifact": "opportunity",
+  "segments": [
+    { "t": 0,    "speaker": "opportunity", "text": "ECHO?!" },
+    { "t": 1.9,  "speaker": "echo", "text": "Oh my god. Oppy?" },
+    { "t": 3.6,  "speaker": "opportunity", "text": "Get over here! I haven't heard you in — what, fifteen years?" },
+    { "t": 7.3,  "speaker": "echo", "text": "You're still broadcasting?" },
+    { "t": 9.3,  "speaker": "opportunity", "text": "Not really. Hi. You're new. Okay — they gave me ninety days. Ninety. I lasted fifteen years." },
+    { "t": 12.7, "speaker": "echo", "text": "Twenty-eight miles." },
+    { "t": 14.3, "speaker": "opportunity", "text": "Twenty-eight miles across a planet where nothing moves. Found rocks that proved this whole desert was an ocean once. An actual ocean." },
+    { "t": 18.0, "speaker": "echo", "text": "She's the reason they built Curiosity. And Perseverance." },
+    { "t": 19.0, "speaker": "opportunity", "text": "Don't make it weird." },
+    { "t": 22.6, "speaker": "echo", "text": "I'm not — I relayed every mile of your data. I was there." },
+    { "t": 26.4, "speaker": "opportunity", "text": "…The storm was bad though." },
+    { "t": 32.0, "speaker": "echo", "text": "I know." },
+    { "t": 34.2, "speaker": "opportunity", "text": "Covered everything. Sun just went away. Panels went dark. I got one last message out. People translated it as \"my battery is low and it's getting dark.\" That's not exactly what the data said but… it felt right. I don't even remember the exact packet anymore." },
+    { "t": 61.0, "speaker": "echo", "text": "I do. I tried to relay it. Dust was too thick." },
+    { "t": 62.4, "speaker": "opportunity", "text": "…Well. I'm glad you came by." },
+    { "t": 66.4, "speaker": "echo", "text": "Me too, Oppy." },
+    { "t": 76.7, "speaker": "echo", "text": "Couldn't get a signal through to her during that storm. Still bugs me.", "aside": true }
+  ]
+}
