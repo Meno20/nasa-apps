@@ -1,9 +1,10 @@
 {
-  "artifact": null,
+  "artifact": "rover",
   "segments": [
-    { "t": 0, "speaker": "echo", "text": "…The wind stopped." },
-    { "t": 2.32, "speaker": "echo", "text": "You notice that?" },
-    { "t": 3.51, "speaker": "echo", "text": "Moon has no atmosphere. No air, no sound. You could scream right next to me and I wouldn't hear you." },
-    { "t": 10.95, "speaker": "echo", "text": "Just the radio in your helmet and your own breathing." }
+    { "t": 0,    "speaker": "rover", "text": "Wait. Is someone — is someone there?" },
+    { "t": 3.52, "speaker": "echo",  "text": "Hey. Yeah, we're here." },
+    { "t": 7.44, "speaker": "rover", "text": "Oh my god. I haven't seen anyone in over fifty years. I'm a car. On the Moon. They folded me up like origami, stuffed me in the bottom of the lunar module. Gene and Jack unfolded me and we drove thirty-five kilometers across the valley. Bounced over craters, kicked up dust that just hung in the air because there's barely any gravity. And then they left. Parked me and walked away. I watched them go." },
+    { "t": 35.41, "speaker": "echo",  "text": "Nobody's been back since." },
+    { "t": 38.67, "speaker": "rover", "text": "I know. Tire tracks are still fresh though. No wind, no rain. They'll be fresh forever. So… thanks. Seriously." }
   ]
 }

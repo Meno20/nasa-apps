@@ -912,13 +912,22 @@ var VIKING_FALLBACK={segments:[
   {t:0,speaker:"echo",text:"This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech."},
   {t:14.58,speaker:"echo",text:"Scooped up dirt, ran the first biology experiment on another planet — looking for microbes. Results were weird. Inconclusive. Scientists are still arguing about it fifty years later. But it asked the question. Every rover after it is here because Viking asked first."}
 ]};
-/* moon-silence narration — now plays in the ROVER zone (the first moon
-   artifact), introducing the moon's eerie silence as the rover model appears. */
+/* moon-silence narration — plays in the moonSilence transition zone (mars→moon),
+   introducing the moon's eerie silence as you leave the martian wind behind. */
 var MOONSILENCE_FALLBACK={segments:[
   {t:0,speaker:"echo",text:"…The wind stopped."},
   {t:2.32,speaker:"echo",text:"You notice that?"},
   {t:3.51,speaker:"echo",text:"Moon has no atmosphere. No air, no sound. You could scream right next to me and I wouldn't hear you."},
   {t:10.95,speaker:"echo",text:"Just the radio in your helmet and your own breathing."}
+]};
+/* Lunar Rover dialogue — Echo meets the Apollo 17 Lunar Rover, parked on the
+   Moon for over fifty years. Plays in the ROVER zone with the rover model. */
+var ROVER_FALLBACK={segments:[
+  {t:0,speaker:"rover",text:"Wait. Is someone — is someone there?"},
+  {t:3.52,speaker:"echo",text:"Hey. Yeah, we're here."},
+  {t:7.44,speaker:"rover",text:"Oh my god. I haven't seen anyone in over fifty years. I'm a car. On the Moon. They folded me up like origami, stuffed me in the bottom of the lunar module. Gene and Jack unfolded me and we drove thirty-five kilometers across the valley. Bounced over craters, kicked up dust that just hung in the air because there's barely any gravity. And then they left. Parked me and walked away. I watched them go."},
+  {t:35.41,speaker:"echo",text:"Nobody's been back since."},
+  {t:38.67,speaker:"rover",text:"I know. Tire tracks are still fresh though. No wind, no rain. They'll be fresh forever. So… thanks. Seriously."}
 ]};
 var EAGLE_FALLBACK={segments:[
   {t:0,speaker:"echo",text:"…This is the Eagle. The bottom half."},
@@ -928,13 +937,11 @@ var EAGLE_FALLBACK={segments:[
   {t:30.62,speaker:"echo",text:"…Yeah. I don't think I need to add anything."}
 ]};
 /* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones).
-   The moon-silence narration ("…the wind stopped… Moon has no atmosphere…") is
-   mapped to the ROVER zone — it plays with the rover model + captions when you
-   arrive at the first moon artifact, rather than in the silent mars→moon
-   transition zone before it. The moonSilence zone itself is now a quiet visual
-   bridge (the planet change carries it). */
-var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3"};
-var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,rover:MOONSILENCE_FALLBACK,eagle:EAGLE_FALLBACK};
+   The moonSilence zone (mars→moon transition) carries the "…the wind stopped…
+   Moon has no atmosphere…" intro narration. The ROVER zone carries the rover's
+   own dialogue (Echo meets the Lunar Rover). Both play with captions. */
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,rover:ROVER_FALLBACK,eagle:EAGLE_FALLBACK};
 function detectAssets(){
   for(var kid in KNOWN_AUDIO){
     ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
@@ -1328,7 +1335,8 @@ var CHECKPOINTS=[
   {id:"opportunity",  depth:4750},
   {id:"spirit",       depth:5600},
   {id:"viking",       depth:6250},
-  {id:"rover",        depth:7450},   /* mid-rover zone — model + moon-silence narration */
+  {id:"moonSilence",  depth:6750},   /* mars→moon transition: "the wind stopped…" */
+  {id:"rover",        depth:7450},   /* Lunar Rover dialogue (Echo meets the rover) */
   {id:"eagle",        depth:8300},
   {id:"surveyor",     depth:8950},
   {id:"deepHum",      depth:9400},   /* midpoint of the deepHum transition */
