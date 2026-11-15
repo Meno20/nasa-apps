@@ -1,0 +1,11 @@
+{
+  "artifact": "insight",
+  "segments": [
+    { "t": 0,     "speaker": "echo",    "text": "There. InSight?" },
+    { "t": 2.88,  "speaker": "insight", "text": "…Oh. Hey." },
+    { "t": 4.28,  "speaker": "echo",    "text": "You okay?" },
+    { "t": 6.37,  "speaker": "insight", "text": "I'm good. I just… can't move. Never could, actually. Landed, unfolded my arms, pressed my seismometer into the dirt. That was the whole job." },
+    { "t": 18.39, "speaker": "echo",    "text": "What were you listening for?" },
+    { "t": 20.86, "speaker": "insight", "text": "Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundreds of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does. But thanks for the light. Even for a little bit." }
+  ]
+}

@@ -952,9 +952,17 @@ var PERSEVERANCE_FALLBACK={segments:[
   {t:52.5,speaker:"echo",text:"And the reason there was a little helicopter flying around on Mars."},
   {t:56.0,speaker:"echo",text:"First powered flight on another planet. Not bad for a crash."}
 ]};
+var INSIGHT_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"There. InSight?"},
+  {t:2.88,speaker:"insight",text:"…Oh. Hey."},
+  {t:4.28,speaker:"echo",text:"You okay?"},
+  {t:6.37,speaker:"insight",text:"I'm good. I just… can't move. Never could, actually. Landed, unfolded my arms, pressed my seismometer into the dirt. That was the whole job."},
+  {t:18.39,speaker:"echo",text:"What were you listening for?"},
+  {t:20.86,speaker:"insight",text:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundreds of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does. But thanks for the light. Even for a little bit."}
+]};
 /* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones) */
-var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3"};
-var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK};
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK};
 function detectAssets(){
   for(var kid in KNOWN_AUDIO){
     ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
@@ -1062,7 +1070,7 @@ onScroll();
    when its zone is active. Drop a model at public/models/<id>.glb and add it
    to MODEL_ZONES to use it.
    ==================================================================== */
-var MODEL_ZONES={ perseverance:"/models/perseverance.glb" };
+var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insight.glb" };
 var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, threeReady=false;
 
 function zoneById(id){ for(var i=0;i<ZONES.length;i++){ if(ZONES[i].id===id)return ZONES[i]; } return null; }
