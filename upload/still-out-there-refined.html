@@ -700,7 +700,7 @@ var ERA_BOUNDS={ lobby:1400, mars:6500, moon:9200, deepspace:EPOCH_DEPTH };
    they're picked up automatically.
    ==================================================================== */
 var ZONES=[
-  {id:"perseverance",range:[1600,3400]},
+  {id:"perseverance",range:[1400,3400]},
   {id:"insight",      range:[3400,4300]},
   {id:"opportunity",  range:[4300,5200]},
   {id:"spirit",       range:[5200,6000]},
@@ -1002,7 +1002,11 @@ function syncAudioCaption(){
 
 function updateNarration(){
   if(audioMode) syncAudioCaption();                  /* per-frame caption sync (incl. cold open) */
-  if(!state.coldOpenDone) return;                    /* let the cold open play fully; dive starts when it's done */
+  if(!state.coldOpenDone){
+    /* as soon as the user scrolls into Mars (the first zone), interrupt the cold open */
+    if(state.started && camDepth>=1400){ state.coldOpenDone=true; stopAudioMode(); cancelSpeech(); currentZoneId=null; }
+    else return;
+  }
   var z=zoneAtDepth(camDepth);
   var zid=z?z.id:null;
   if(zid===currentZoneId) return;                    /* same zone — no switch */
@@ -1064,11 +1068,11 @@ var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, three
 function zoneById(id){ for(var i=0;i<ZONES.length;i++){ if(ZONES[i].id===id)return ZONES[i]; } return null; }
 /* model stays visible across the whole zone (fade in/out at the edges), not just at the depth point */
 function modelOpacity(d, range){
-  var margin=200;
-  if(d<range[0]-margin)return 0;
-  if(d<range[0])return (d-(range[0]-margin))/margin;
+  var fadeIn=60, fadeOut=200;
+  if(d<range[0]-fadeIn)return 0;
+  if(d<range[0])return (d-(range[0]-fadeIn))/fadeIn;
   if(d<=range[1])return 1;
-  if(d<range[1]+margin)return 1-((d-range[1])/margin);
+  if(d<range[1]+fadeOut)return 1-((d-range[1])/fadeOut);
   return 0;
 }
 function setModelOpacity(obj, op){ obj.traverse(function(child){ if(child.isMesh&&child.material){ child.material.transparent=true; child.material.opacity=op; } }); }
