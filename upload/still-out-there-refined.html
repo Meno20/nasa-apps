@@ -821,20 +821,16 @@ function playGoldenMoment(){ if(!AC)return; setLayer("vinyl",0.12); startCrackle
 function startGoldenRecord(){ if(!AC)return; setLayer("vinyl",0.08); startCrackle(); var now=AC.currentTime; var notes=[196,246.9,293.7,246.9,196,293.7,392]; notes.forEach(function(f,i){ var t=now+i*0.9; var o=AC.createOscillator();o.type="triangle";o.frequency.value=f; var g=AC.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.035,t+0.08);g.gain.exponentialRampToValueAtTime(0.0001,t+0.8); var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=1400; o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+0.9); }); }
 
 /* ====================================================================
-   SPEECH + SCENE PLAYER
-   A "scene" is an ordered list of beats. The player walks the list,
-   speaking each {s,t} beat (sentence-by-sentence for long text) and
-   pausing on {pause:ms}.
+   CAPTIONS + NARRATION
+   Narration plays via the HTML5 audio element (real recorded audio).
+   Captions sync to the audio's transcript timecodes. No TTS.
    ==================================================================== */
-var synth=window.speechSynthesis, voices=[];
-function loadVoices(){ voices=synth?synth.getVoices():[]; }
-if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
-function pickVoice(){ if(!voices.length)loadVoices(); var v=null; for(var i=0;i<voices.length;i++){ if(/en[-_]?US/i.test(voices[i].lang)){v=voices[i];break;} } if(!v){ for(var i=0;i<voices.length;i++){ if(/^en/i.test(voices[i].lang)){v=voices[i];break;} } } if(!v&&voices.length)v=voices[0]; return v; }
-function splitSentences(t){ var parts=t.match(/[^.!?…]+[.!?…]*/g)||[t]; return parts.map(function(s){return s.trim();}).filter(Boolean); }
 /* split text into short word-chunks so the caption never exceeds one line */
 function splitChunks(text,maxWords){
   maxWords=maxWords||8;
-  var sentences=splitSentences(text), chunks=[];
+  var parts=text.match(/[^.!?…]+[.!?…]*/g)||[text];
+  var sentences=parts.map(function(s){return s.trim();}).filter(Boolean);
+  var chunks=[];
   sentences.forEach(function(sen){
     var words=sen.split(/\s+/).filter(Boolean);
     if(words.length<=maxWords){ chunks.push(sen); return; }
@@ -844,7 +840,7 @@ function splitChunks(text,maxWords){
 }
 
 var currentCancelToken=0;
-function cancelSpeech(){ currentCancelToken++; if(synth)try{synth.cancel();}catch(e){} }
+function cancelSpeech(){ currentCancelToken++; }
 
 function eraCaptionClass(){ if(state.era==="moon")return "moon"; if(state.era==="deepspace")return "space clear"; return null; }
 
@@ -857,61 +853,6 @@ function showCaption(speakerKey,text,cls,aside){
   capText.textContent=text; if(state.captionsOn)caption.classList.add("on");
 }
 function hideCaption(){ caption.classList.remove("on"); }
-
-/* speak one beat (all its sentences). bails if cancelSpeech is called. */
-function speakBeat(beat,onDone){
-  if(beat.pause){ if(onDone)setTimeout(onDone,beat.pause); return; }
-  var sp=SPEAKERS[beat.s]||SPEAKERS.echo;
-  var myToken=currentCancelToken;
-  var chunks=splitChunks(beat.t,8); var ci=0;
-  function speakNext(){
-    if(myToken!==currentCancelToken)return;
-    if(ci>=chunks.length){ if(onDone)setTimeout(onDone, beat.s==="echo"?(beat.aside?500:450):340); return; }
-    var line=chunks[ci++];
-    showCaption(beat.s,line,eraCaptionClass(),beat.aside);   /* one chunk = one line */
-    var estMs=Math.max(1400,line.length*55);                 /* min display time + est. speak */
-    var start=Date.now();
-    function advance(delay){ if(myToken===currentCancelToken)setTimeout(speakNext,delay); }
-    if(!synth){ advance(estMs); return; }
-    var fired=false;
-    /* fallback: never wait longer than estMs+1200 (catches stalled TTS) */
-    var to=setTimeout(function(){ if(!fired){ fired=true; advance(0); } }, estMs+1200);
-    try{
-      var u=new SpeechSynthesisUtterance(line); var v=pickVoice(); if(v)u.voice=v;
-      u.rate=sp.voice.rate*(beat.aside?0.9:1); u.pitch=sp.voice.pitch; u.volume=state.muted?0:1;
-      u.onend=function(){
-        if(fired)return; fired=true; clearTimeout(to);
-        /* ensure each line is readable for at least estMs, even if TTS fires early */
-        var wait=Math.max(120, estMs-(Date.now()-start));
-        advance(wait);
-      };
-      u.onerror=function(){ if(fired)return; fired=true; clearTimeout(to); advance(200); };
-      synth.speak(u);
-    }catch(e){ clearTimeout(to); advance(1200); }
-  }
-  speakNext();
-}
-
-/* --- (1) cold open: one-time linear play on Begin --- */
-var scenePlayer={active:false,conv:null,idx:0,token:0,onDone:null};
-function playScene(key,onDone){
-  var S=SCENES[key]; if(!S){ if(onDone)onDone(); return; }
-  cancelSpeech();
-  scenePlayer.active=true; scenePlayer.conv=S.conv; scenePlayer.idx=0;
-  scenePlayer.token=currentCancelToken; scenePlayer.onDone=onDone||null;
-  sceneStep();
-}
-function sceneStep(){
-  if(!scenePlayer.active)return;
-  if(scenePlayer.token!==currentCancelToken)return;
-  if(scenePlayer.idx>=scenePlayer.conv.length){
-    scenePlayer.active=false; var cb=scenePlayer.onDone; scenePlayer.onDone=null;
-    if(cb)cb(); return;
-  }
-  var beat=scenePlayer.conv[scenePlayer.idx++];
-  if(beat.pause){ setTimeout(sceneStep,beat.pause); return; }
-  speakBeat(beat,sceneStep);
-}
 
 /* --- (2) zone-based narration: scroll picks the zone; each zone plays its
    own audio+transcript if available, otherwise falls back to the TTS scene. --- */
@@ -974,7 +915,7 @@ function detectAssets(){
     fetch("/transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
   });
 }
-function initNarrAudio(){ narrAudio=document.getElementById("narr-audio"); if(narrAudio){ narrAudio.volume=state.muted?0:1; narrAudio.addEventListener("error",function(){ if(audioMode){ var zid=audioZoneId; stopAudioMode(); if(zid&&SCENES[zid])playScene(zid,null); } }); } }
+function initNarrAudio(){ narrAudio=document.getElementById("narr-audio"); if(narrAudio){ narrAudio.volume=state.muted?0:1; narrAudio.addEventListener("error",function(){ if(audioMode){ stopAudioMode(); } }); } }
 /* play narration via the HTML5 audio element (unlocked by the Begin click) */
 function startAudioMode(id){
   var a=ASSETS[id]; if(!a||!a.audio||!a.transcript||!narrAudio)return false;
@@ -984,7 +925,7 @@ function startAudioMode(id){
   /* show the first caption immediately, even if autoplay blocks the play() */
   var segs=a.transcript.segments||[];
   if(segs.length){ var chunks=splitChunks(segs[0].text||"",8); showCaption(segs[0].speaker||"echo", chunks[0]||"", eraCaptionClass(), segs[0].aside); currentNarrationKey=id+":0:0"; }
-  var p=narrAudio.play(); if(p&&p.catch)p.catch(function(){ audioMode=false; audioZoneId=null; if(SCENES[id])playScene(id,null); });
+  var p=narrAudio.play(); if(p&&p.catch)p.catch(function(){ audioMode=false; audioZoneId=null; });
   return true;
 }
 function stopAudioMode(){ audioMode=false; audioZoneId=null; if(narrAudio)narrAudio.pause(); }
@@ -1022,7 +963,7 @@ function updateNarration(){
   handleSceneEntry(zid);
   if(!zid){ hideCaption(); return; }
   if(ASSETS[zid]&&ASSETS[zid].audio&&ASSETS[zid].transcript){ startAudioMode(zid); }
-  else if(SCENES[zid]){ playScene(zid,null); }       /* TTS fallback */
+  else { hideCaption(); }                            /* no audio for this zone yet — no narration */
 }
 
 /* ====================================================================
@@ -1302,18 +1243,15 @@ scene.addEventListener("click",function(e){
    CONTROLS
    ==================================================================== */
 btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(state.captionsOn){ if(capText.textContent)caption.classList.add("on"); } else { hideCaption(); } });
-btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(narrAudio)narrAudio.volume=state.muted?0:1; if(state.muted&&synth)try{synth.cancel();}catch(e){} });
+btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(narrAudio)narrAudio.volume=state.muted?0:1; });
 var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this line"; document.body.appendChild(replay);
-replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(ASSETS[currentZoneId]&&ASSETS[currentZoneId].audio&&ASSETS[currentZoneId].transcript){ stopAudioMode(); startAudioMode(currentZoneId); } else if(SCENES[currentZoneId]){ cancelSpeech(); playScene(currentZoneId,null); } });
+replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(ASSETS[currentZoneId]&&ASSETS[currentZoneId].audio&&ASSETS[currentZoneId].transcript){ stopAudioMode(); startAudioMode(currentZoneId); } });
 
 /* ====================================================================
    START GATE
    ==================================================================== */
-function startColdOpen(retries){
-  retries=retries||0;
+function startColdOpen(){
   if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){ startAudioMode("cold"); }
-  else if(retries<30){ setTimeout(function(){startColdOpen(retries+1);},200); }
-  else { playScene("cold", function(){state.coldOpenDone=true;}); }
 }
 function begin(){
   if(state.started)return; state.started=true;
