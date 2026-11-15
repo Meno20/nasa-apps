@@ -23,7 +23,8 @@
   --hud-border:rgba(160,180,230,.18);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:auto;overscroll-behavior:none}
+html{scroll-behavior:auto;overscroll-behavior:none;scrollbar-width:none;-ms-overflow-style:none}
+html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 body{
   background:var(--bg);
   color:var(--text);
@@ -82,7 +83,7 @@ body.dive-active{touch-action:none}
   position:fixed;z-index:6;width:12px;height:12px;border-radius:50%;
   background:radial-gradient(circle, var(--echo-bright) 0%, var(--echo) 40%, rgba(60,180,220,0) 72%);
   box-shadow:0 0 14px 4px rgba(120,220,255,.7),0 0 36px 9px rgba(80,160,220,.3);
-  left:50%;top:50%;transform:translate(-50%,-50%);
+  left:7%;top:70%;transform:translate(-50%,-50%);
   transition:opacity .8s ease;pointer-events:none;
 }
 #echo::after{content:"";position:absolute;inset:-9px;border-radius:50%;
@@ -1260,12 +1261,11 @@ function renderArtifacts(){
   }
 }
 function renderEcho(){
-  /* Echo sits on the center line, leading the camera by a fixed depth */
+  /* Echo floats in the bottom-left as a companion guide. Its brightness still
+     reacts to depth (brighter in deep space as the "signal clears" hint). */
   var lead=420;
   var target=Math.min(TOTAL_DEPTH,camDepth+lead);
-  /* all waypoints are at (0,0), so Echo projects to screen center */
-  var p=project(target,camDepth);
-  echoEl.style.left=cx+"px"; echoEl.style.top=cy+"px";
+  var p=project(target,camDepth); /* kept for potential future use */
   /* deep-space clarity inversion: Echo gets BRIGHTER out there (the hint) */
   var deepBoost=camDepth>9000?Math.min(1.25,1+(camDepth-9000)/2600):1;
   echoEl.style.opacity=state.started?deepBoost:0;
