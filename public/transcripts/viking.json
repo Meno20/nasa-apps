@@ -1,7 +1,15 @@
 {
   "artifact": "viking",
   "segments": [
-    { "t": 0, "speaker": "echo", "text": "This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech." },
-    { "t": 14.58, "speaker": "echo", "text": "Scooped up dirt, ran the first biology experiment on another planet — looking for microbes. Results were weird. Inconclusive. Scientists are still arguing about it fifty years later. But it asked the question. Every rover after it is here because Viking asked first." }
+    {
+      "t": 1.74,
+      "speaker": "echo",
+      "text": "This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech."
+    },
+    {
+      "t": 14.58,
+      "speaker": "echo",
+      "text": "Scooped up dirt, ran the first biology experiment on another planet — looking for microbes. Results were weird. Inconclusive. Scientists are still arguing about it fifty years later. But it asked the question. Every rover after it is here because Viking asked first."
+    }
   ]
 }

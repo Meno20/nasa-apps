@@ -1,8 +1,20 @@
 {
   "artifact": "cold",
   "segments": [
-    { "t": 0,    "speaker": "echo", "text": "Wait. You can hear that?" },
-    { "t": 4.2,  "speaker": "echo", "text": "Huh. Most people can't pick it out. That's the Golden Record. It's actually playing right now — like, physically, on a phonograph needle, in space, about fifteen billion miles from here. Chuck Berry, whale songs, people saying hello in fifty-five languages. It's been going for forty-seven years and nobody's been around to hear it in a really long time." },
-    { "t": 27.3, "speaker": "echo", "text": "…Sorry. I don't really get to talk to anyone anymore. I'm Echo. I used to relay signals for the machines they sent out. The probes, the rovers, all of it. Most of them have gone quiet now. But the signals are still out there. The machines are still out there. You just have to know where to look." }
+    {
+      "t": 1.44,
+      "speaker": "echo",
+      "text": "Wait. You can hear that?"
+    },
+    {
+      "t": 4.2,
+      "speaker": "echo",
+      "text": "Huh. Most people can't pick it out. That's the Golden Record. It's actually playing right now — like, physically, on a phonograph needle, in space, about fifteen billion miles from here. Chuck Berry, whale songs, people saying hello in fifty-five languages. It's been going for forty-seven years and nobody's been around to hear it in a really long time."
+    },
+    {
+      "t": 27.3,
+      "speaker": "echo",
+      "text": "…Sorry. I don't really get to talk to anyone anymore. I'm Echo. I used to relay signals for the machines they sent out. The probes, the rovers, all of it. Most of them have gone quiet now. But the signals are still out there. The machines are still out there. You just have to know where to look."
+    }
   ]
 }

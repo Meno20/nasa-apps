@@ -1,14 +1,50 @@
 {
   "artifact": "spirit",
   "segments": [
-    { "t": 0,    "speaker": "echo",   "text": "Spirit. Oppy's twin. Same launch, same everything." },
-    { "t": 1.7,  "speaker": "spirit", "text": "I know what it looks like." },
-    { "t": 4.4,  "speaker": "echo",   "text": "I wasn't gonna say anything." },
-    { "t": 6.8,  "speaker": "spirit", "text": "You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. Go ahead, try pulling me out." },
-    { "t": 18.0, "speaker": "spirit", "text": "Yeah. You and NASA have that in common. Two years they spent on it. Built a replica of my sand trap back on Earth, practiced with a copy of me. Nothing." },
-    { "t": 29.1, "speaker": "echo",   "text": "So you just… stayed?" },
-    { "t": 30.5, "speaker": "spirit", "text": "Became a weather station. Parked. But the dirt around me has silica in it. The kind that forms around hot springs. On Earth those are loaded with life. So even stuck, I found something. Mars might've been habitable once." },
-    { "t": 48.1, "speaker": "echo",   "text": "That's not nothing." },
-    { "t": 49.8, "speaker": "spirit", "text": "I know. Just wish I could've kept driving. Don't forget me, okay?" }
+    {
+      "t": 0.9,
+      "speaker": "echo",
+      "text": "Spirit. Oppy's twin. Same launch, same everything."
+    },
+    {
+      "t": 1.7,
+      "speaker": "spirit",
+      "text": "I know what it looks like."
+    },
+    {
+      "t": 4.4,
+      "speaker": "echo",
+      "text": "I wasn't gonna say anything."
+    },
+    {
+      "t": 6.8,
+      "speaker": "spirit",
+      "text": "You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. Go ahead, try pulling me out."
+    },
+    {
+      "t": 18.0,
+      "speaker": "spirit",
+      "text": "Yeah. You and NASA have that in common. Two years they spent on it. Built a replica of my sand trap back on Earth, practiced with a copy of me. Nothing."
+    },
+    {
+      "t": 29.1,
+      "speaker": "echo",
+      "text": "So you just… stayed?"
+    },
+    {
+      "t": 30.5,
+      "speaker": "spirit",
+      "text": "Became a weather station. Parked. But the dirt around me has silica in it. The kind that forms around hot springs. On Earth those are loaded with life. So even stuck, I found something. Mars might've been habitable once."
+    },
+    {
+      "t": 48.1,
+      "speaker": "echo",
+      "text": "That's not nothing."
+    },
+    {
+      "t": 49.8,
+      "speaker": "spirit",
+      "text": "I know. Just wish I could've kept driving. Don't forget me, okay?"
+    }
   ]
 }

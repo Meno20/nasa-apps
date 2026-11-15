@@ -1,13 +1,45 @@
 {
   "artifact": "surveyor",
   "segments": [
-    { "t": 0,     "speaker": "echo",     "text": "Oh, this little guy. Surveyor 1." },
-    { "t": 3.40,  "speaker": "surveyor", "text": "Hi. I was just a test, honestly. Nobody knew if the Moon was solid or if you'd sink right into it, so they sent me first." },
-    { "t": 10.33, "speaker": "surveyor", "text": "I landed softly. Ground held." },
-    { "t": 12.79, "speaker": "surveyor", "text": "That's it. That's it. Let's see if that counts." },
-    { "t": 16.43, "speaker": "echo",     "text": "Armstrong stepped onto solid ground because you were first and proved it wouldn't swallow him." },
-    { "t": 22.24, "speaker": "echo",     "text": "You're just a tiny tripod with a camera." },
-    { "t": 24.46, "speaker": "surveyor", "text": "I didn't think of it that way." },
-    { "t": 27.67, "speaker": "echo",     "text": "Well, you should." }
+    {
+      "t": 1.02,
+      "speaker": "echo",
+      "text": "Oh, this little guy. Surveyor 1."
+    },
+    {
+      "t": 3.4,
+      "speaker": "surveyor",
+      "text": "Hi. I was just a test, honestly. Nobody knew if the Moon was solid or if you'd sink right into it, so they sent me first."
+    },
+    {
+      "t": 10.33,
+      "speaker": "surveyor",
+      "text": "I landed softly. Ground held."
+    },
+    {
+      "t": 12.79,
+      "speaker": "surveyor",
+      "text": "That's it. That's it. Let's see if that counts."
+    },
+    {
+      "t": 16.43,
+      "speaker": "echo",
+      "text": "Armstrong stepped onto solid ground because you were first and proved it wouldn't swallow him."
+    },
+    {
+      "t": 22.24,
+      "speaker": "echo",
+      "text": "You're just a tiny tripod with a camera."
+    },
+    {
+      "t": 24.46,
+      "speaker": "surveyor",
+      "text": "I didn't think of it that way."
+    },
+    {
+      "t": 27.67,
+      "speaker": "echo",
+      "text": "Well, you should."
+    }
   ]
 }

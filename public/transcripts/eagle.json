@@ -1,10 +1,30 @@
 {
   "artifact": "eagle",
   "segments": [
-    { "t": 0,     "speaker": "echo",  "text": "…This is the Eagle. The bottom half." },
-    { "t": 4.81,  "speaker": "eagle", "text": "I held them while they slept their first night on the Moon." },
-    { "t": 9.17,  "speaker": "eagle", "text": "When they climbed back into the top half and went home, I stayed. I was the launchpad. The landing gear. The footprints around me haven't moved in fifty-five years. They'll outlast every building on Earth." },
-    { "t": 23.07, "speaker": "eagle", "text": "The plaque says \"We came in peace for all mankind.\" I'm still holding that too." },
-    { "t": 30.74, "speaker": "echo",  "text": "…Yeah. I don't think I need to add anything." }
+    {
+      "t": 1.8,
+      "speaker": "echo",
+      "text": "…This is the Eagle. The bottom half."
+    },
+    {
+      "t": 4.81,
+      "speaker": "eagle",
+      "text": "I held them while they slept their first night on the Moon."
+    },
+    {
+      "t": 9.17,
+      "speaker": "eagle",
+      "text": "When they climbed back into the top half and went home, I stayed. I was the launchpad. The landing gear. The footprints around me haven't moved in fifty-five years. They'll outlast every building on Earth."
+    },
+    {
+      "t": 23.07,
+      "speaker": "eagle",
+      "text": "The plaque says \"We came in peace for all mankind.\" I'm still holding that too."
+    },
+    {
+      "t": 30.74,
+      "speaker": "echo",
+      "text": "…Yeah. I don't think I need to add anything."
+    }
   ]
 }

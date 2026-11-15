@@ -1,8 +1,20 @@
 {
   "artifact": null,
   "segments": [
-    { "t": 0,     "speaker": "echo", "text": "Oh, the hum you hear right now isn't music — it's radio waves coming from deep space, slowed down so you can hear them." },
-    { "t": 9.66,  "speaker": "echo", "text": "We're really far out now, and the machines here aren't really on any planet — they're just falling through the dark." },
-    { "t": 18.53, "speaker": "echo", "text": "Some of them have been falling for fifty years." }
+    {
+      "t": 1.8,
+      "speaker": "echo",
+      "text": "Oh, the hum you hear right now isn't music — it's radio waves coming from deep space, slowed down so you can hear them."
+    },
+    {
+      "t": 9.66,
+      "speaker": "echo",
+      "text": "We're really far out now, and the machines here aren't really on any planet — they're just falling through the dark."
+    },
+    {
+      "t": 18.53,
+      "speaker": "echo",
+      "text": "Some of them have been falling for fifty years."
+    }
   ]
 }

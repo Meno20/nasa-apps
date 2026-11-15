@@ -4,7 +4,7 @@
  * "Still Out There" — a scroll-driven cosmic museum.
  *
  * A forgotten satellite named Echo guides you backward through time, diving
- * deeper into space to meet twelve real machines humanity left among the stars.
+ * deeper into space to meet eleven real machines humanity left among the stars.
  * The experience lives in a self-contained HTML file (public/still-out-there.html)
  * and is embedded here as a full-viewport, fullscreen iframe so the scroll-driven
  * "dive" mechanics work exactly as designed.

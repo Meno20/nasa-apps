@@ -1,11 +1,35 @@
 {
   "artifact": "perseverance",
   "segments": [
-    { "t": 0,    "speaker": "echo", "text": "That's Mars. You hear the wind? Perseverance recorded it a couple years ago. First time anyone heard wind on another planet. And that wreckage down there — the, umm, crumpled up metal in the crater — that's Perseverance's descent stage." },
-    { "t": 13.9, "speaker": "echo", "text": "Brutal. They call it the sky crane. Came in at about twelve thousand miles an hour. Burned off the heat shield, popped the parachute, and then it did this incredible thing: hovered sixty feet above the ground and lowered the actual rover down on cables." },
-    { "t": 18.4, "speaker": "echo", "text": "Super gently. The second the rover's wheels touched dirt, the sky crane cut the lines, flew off to the side, and crashed on purpose so it wouldn't hit the rover." },
-    { "t": 45.3, "speaker": "echo", "text": "That was its whole job. Seven minutes." },
-    { "t": 52.5, "speaker": "echo", "text": "And the reason there was a little helicopter flying around on Mars." },
-    { "t": 56.0, "speaker": "echo", "text": "First powered flight on another planet. Not bad for a crash." }
+    {
+      "t": 0.79,
+      "speaker": "echo",
+      "text": "That's Mars. You hear the wind? Perseverance recorded it a couple years ago. First time anyone heard wind on another planet. And that wreckage down there — the, umm, crumpled up metal in the crater — that's Perseverance's descent stage."
+    },
+    {
+      "t": 13.9,
+      "speaker": "echo",
+      "text": "Brutal. They call it the sky crane. Came in at about twelve thousand miles an hour. Burned off the heat shield, popped the parachute, and then it did this incredible thing: hovered sixty feet above the ground and lowered the actual rover down on cables."
+    },
+    {
+      "t": 18.4,
+      "speaker": "echo",
+      "text": "Super gently. The second the rover's wheels touched dirt, the sky crane cut the lines, flew off to the side, and crashed on purpose so it wouldn't hit the rover."
+    },
+    {
+      "t": 45.3,
+      "speaker": "echo",
+      "text": "That was its whole job. Seven minutes."
+    },
+    {
+      "t": 52.5,
+      "speaker": "echo",
+      "text": "And the reason there was a little helicopter flying around on Mars."
+    },
+    {
+      "t": 56.0,
+      "speaker": "echo",
+      "text": "First powered flight on another planet. Not bad for a crash."
+    }
   ]
 }

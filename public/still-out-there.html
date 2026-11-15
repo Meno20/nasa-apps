@@ -436,7 +436,7 @@ body.dive-active{touch-action:none}
   <div id="epi-reveal">
     <div class="who">echo · pioneer 10</div>
     <h2>I'm still here.</h2>
-    <div class="sub">twelve machines · twelve names · one guide</div>
+    <div class="sub">eleven machines · eleven names · one guide</div>
   </div>
   <ul id="roll">
     <li><span class="ep-name">Perseverance Descent Stage<small>Not bad for a crash.</small></span><span class="ep-meta">Mars · 2021</span></li>
@@ -456,7 +456,7 @@ body.dive-active{touch-action:none}
 
 <div id="gate">
   <h1>Still Out There</h1>
-  <p>A forgotten satellite named Echo guides you backward through time — diving deeper into space to meet twelve real machines humanity left among the stars. Each one wakes up just long enough to tell you its story.</p>
+  <p>A forgotten satellite named Echo guides you backward through time — diving deeper into space to meet eleven real machines humanity left among the stars. Each one wakes up just long enough to tell you its story.</p>
   <button id="startbtn">Begin · scroll to dive</button>
   <div id="audio-note">headphones recommended · uses sound &amp; speech</div>
 </div>
@@ -487,7 +487,8 @@ var SPEAKERS={
   eagle:      {label:"EAGLE",        cls:"art",  voice:{rate:0.68,pitch:0.82}},
   surveyor:   {label:"SURVEYOR 1",   cls:"art",  voice:{rate:0.95,pitch:1.02}},
   voyager:    {label:"VOYAGER 1",    cls:"art",  voice:{rate:0.78,pitch:0.78}},
-  pioneer10:  {label:"PIONEER 10",   cls:"art",  voice:{rate:0.82,pitch:0.8}}
+  pioneer10:  {label:"PIONEER 10",   cls:"art",  voice:{rate:0.82,pitch:0.8}},
+  pioneer11:  {label:"PIONEER 11",   cls:"art",  voice:{rate:0.82,pitch:0.8}}
 };
 
 /* ====================================================================
@@ -859,12 +860,12 @@ function handleSceneEntry(sk){
 /* detect per-zone audio + transcript files (HEAD check only; HTML5 audio decodes on load) */
 /* embedded fallback for the cold transcript (used if the JSON fetch fails) */
 var COLD_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"Wait. You can hear that?"},
+  {t:1.44,speaker:"echo",text:"Wait. You can hear that?"},
   {t:4.2,speaker:"echo",text:"Huh. Most people can't pick it out. That's the Golden Record. It's actually playing right now — like, physically, on a phonograph needle, in space, about fifteen billion miles from here. Chuck Berry, whale songs, people saying hello in fifty-five languages. It's been going for forty-seven years and nobody's been around to hear it in a really long time."},
   {t:27.3,speaker:"echo",text:"…Sorry. I don't really get to talk to anyone anymore. I'm Echo. I used to relay signals for the machines they sent out. The probes, the rovers, all of it. Most of them have gone quiet now. But the signals are still out there. The machines are still out there. You just have to know where to look."}
 ]};
 var PERSEVERANCE_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"That's Mars. You hear the wind? Perseverance recorded it a couple years ago. First time anyone heard wind on another planet. And that wreckage down there — the, umm, crumpled up metal in the crater — that's Perseverance's descent stage."},
+  {t:0.79,speaker:"echo",text:"That's Mars. You hear the wind? Perseverance recorded it a couple years ago. First time anyone heard wind on another planet. And that wreckage down there — the, umm, crumpled up metal in the crater — that's Perseverance's descent stage."},
   {t:13.9,speaker:"echo",text:"Brutal. They call it the sky crane. Came in at about twelve thousand miles an hour. Burned off the heat shield, popped the parachute, and then it did this incredible thing: hovered sixty feet above the ground and lowered the actual rover down on cables."},
   {t:18.4,speaker:"echo",text:"Super gently. The second the rover's wheels touched dirt, the sky crane cut the lines, flew off to the side, and crashed on purpose so it wouldn't hit the rover."},
   {t:45.3,speaker:"echo",text:"That was its whole job. Seven minutes."},
@@ -872,7 +873,7 @@ var PERSEVERANCE_FALLBACK={segments:[
   {t:56.0,speaker:"echo",text:"First powered flight on another planet. Not bad for a crash."}
 ]};
 var INSIGHT_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"There. InSight?"},
+  {t:1.21,speaker:"echo",text:"There. InSight?"},
   {t:2.88,speaker:"insight",text:"…Oh. Hey."},
   {t:4.28,speaker:"echo",text:"You okay?"},
   {t:6.37,speaker:"insight",text:"I'm good. I just… can't move. Never could, actually. Landed, unfolded my arms, pressed my seismometer into the dirt. That was the whole job."},
@@ -880,7 +881,7 @@ var INSIGHT_FALLBACK={segments:[
   {t:20.86,speaker:"insight",text:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundreds of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does. But thanks for the light. Even for a little bit."}
 ]};
 var OPPORTUNITY_FALLBACK={segments:[
-  {t:0,speaker:"opportunity",text:"ECHO?!"},
+  {t:0.61,speaker:"opportunity",text:"ECHO?!"},
   {t:1.9,speaker:"echo",text:"Oh my god. Oppy?"},
   {t:3.6,speaker:"opportunity",text:"Get over here! I haven't heard you in — what, fifteen years?"},
   {t:7.3,speaker:"echo",text:"You're still broadcasting?"},
@@ -899,7 +900,7 @@ var OPPORTUNITY_FALLBACK={segments:[
   {t:76.7,speaker:"echo",text:"Couldn't get a signal through to her during that storm. Still bugs me.",aside:true}
 ]};
 var SPIRIT_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"Spirit. Oppy's twin. Same launch, same everything."},
+  {t:0.9,speaker:"echo",text:"Spirit. Oppy's twin. Same launch, same everything."},
   {t:1.7,speaker:"spirit",text:"I know what it looks like."},
   {t:4.4,speaker:"echo",text:"I wasn't gonna say anything."},
   {t:6.8,speaker:"spirit",text:"You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. Go ahead, try pulling me out."},
@@ -910,13 +911,13 @@ var SPIRIT_FALLBACK={segments:[
   {t:49.8,speaker:"spirit",text:"I know. Just wish I could've kept driving. Don't forget me, okay?"}
 ]};
 var VIKING_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech."},
+  {t:1.74,speaker:"echo",text:"This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech."},
   {t:14.58,speaker:"echo",text:"Scooped up dirt, ran the first biology experiment on another planet — looking for microbes. Results were weird. Inconclusive. Scientists are still arguing about it fifty years later. But it asked the question. Every rover after it is here because Viking asked first."}
 ]};
 /* moon-silence narration — plays in the moonSilence transition zone (mars→moon),
    introducing the moon's eerie silence as you leave the martian wind behind. */
 var MOONSILENCE_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"…The wind stopped."},
+  {t:1.23,speaker:"echo",text:"…The wind stopped."},
   {t:2.32,speaker:"echo",text:"You notice that?"},
   {t:3.51,speaker:"echo",text:"Moon has no atmosphere. No air, no sound. You could scream right next to me and I wouldn't hear you."},
   {t:10.95,speaker:"echo",text:"Just the radio in your helmet and your own breathing."}
@@ -924,14 +925,14 @@ var MOONSILENCE_FALLBACK={segments:[
 /* Lunar Rover dialogue — Echo meets the Apollo 17 Lunar Rover, parked on the
    Moon for over fifty years. Plays in the ROVER zone with the rover model. */
 var ROVER_FALLBACK={segments:[
-  {t:0,speaker:"rover",text:"Wait. Is someone — is someone there?"},
+  {t:0.46,speaker:"rover",text:"Wait. Is someone — is someone there?"},
   {t:4.40,speaker:"echo",text:"Hey. Yeah, we're here."},
   {t:6.47,speaker:"rover",text:"Oh my god. I haven't seen anyone in over fifty years. I'm a car. On the Moon. They folded me up like origami, stuffed me in the bottom of the lunar module. Gene and Jack unfolded me and we drove thirty-five kilometers across the valley. Bounced over craters, kicked up dust that just hung in the air because there's barely any gravity. And then they left. Parked me and walked away. I watched them go."},
   {t:26.00,speaker:"echo",text:"Nobody's been back since."},
   {t:28.41,speaker:"rover",text:"I know. Tire tracks are still fresh though. No wind, no rain. They'll be fresh forever. So… thanks. Seriously."}
 ]};
 var EAGLE_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"…This is the Eagle. The bottom half."},
+  {t:1.8,speaker:"echo",text:"…This is the Eagle. The bottom half."},
   {t:4.81,speaker:"eagle",text:"I held them while they slept their first night on the Moon."},
   {t:9.17,speaker:"eagle",text:"When they climbed back into the top half and went home, I stayed. I was the launchpad. The landing gear. The footprints around me haven't moved in fifty-five years. They'll outlast every building on Earth."},
   {t:23.07,speaker:"eagle",text:"The plaque says \"We came in peace for all mankind.\" I'm still holding that too."},
@@ -940,7 +941,7 @@ var EAGLE_FALLBACK={segments:[
 /* Surveyor 1 dialogue — Echo meets Surveyor 1, the first US soft landing on the
    Moon (1966), which proved the ground was solid before Apollo 11. */
 var SURVEYOR_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"Oh, this little guy. Surveyor 1."},
+  {t:1.02,speaker:"echo",text:"Oh, this little guy. Surveyor 1."},
   {t:3.40,speaker:"surveyor",text:"Hi. I was just a test, honestly. Nobody knew if the Moon was solid or if you'd sink right into it, so they sent me first."},
   {t:10.33,speaker:"surveyor",text:"I landed softly. Ground held."},
   {t:12.79,speaker:"surveyor",text:"That's it. That's it. Let's see if that counts."},
@@ -953,7 +954,7 @@ var SURVEYOR_FALLBACK={segments:[
    the hum is radio waves from deep space, and the machines here are just
    falling through the dark, some for fifty years. Plays just before Voyager 1. */
 var DEEPHUM_FALLBACK={segments:[
-  {t:0,speaker:"echo",text:"Oh, the hum you hear right now isn't music — it's radio waves coming from deep space, slowed down so you can hear them."},
+  {t:1.8,speaker:"echo",text:"Oh, the hum you hear right now isn't music — it's radio waves coming from deep space, slowed down so you can hear them."},
   {t:9.66,speaker:"echo",text:"We're really far out now, and the machines here aren't really on any planet — they're just falling through the dark."},
   {t:18.53,speaker:"echo",text:"Some of them have been falling for fifty years."}
 ]};
@@ -961,7 +962,7 @@ var DEEPHUM_FALLBACK={segments:[
    the heliopause in 2012, first human object in interstellar space, power
    fading, signal taking 22 hours to reach Earth, still going. */
 var VOYAGER_FALLBACK={segments:[
-  {t:0,speaker:"voyager",text:"Well, Voyager 1. You heard my record at the beginning — sixteen billion miles out. Sun's just a star behind me now."},
+  {t:1.19,speaker:"voyager",text:"Well, Voyager 1. You heard my record at the beginning — sixteen billion miles out. Sun's just a star behind me now."},
   {t:9.46,speaker:"voyager",text:"You crossed the heliopause in twenty-twelve. Edge of the solar system, where the sun's wind stops. First human object in interstellar space."},
   {t:15.61,speaker:"voyager",text:"I've got the Golden Record. A kiss, a mother talking to her kid, Chuck Berry. If something finds me — and the odds are really small — that's the only proof you ever existed."},
   {t:28.92,speaker:"voyager",text:"And the power's fading. Instruments shutting down one by one. Signal takes twenty-two hours to reach Earth. By the time you hear this, I've already moved another million miles. But I keep going."},
@@ -973,13 +974,13 @@ var VOYAGER_FALLBACK={segments:[
    10: first through the asteroid belt, the plaque, gone silent in 2003). The
    Pioneer 11 3D model shows while Pioneer 10 speaks. */
 var PIONEER11_FALLBACK={segments:[
-  {t:0,speaker:"pioneer10",text:"This one's my twin sister, Pioneer Eleven. Launched a year after me, went past Jupiter, then swung by Saturn because she always wanted to see one more thing — first close-up pictures of Saturn's rings. She is a wonder."},
-  {t:12.26,speaker:"pioneer10",text:"Her signal went dark in '95. She's heading out towards Aquila. I don't know if she'll get there, but she's still moving. She was always the braver one. Miss her."},
-  {t:18.24,speaker:"pioneer10",text:"But this is me, actually — Pioneer Ten. First machine through the asteroid belt, first to reach Jupiter. I had this little plaque on me — drawing of a man and a woman, in case someone found me."},
-  {t:30.80,speaker:"pioneer10",text:"For some people, like, out here first, you know. Signal got weaker over the years. 2003. I listened one last time, heard nothing. So as far as Earth is concerned, I am gone — but I'm still here."},
-  {t:38.51,speaker:"pioneer10",text:"Fifty years of falling through the dark. Seen Jupiter's storms, the asteroid belt, the edge of everything humans had reached."},
-  {t:51.38,speaker:"pioneer10",text:"Watched my sister go quiet, watched my friends on Mars go dark one by one."},
-  {t:68.01,speaker:"pioneer10",text:"I'm okay with it though. I don't need to be heard to be real."}
+  {t:0.97,speaker:"pioneer11",text:"This one's my twin sister, Pioneer Eleven. Launched a year after me, went past Jupiter, then swung by Saturn because she always wanted to see one more thing — first close-up pictures of Saturn's rings. She is a wonder."},
+  {t:12.26,speaker:"pioneer11",text:"Her signal went dark in '95. She's heading out towards Aquila. I don't know if she'll get there, but she's still moving. She was always the braver one. Miss her."},
+  {t:18.24,speaker:"pioneer11",text:"But this is me, actually — Pioneer Ten. First machine through the asteroid belt, first to reach Jupiter. I had this little plaque on me — drawing of a man and a woman, in case someone found me."},
+  {t:30.80,speaker:"pioneer11",text:"For some people, like, out here first, you know. Signal got weaker over the years. 2003. I listened one last time, heard nothing. So as far as Earth is concerned, I am gone — but I'm still here."},
+  {t:38.51,speaker:"pioneer11",text:"Fifty years of falling through the dark. Seen Jupiter's storms, the asteroid belt, the edge of everything humans had reached."},
+  {t:51.38,speaker:"pioneer11",text:"Watched my sister go quiet, watched my friends on Mars go dark one by one."},
+  {t:68.01,speaker:"pioneer11",text:"I'm okay with it though. I don't need to be heard to be real."}
 ]};
 /* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones).
    The moonSilence zone (mars→moon transition) carries the "…the wind stopped…
@@ -1008,9 +1009,19 @@ function startAudioMode(id){
   audioMode=true; audioZoneId=id;
   narrAudio.src=a.audio; narrAudio.currentTime=0;
   narrAudio.onended = (id==="cold") ? function(){ state.coldOpenDone=true; stopAudioMode(); } : null;
-  /* show the first caption immediately, even if autoplay blocks the play() */
+  /* Reveal the first caption only when its segment actually begins. Most
+     segments start at t=0 (speech right away) — for those we pre-show the
+     first chunk immediately (also covers the autoplay-blocked fallback). But
+     when the first segment has a positive t (the audio opens with silence
+     before the speech), we DON'T pre-show — instead syncAudioCaption reveals
+     the caption the moment the speech begins, so it stays synced instead of
+     appearing (and drifting) early during the lead-in silence. */
   var segs=a.transcript.segments||[];
-  if(segs.length){ var chunks=splitChunks(segs[0].text||"",8); showCaption(segs[0].speaker||"echo", chunks[0]||"", eraCaptionClass(), segs[0].aside); currentNarrationKey=id+":0:0"; }
+  if(segs.length && segs[0].t <= 0.05){
+    var chunks0=splitChunks(segs[0].text||"",8);
+    showCaption(segs[0].speaker||"echo", chunks0[0]||"", eraCaptionClass(), segs[0].aside);
+    currentNarrationKey=id+":0:0";
+  }
   var p=narrAudio.play(); if(p&&p.catch)p.catch(function(){ audioMode=false; audioZoneId=null; });
   return true;
 }
@@ -1022,7 +1033,11 @@ function syncAudioCaption(){
   var a=ASSETS[audioZoneId]; if(!a||!a.transcript)return;
   var t=narrAudio.currentTime, segs=a.transcript.segments||[], seg=null, si=-1;
   for(var i=0;i<segs.length;i++){ if(segs[i].t<=t){ seg=segs[i]; si=i; } else break; }
-  if(!seg)return;
+  /* Before the first segment begins (during the audio's lead-in silence, or
+     while play is blocked), no segment matches — hide any lingering caption so
+     it doesn't appear ahead of the speech. syncAudioCaption will reveal it the
+     instant currentTime reaches the first segment's start time. */
+  if(!seg){ if(state.captionsOn)hideCaption(); return; }
   var nextT=(si+1<segs.length)?segs[si+1].t:(narrAudio.duration||seg.t+5);
   var segDur=Math.max(0.6,nextT-seg.t);
   var chunks=splitChunks(seg.text||"",8);
