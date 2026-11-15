@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Still Out There</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <style>
 :root{
   --bg:#03030a;
@@ -34,6 +36,7 @@ body{
 
 /* ---------- fixed background layers ---------- */
 #stars{position:fixed;inset:0;z-index:0;display:block}
+#three-canvas{position:fixed;inset:0;z-index:4;display:block;pointer-events:none}
 #planets{position:fixed;inset:0;z-index:1;pointer-events:none}
 .planet{
   position:absolute;inset:-10% 0 -10% 0;
@@ -278,6 +281,7 @@ body{
 <audio id="narr-audio" preload="auto"></audio>
 
 <canvas id="stars"></canvas>
+<canvas id="three-canvas"></canvas>
 <div id="planets">
   <div class="planet earth"></div>
   <div class="planet mars"></div>
@@ -745,6 +749,7 @@ var W=0,H=0,cx=0,cy=0,stars=[],maxR=400;
 function resize(){
   W=starCanvas.width=window.innerWidth; H=starCanvas.height=window.innerHeight;
   cx=W/2; cy=H/2; maxR=Math.sqrt(cx*cx+cy*cy)+40; buildStars();
+  resizeThree();
 }
 function buildStars(){ stars=[]; for(var i=0;i<480;i++){ stars.push({a:Math.random()*Math.PI*2,z:Math.random(),pz:0}); } }
 function starColor(){ if(state.era==="deepspace")return "#aab4e8"; if(state.era==="moon")return "#dfe6f5"; return "#ffffff"; }
@@ -1034,10 +1039,81 @@ function onScroll(){
 window.addEventListener("scroll",onScroll,{passive:true});
 onScroll();
 
+/* ====================================================================
+   THREE.JS 3D MODELS — artifacts with a .glb file render in WebGL instead
+   of the CSS placeholder. The model is showcased (centered, slowly rotating)
+   when its zone is active. Drop a model at public/models/<id>.glb and add it
+   to MODEL_ZONES to use it.
+   ==================================================================== */
+var MODEL_ZONES={ perseverance:"/models/perseverance.glb" };
+var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, threeReady=false;
+
+function initThree(){
+  var canvas=document.getElementById("three-canvas");
+  if(!canvas||!window.THREE)return;
+  try{
+    threeRenderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
+    threeRenderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    threeRenderer.setSize(window.innerWidth,window.innerHeight);
+    threeRenderer.setClearColor(0x000000,0);
+    threeScene=new THREE.Scene();
+    threeCamera=new THREE.PerspectiveCamera(40,window.innerWidth/window.innerHeight,0.1,100);
+    threeCamera.position.set(0,0.4,5);
+    threeCamera.lookAt(0,0,0);
+    var hemi=new THREE.HemisphereLight(0xddeeff,0x223344,1.0); threeScene.add(hemi);
+    var dir=new THREE.DirectionalLight(0xffffff,1.1); dir.position.set(3,4,5); threeScene.add(dir);
+    var dir2=new THREE.DirectionalLight(0xffeecc,0.5); dir2.position.set(-3,-2,2); threeScene.add(dir2);
+    threeReady=true;
+    /* load each model */
+    for(var id in MODEL_ZONES){
+      (function(mid,url){
+        var loader=new THREE.GLTFLoader();
+        loader.load(url,function(gltf){
+          var obj=gltf.scene;
+          /* center + normalize scale */
+          var box=new THREE.Box3().setFromObject(obj);
+          var size=box.getSize(new THREE.Vector3());
+          var center=box.getCenter(new THREE.Vector3());
+          obj.position.sub(center);
+          var maxDim=Math.max(size.x,size.y,size.z);
+          if(maxDim>0)obj.scale.setScalar(2.4/maxDim);
+          obj.visible=false;
+          threeScene.add(obj);
+          threeModels[mid]=obj;
+        },undefined,function(err){ /* load failed; CSS placeholder stays */ });
+      })(id,MODEL_ZONES[id]);
+    }
+  }catch(e){ threeReady=false; }
+}
+
+function resizeThree(){
+  if(!threeReady)return;
+  threeRenderer.setSize(window.innerWidth,window.innerHeight);
+  threeCamera.aspect=window.innerWidth/window.innerHeight;
+  threeCamera.updateProjectionMatrix();
+}
+
+function renderThree(){
+  if(!threeReady)return;
+  /* show each model based on camera proximity (same window as the CSS artifacts) */
+  var active=null;
+  for(var id in threeModels){
+    var L=layoutById(id), m=threeModels[id];
+    if(!L){ m.visible=false; continue; }
+    var op=tzOpacity(camDepth-L.depth);
+    m.visible = (op>0.02);
+    if(m.visible){ m.rotation.y += 0.0035; active=m; }
+  }
+  threeRenderer.clear();
+  if(active) threeRenderer.render(threeScene,threeCamera);
+}
+
 function renderArtifacts(){
   for(var i=0;i<LAYOUT.length;i++){
     var L=LAYOUT[i], el=L.el; if(!el)continue;
     var tz=camDepth-L.depth; var op=tzOpacity(tz);
+    /* if this artifact has a loaded 3D model that's in view, hide the CSS placeholder */
+    if(MODEL_ZONES[L.id] && threeReady && threeModels[L.id] && op>0.02){ el.style.opacity=0; el.classList.remove("near"); continue; }
     el.style.opacity=op;
     /* all on one line: x=0, y=0 */
     el.style.transform="translate3d(0px,0px,"+tz+"px)";
@@ -1201,6 +1277,7 @@ function begin(){
   beginTime=Date.now();
   initAudio(); if(AC&&AC.state==="suspended")AC.resume();
   initNarrAudio();
+  initThree();
   /* unlock the audio element inside the Begin gesture so later play() calls aren't blocked */
   if(narrAudio){ narrAudio.src="/audio/cold.mp3"; var u=narrAudio.play(); if(u&&u.then)u.then(function(){ narrAudio.pause(); narrAudio.currentTime=0; }).catch(function(){}); }
   detectAssets();
@@ -1267,6 +1344,7 @@ function loop(ts){
   detectEra();
   renderArtifacts();
   renderEcho();
+  renderThree();
   renderRail();
   updateVisor();
   updateNarration();
