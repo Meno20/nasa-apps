@@ -653,16 +653,16 @@ var META={
    ==================================================================== */
 var LAYOUT=[
   {id:"perseverance",depth:1600, era:"mars",    sec:true},
-  {id:"insight",      depth:3400, era:"mars"},
-  {id:"opportunity",  depth:4300, era:"mars", widen:true},   /* calls out first */
-  {id:"spirit",       depth:5200, era:"mars"},
-  {id:"viking",       depth:6000, era:"mars",   sec:true},
-  {id:"rover",        depth:7000, era:"moon"},
-  {id:"eagle",        depth:7900, era:"moon"},
-  {id:"surveyor",     depth:8700, era:"moon",   sec:true},
-  {id:"voyager",      depth:9600, era:"deepspace"},
-  {id:"pioneer11",    depth:10400,era:"deepspace",sec:true},
-  {id:"pioneer10",    depth:11200,era:"deepspace"}
+  {id:"insight",      depth:3850, era:"mars"},
+  {id:"opportunity",  depth:4750, era:"mars", widen:true},   /* calls out first */
+  {id:"spirit",       depth:5600, era:"mars"},
+  {id:"viking",       depth:6250, era:"mars",   sec:true},
+  {id:"rover",        depth:7450, era:"moon"},
+  {id:"eagle",        depth:8300, era:"moon"},
+  {id:"surveyor",     depth:8950, era:"moon",   sec:true},
+  {id:"voyager",      depth:10000,era:"deepspace"},
+  {id:"pioneer11",    depth:10800,era:"deepspace",sec:true},
+  {id:"pioneer10",    depth:11400,era:"deepspace"}
 ];
 var PERSP=620;
 var TOTAL_DEPTH=12500;
@@ -1068,20 +1068,25 @@ var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insi
 var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, threeReady=false;
 
 function zoneById(id){ for(var i=0;i<ZONES.length;i++){ if(ZONES[i].id===id)return ZONES[i]; } return null; }
-/* model stays visible across the whole zone (fade in/out at the edges), not just at the depth point.
-   fadeIn is configurable per-zone so the rover can start emerging during the moonSilence transition
-   (fixing the audio/plays-before-model misalignment). */
-function modelOpacity(d, range, fadeIn){
-  fadeIn=fadeIn||60; var fadeOut=200;
-  if(d<range[0]-fadeIn)return 0;
-  if(d<range[0])return (d-(range[0]-fadeIn))/fadeIn;
-  if(d<=range[1])return 1;
-  if(d<range[1]+fadeOut)return 1-((d-range[1])/fadeOut);
-  return 0;
+/* Model visibility is contained strictly INSIDE its zone: it fades in at the
+   zone start (over `fade` units), is full through the middle, and fades out at
+   the zone end (over `fade` units) — reaching 0 AT both edges. This guarantees
+   consecutive artifacts never overlap at a shared zone boundary (the outgoing
+   model is already 0 by the time the incoming one begins), which fixes the
+   rover/eagle and rover/surveyor merges. The checkpoint sits at the zone
+   middle, where the model is at full opacity. */
+function modelOpacity(d, range, fade){
+  fade=fade||100;
+  var lo=range[0], hi=range[1];
+  if(d<lo || d>hi) return 0;
+  if(d<lo+fade) return (d-lo)/fade;
+  if(d>hi-fade) return 1-(d-(hi-fade))/fade;
+  return 1;
 }
-/* per-zone fadeIn overrides — the rover fades in 300 units early so it's visible
-   during the moonSilence audio transition, not after. */
-function fadeInFor(id){ return id==="rover"?300:60; }
+/* uniform fade width for every zone (the old rover-specific 300-unit early
+   fadeIn override caused the rover to emerge during the moonSilence audio —
+   i.e. "audio early" — and is no longer needed now that models stay in-zone). */
+function fadeInFor(id){ return 100; }
 function setModelOpacity(obj, op){ obj.traverse(function(child){ if(child.isMesh&&child.material){ child.material.transparent=true; child.material.opacity=op; } }); }
 
 function initThree(){
@@ -1159,12 +1164,17 @@ function renderThree(){
 function renderArtifacts(){
   for(var i=0;i<LAYOUT.length;i++){
     var L=LAYOUT[i], el=L.el; if(!el)continue;
-    var tz=camDepth-L.depth; var op=tzOpacity(tz);
-    /* if this artifact has a loaded 3D model that's in view (within its zone), hide the CSS placeholder */
+    var z=zoneById(L.id);
+    var tz=camDepth-L.depth;
+    /* If this artifact has a loaded 3D model, the WebGL renderer owns it —
+       hide the CSS placeholder entirely (the model's in-zone fade handles
+       visibility). Otherwise show the CSS placeholder ONLY within its zone
+       (same in-zone fade as the 3D models), so a placeholder can never appear
+       early and merge with a neighbouring artifact's model. */
     if(MODEL_ZONES[L.id] && threeReady && threeModels[L.id]){
-      var mz=zoneById(L.id);
-      if(mz && modelOpacity(camDepth, mz.range, fadeInFor(L.id))>0.01){ el.style.opacity=0; el.classList.remove("near"); continue; }
+      el.style.opacity=0; el.classList.remove("near"); continue;
     }
+    var op = z ? modelOpacity(camDepth, z.range, fadeInFor(L.id)) : 0;
     el.style.opacity=op;
     /* all on one line: x=0, y=0 */
     el.style.transform="translate3d(0px,0px,"+tz+"px)";
@@ -1307,19 +1317,19 @@ function updateNav(){
    ==================================================================== */
 var CHECKPOINTS=[
   {id:"perseverance", depth:1600},
-  {id:"insight",      depth:3400},
-  {id:"opportunity",  depth:4300},
-  {id:"spirit",       depth:5200},
-  {id:"viking",       depth:6000},
+  {id:"insight",      depth:3850},
+  {id:"opportunity",  depth:4750},
+  {id:"spirit",       depth:5600},
+  {id:"viking",       depth:6250},
   {id:"moonSilence",  depth:6750},   /* midpoint of the moonSilence transition */
   {id:"rover",        depth:7450},   /* mid-rover zone — model is fully shown here */
-  {id:"eagle",        depth:7900},
-  {id:"surveyor",     depth:8700},
+  {id:"eagle",        depth:8300},
+  {id:"surveyor",     depth:8950},
   {id:"deepHum",      depth:9400},   /* midpoint of the deepHum transition */
-  {id:"voyager",      depth:9600},
-  {id:"pioneer11",    depth:10400},
-  {id:"pioneer10",    depth:11200},
-  {id:"epilogue",     depth:11800}
+  {id:"voyager",      depth:10000},
+  {id:"pioneer11",    depth:10800},
+  {id:"pioneer10",    depth:11400},
+  {id:"epilogue",     depth:12050}
 ];
 
 /* the live drift animation state. When `active`, tickDrift() (called from the
@@ -1575,20 +1585,22 @@ function loop(ts){
   /* advance the checkpoint drift animation first — it drives window.scrollY,
      which fires onScroll and updates targetCamDepth for the camera below. */
   tickDrift(ts);
-  /* Camera depth follows the scroll target. During a drift — AND for the few
-     frames after it ends until the camera crosses into the drift's target zone
-     (tracked by drift.pendingTarget) — the camera tracks targetCamDepth
-     EXACTLY. The scroll itself is animated on an easeInOutCubic curve, so this
-     gives a smooth glide with no trailing lag, and the camera lands precisely
-     on the checkpoint the instant the scroll does (so the narration zone
-     switches immediately on arrival). Tracking continues past drift end
-     because the scroll event for the final scrollTo may land a frame late;
-     without it, the camera would drop back to the slow LERP just shy of a zone
-     boundary and the audio would never switch. Once narration clears
-     pendingTarget (camera reached the target zone), idle movement uses a
-     gentle LERP + snap for the cinematic trailing glide. */
-  if(drift.active || drift.pendingTarget != null){
+  /* Camera depth follows the scroll target. During a drift the camera tracks
+     targetCamDepth EXACTLY (the scroll is already on an easeInOutCubic curve,
+     so this is smooth). The moment the drift ends, the camera SNAPS to the
+     drift's exact target depth (drift.pendingTarget) rather than the
+     scroll-derived targetCamDepth — because the scroll event for the final
+     scrollTo can land a frame late, leaving targetCamDepth stale just inside the
+     zone, which would otherwise drop the camera to the slow idle LERP and leave
+     it lagging the checkpoint for seconds. Snapping to pendingTarget guarantees
+     the camera arrives precisely on the checkpoint the instant the glide ends,
+     so the model is at full opacity and the narration zone switches
+     immediately. Once narration clears pendingTarget (camera confirmed in the
+     target zone), idle movement uses a gentle LERP + snap. */
+  if(drift.active){
     camDepth = targetCamDepth;
+  } else if(drift.pendingTarget != null){
+    camDepth = drift.pendingTarget;
   } else if(Math.abs(targetCamDepth - camDepth) < 1){
     camDepth = targetCamDepth;
   } else {
