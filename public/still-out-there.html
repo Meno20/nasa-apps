@@ -948,12 +948,20 @@ var SURVEYOR_FALLBACK={segments:[
   {t:24.46,speaker:"surveyor",text:"I didn't think of it that way."},
   {t:27.67,speaker:"echo",text:"Well, you should."}
 ]};
+/* Voyager 1 narration — Echo introduces the deep-space era: the hum is radio
+   waves from deep space, and the machines here are just falling through the
+   dark, some for fifty years. */
+var VOYAGER_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"Oh, the hum you hear right now isn't music — it's radio waves coming from deep space, slowed down so you can hear them."},
+  {t:9.66,speaker:"echo",text:"We're really far out now, and the machines here aren't really on any planet — they're just falling through the dark."},
+  {t:18.53,speaker:"echo",text:"Some of them have been falling for fifty years."}
+]};
 /* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones).
    The moonSilence zone (mars→moon transition) carries the "…the wind stopped…
    Moon has no atmosphere…" intro narration. The ROVER zone carries the rover's
    own dialogue (Echo meets the Lunar Rover). Both play with captions. */
-var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3",surveyor:"/audio/surveyor.mp3"};
-var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,rover:ROVER_FALLBACK,eagle:EAGLE_FALLBACK,surveyor:SURVEYOR_FALLBACK};
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3",surveyor:"/audio/surveyor.mp3",voyager:"/audio/voyager.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,rover:ROVER_FALLBACK,eagle:EAGLE_FALLBACK,surveyor:SURVEYOR_FALLBACK,voyager:VOYAGER_FALLBACK};
 function detectAssets(){
   for(var kid in KNOWN_AUDIO){
     ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
@@ -1090,7 +1098,7 @@ onScroll();
    when its zone is active. Drop a model at public/models/<id>.glb and add it
    to MODEL_ZONES to use it.
    ==================================================================== */
-var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insight.glb", opportunity:"/models/opportunity.glb", spirit:"/models/spirit.glb", viking:"/models/viking.glb", rover:"/models/rover.glb", eagle:"/models/eagle.glb" };
+var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insight.glb", opportunity:"/models/opportunity.glb", spirit:"/models/spirit.glb", viking:"/models/viking.glb", rover:"/models/rover.glb", eagle:"/models/eagle.glb", voyager:"/models/voyager.glb" };
 var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, threeReady=false;
 
 function zoneById(id){ for(var i=0;i<ZONES.length;i++){ if(ZONES[i].id===id)return ZONES[i]; } return null; }
