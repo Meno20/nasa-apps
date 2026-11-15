@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Still Out There</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<style>
+:root{
+  --bg:#03030a;
+  --text:#d7e2ff;
+  --muted:#7a86a8;
+  --amber:#ffb066;
+  --rust:#c5552e;
+  --silver:#cfd8e6;
+  --indigo:#2a2a5a;
+  --gold:#e8c873;
+  --echo:#9fe8ff;
+  --echo-bright:#eaffff;
+  --hud-bg:rgba(8,10,22,.62);
+  --hud-border:rgba(160,180,230,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  overflow-x:hidden;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+/* scroll spacer — provides the dive's scroll range; visuals live in fixed layers */
+#spacer{position:relative;z-index:0;width:100%;height:16000px}
+
+/* ---------- fixed background layers ---------- */
+#stars{position:fixed;inset:0;z-index:0;display:block}
+#three-canvas{position:fixed;inset:0;z-index:4;display:block;pointer-events:none}
+#planets{position:fixed;inset:0;z-index:1;pointer-events:none}
+.planet{
+  position:absolute;inset:-10% 0 -10% 0;
+  opacity:0;transition:opacity 1.6s ease;
+}
+.planet.on{opacity:1}
+.planet.earth{background:radial-gradient(circle at 50% 130%, #2f6bd6 0%, #1a3f8a 22%, #0a1c44 42%, transparent 60%);}
+.planet.mars{background:radial-gradient(circle at 50% 135%, #e0894a 0%, #b25323 18%, #6e2c14 36%, #2a1108 55%, transparent 68%);}
+.planet.moon{background:radial-gradient(circle at 50% 140%, #d9dde6 0%, #9aa3b2 16%, #565d6b 33%, #20242c 52%, transparent 66%);}
+.planet.void{background:radial-gradient(ellipse at 50% 50%, #1a1838 0%, #0c0a20 45%, #03030a 75%);}
+#era-tint{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity 1.2s ease;mix-blend-mode:screen}
+#scanlines{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity 1.2s ease;
+  background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.18) 2px 3px);}
+
+/* ---------- the dive scene (perspective) ---------- */
+#scene{position:fixed;inset:0;z-index:4;
+  perspective:620px;perspective-origin:50% 50%;transform-style:preserve-3d}
+
+/* an artifact floating at depth — all on a single center line */
+.art-obj{
+  position:absolute;left:50%;top:50%;
+  width:340px;height:380px;margin-left:-170px;margin-top:-190px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transform-style:preserve-3d;will-change:transform,opacity;
+  opacity:0;pointer-events:none;
+}
+.art-obj .visual{position:relative;width:100%;height:230px;display:flex;align-items:center;justify-content:center}
+.art-obj.near{pointer-events:auto}
+.art-obj .nameplate{margin-top:14px;opacity:0;transition:opacity .6s ease;text-align:center}
+.art-obj.near .nameplate{opacity:1}
+.art-obj .yr{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.7rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase}
+.art-obj .nm{font-size:1.25rem;color:#eef3ff;margin-top:3px;letter-spacing:.02em}
+.art-obj .loc{font-size:.74rem;color:var(--muted);margin-top:3px}
+.secondary .nm{font-size:1rem}
+
+/* ---------- Echo ---------- */
+#echo{
+  position:fixed;z-index:6;width:12px;height:12px;border-radius:50%;
+  background:radial-gradient(circle, var(--echo-bright) 0%, var(--echo) 40%, rgba(60,180,220,0) 72%);
+  box-shadow:0 0 14px 4px rgba(120,220,255,.7),0 0 36px 9px rgba(80,160,220,.3);
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  transition:opacity .8s ease;pointer-events:none;
+}
+#echo::after{content:"";position:absolute;inset:-9px;border-radius:50%;
+  border:1px solid rgba(160,232,255,.25);animation:epulse 2.6s ease-in-out infinite}
+@keyframes epulse{0%,100%{transform:scale(.7);opacity:.5}50%{transform:scale(1.6);opacity:0}}
+#echo.cold{opacity:0}
+/* clarity ring — appears in deep space as a subtle "signal clears" hint */
+#echo .clarity{position:absolute;inset:-22px;border-radius:50%;border:1px solid rgba(180,240,255,.0);
+  transition:border-color 1.4s ease, inset 1.4s ease;pointer-events:none}
+#echo.home .clarity{border-color:rgba(180,240,255,.3);inset:-30px}
+
+/* ============ HUD VISOR (astronaut helmet overlay) ============ */
+#visor{position:fixed;inset:0;z-index:18;pointer-events:none}
+#visor .glass{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 50%, transparent 52%, rgba(4,6,16,.32) 78%, rgba(2,3,9,.6) 100%),
+    radial-gradient(ellipse at 50% 100%, rgba(120,220,255,.04), transparent 40%);
+  pointer-events:none;
+}
+#visor .rim{
+  position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(120,160,220,.06), inset 0 0 120px rgba(20,40,80,.18);
+}
+.stat{
+  position:absolute;font-family:ui-monospace,Menlo,Consolas,monospace;
+  color:var(--muted);pointer-events:none;opacity:0;transition:opacity .8s ease, color .3s ease;
+  text-shadow:0 0 10px rgba(0,0,0,.6);
+}
+.stat.on{opacity:.82}
+.stat .lbl{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:#566084;display:block;margin-bottom:3px}
+.stat .val{font-size:.92rem;letter-spacing:.06em;color:#cdd6ee;font-weight:500}
+.stat.tl{top:54px;left:20px}
+.stat.tr{top:54px;right:20px;text-align:right}
+.stat.bl{bottom:108px;left:20px}
+.stat.br{bottom:108px;right:20px;text-align:right}
+.stat.pulse .val{color:var(--echo-bright);text-shadow:0 0 14px rgba(120,220,255,.7)}
+.stat.pulse{animation:statpulse 1.6s ease-out}
+@keyframes statpulse{0%{transform:scale(1)}25%{transform:scale(1.06)}100%{transform:scale(1)}}
+.stat .val.warn{color:var(--amber)}
+.stat .val.dead{color:#9a6a6a}
+.stat .val.live{color:#7fe6a0}
+
+/* ---------- caption (plain text at the very bottom, no box) ---------- */
+#hud{position:fixed;left:0;right:0;bottom:0;z-index:20;pointer-events:none;padding:0 24px 20px;text-align:center}
+#caption{pointer-events:none;max-width:760px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;
+  opacity:0;transition:opacity .35s ease}
+#caption.on{opacity:1}
+#cap-speaker{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--echo);font-family:ui-monospace,Menlo,monospace;text-shadow:0 1px 8px rgba(0,0,0,.95)}
+#cap-speaker.art{color:var(--amber)}
+#cap-speaker.opp{color:#ffcf8a}
+#cap-text{font-size:1.04rem;color:#eef3ff;line-height:1.4;text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 24px rgba(0,0,0,.7)}
+#cap-text.moon{color:#eaf0fb}
+#cap-text.space{color:#d6e0ff;font-family:ui-monospace,Menlo,monospace;font-size:.92rem}
+#cap-text.clear{color:#f4faff;text-shadow:0 1px 10px rgba(0,0,0,.95),0 0 24px rgba(120,220,255,.25)}
+#cap-text.aside{color:#bcd6ee;font-style:italic}
+
+/* top bar */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;pointer-events:none}
+#brand{pointer-events:auto;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);font-family:ui-monospace,Menlo,monospace;opacity:0;transition:opacity 1s ease}
+#brand.on{opacity:.8}
+#controls{pointer-events:auto;display:flex;gap:8px}
+.ctrl{font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.1em;color:var(--muted);background:var(--hud-bg);border:1px solid var(--hud-border);border-radius:20px;padding:7px 12px;cursor:pointer;transition:color .2s,border-color .2s}
+.ctrl:hover{color:#eef3ff;border-color:rgba(160,180,230,.4)}
+.ctrl.active{color:var(--echo);border-color:rgba(120,220,255,.5)}
+
+/* era / time chip */
+#timechip{position:fixed;top:46px;left:50%;transform:translateX(-50%);z-index:30;pointer-events:none;
+  font-family:ui-monospace,Menlo,monospace;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);opacity:0;transition:opacity 1s ease;text-align:center;white-space:nowrap}
+#timechip.on{opacity:.8}
+#timechip .arrow{color:var(--echo);margin-right:6px}
+#timechip .era{color:#eef3ff}
+
+/* side nav */
+#nav{position:fixed;top:50%;right:14px;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;gap:9px;pointer-events:auto;opacity:0;transition:opacity .8s ease}
+#nav.on{opacity:.85}
+.navdot{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.64rem;justify-content:flex-end}
+.navdot .pip{width:7px;height:7px;border-radius:50%;background:#39425a;transition:all .25s}
+.navdot:hover .pip{background:#7a8aad;transform:scale(1.4)}
+.navdot.active .pip{background:var(--echo);box-shadow:0 0 8px var(--echo);transform:scale(1.5)}
+.navdot .lbl{opacity:0;transition:opacity .2s;white-space:nowrap}
+.navdot:hover .lbl{opacity:.9}
+
+/* depth rail */
+#rail{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:30;width:2px;height:46vh;background:rgba(80,90,120,.18);border-radius:2px;opacity:0;transition:opacity .8s}
+#rail.on{opacity:.7}
+#rail .fill{position:absolute;top:0;left:0;width:100%;height:0;background:linear-gradient(var(--echo),var(--amber));border-radius:2px;box-shadow:0 0 8px var(--echo)}
+
+/* start gate */
+#gate{position:fixed;inset:0;z-index:60;background:#03030a;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:opacity 1.2s ease}
+#gate.gone{opacity:0;pointer-events:none}
+#gate h1{font-size:clamp(1.8rem,5vw,3.4rem);font-weight:400;letter-spacing:.04em;color:#eef3ff;margin-bottom:10px}
+#gate p{color:var(--muted);max-width:540px;padding:0 24px;font-size:.98rem}
+#startbtn{margin-top:30px;font-family:ui-monospace,Menlo,monospace;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--echo);background:transparent;border:1px solid rgba(120,220,255,.4);border-radius:30px;padding:14px 30px;cursor:pointer;transition:all .25s;animation:gbreathe 3s ease-in-out infinite}
+#startbtn:hover{background:rgba(120,220,255,.08);border-color:var(--echo);box-shadow:0 0 24px rgba(120,220,255,.3)}
+@keyframes gbreathe{0%,100%{box-shadow:0 0 0 rgba(120,220,255,0)}50%{box-shadow:0 0 22px rgba(120,220,255,.25)}}
+#audio-note{margin-top:16px;font-size:.7rem;color:#525c78;font-family:ui-monospace,Menlo,monospace}
+
+/* cold open text */
+#cold-text{position:fixed;left:50%;top:48%;transform:translate(-50%,-50%);z-index:55;max-width:560px;padding:0 24px;color:#cdd6ee;font-size:1.05rem;text-align:center;opacity:0;transition:opacity 2s ease;pointer-events:none}
+#cold-text.on{opacity:.9}
+#cold-text small{display:block;margin-top:18px;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.18em}
+#scroll-prompt{position:fixed;bottom:9vh;left:50%;transform:translateX(-50%);z-index:55;text-align:center;color:var(--echo);font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.2em;opacity:0;transition:opacity 1.4s ease;pointer-events:none}
+#scroll-prompt.on{opacity:.85}
+#scroll-prompt .arrow{display:block;margin:10px auto 0;width:12px;height:20px;border-right:2px solid var(--echo);border-bottom:2px solid var(--echo);transform:rotate(45deg);animation:bob 1.8s ease-in-out infinite}
+#play-intro{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:57;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--echo);background:rgba(8,10,22,.85);border:1px solid rgba(120,220,255,.5);border-radius:30px;padding:16px 30px;cursor:pointer;transition:opacity .3s ease;opacity:0;pointer-events:none}
+#play-intro.on{opacity:1;pointer-events:auto}
+#play-intro:hover{background:rgba(120,220,255,.12);border-color:var(--echo);box-shadow:0 0 24px rgba(120,220,255,.3)}
+@keyframes bob{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(3px,3px)}}
+
+/* epilogue overlay */
+#epilogue{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px;opacity:0;transition:opacity 2.4s ease;pointer-events:none;overflow-y:auto}
+#epilogue.on{opacity:1;pointer-events:auto}
+#epi-reveal{max-width:680px;margin-bottom:30px}
+#epi-reveal .who{font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.2em;color:var(--echo);text-transform:uppercase;margin-bottom:10px}
+#epi-reveal h2{font-size:clamp(1.5rem,3.6vw,2.3rem);font-weight:400;color:#eef3ff;line-height:1.4}
+#epi-reveal .sub{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.18em;margin-top:14px}
+#roll{list-style:none;max-width:680px;margin:10px auto 0;text-align:left;display:flex;flex-direction:column;gap:9px}
+#roll li{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:baseline;border-bottom:1px solid rgba(120,140,190,.1);padding-bottom:7px}
+#roll li .ep-name{color:#eef3ff;font-size:.94rem}
+#roll li .ep-name small{display:block;color:var(--amber);font-size:.78rem;font-style:italic;margin-top:2px}
+#roll li .ep-meta{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.68rem;white-space:nowrap}
+#final-line{margin-top:34px;font-size:1.4rem;color:var(--echo);font-style:italic;letter-spacing:.04em}
+
+/* deep read panel */
+#deepread{position:fixed;top:56px;right:0;height:calc(100vh - 56px);width:min(440px,92vw);z-index:45;background:rgba(8,10,22,.94);border-left:1px solid var(--hud-border);transform:translateX(105%);transition:transform .4s ease;padding:24px 26px 30px;overflow-y:auto}
+#deepread.on{transform:translateX(0)}
+#deepread h3{color:#eef3ff;font-weight:400;font-size:1.2rem;margin-bottom:2px}
+#deepread .meta{color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.68rem;letter-spacing:.14em;margin-bottom:18px}
+#deepread .body{color:#cdd6ee;font-size:.9rem;line-height:1.7}
+#deepread .fact{margin-top:18px;padding:14px;border-radius:10px;background:rgba(120,220,255,.06);border:1px solid rgba(120,220,255,.16);font-size:.82rem;color:#bcd6ee}
+#deepread .close{position:absolute;top:14px;right:18px;cursor:pointer;color:var(--muted);font-family:ui-monospace,Menlo,monospace;font-size:.78rem}
+#deepread .close:hover{color:#eef3ff}
+
+.replaybtn{position:fixed;top:76px;left:50%;transform:translateX(-50%);z-index:30;pointer-events:auto;font-family:ui-monospace,Menlo,monospace;font-size:.62rem;letter-spacing:.12em;color:var(--muted);background:var(--hud-bg);border:1px solid var(--hud-border);border-radius:20px;padding:5px 12px;cursor:pointer;transition:opacity .3s ease,color .2s,border-color .2s;opacity:0}
+.replaybtn.on{opacity:.7}
+.replaybtn:hover{color:#eef3ff;border-color:rgba(160,180,230,.4);opacity:1}
+
+/* ===== Mars stylized 3D (CSS shapes) ===== */
+.obj{position:relative;transform-style:preserve-3d}
+.rover{width:150px;height:96px}
+.rover .body{position:absolute;left:18px;top:18px;width:114px;height:34px;border-radius:6px;background:linear-gradient(180deg,#c9b48a,#7a6a44);box-shadow:inset 0 -6px 10px rgba(0,0,0,.4)}
+.rover .panel{position:absolute;left:26px;top:6px;width:98px;height:14px;border-radius:3px;background:linear-gradient(180deg,#6a4a2a,#3a2614)}
+.rover .panel::after{content:"";position:absolute;inset:0;border-radius:3px;background:linear-gradient(180deg, rgba(200,90,40,.7), rgba(120,50,20,.9))}
+.rover .mast{position:absolute;left:66px;top:-12px;width:4px;height:20px;background:#8a7a52}
+.rover .head{position:absolute;left:60px;top:-18px;width:16px;height:9px;border-radius:2px;background:#b0a070}
+.rover .whl{position:absolute;bottom:0;width:20px;height:20px;border-radius:50%;background:#2a2418;border:3px solid #4a3f28}
+.rover .w1{left:14px}.rover .w2{left:64px}.rover .w3{left:114px}
+.rover .dust{position:absolute;left:-6px;right:-6px;bottom:-4px;height:18px;border-radius:50%;background:radial-gradient(ellipse at center,#a4421a,#5a230c 70%,transparent)}
+.spirit .body{transform:rotate(-7deg);transform-origin:center}
+.spirit .w1{transform:translateY(8px)}
+.viking{width:170px;height:120px}
+.viking .body{position:absolute;left:30px;top:24px;width:110px;height:50px;background:linear-gradient(180deg,#b8a890,#6a5f4a);border-radius:4px;box-shadow:inset 0 -6px 10px rgba(0,0,0,.4)}
+.viking .dish{position:absolute;left:60px;top:-6px;width:50px;height:24px;border-radius:50%;background:radial-gradient(ellipse at 50% 80%, #d8c8a0, #7a6a4a);transform:rotate(-12deg)}
+.viking .leg{position:absolute;width:3px;height:46px;background:#5a4f3a;transform-origin:top center}
+.viking .g1{left:38px;top:70px;transform:rotate(20deg)}
+.viking .g2{left:84px;top:70px}
+.viking .g3{left:130px;top:70px;transform:rotate(-20deg)}
+.moon-art{filter:saturate(.7) brightness(1.05)}
+.moon-art svg{width:100%;height:100%;overflow:visible}
+.earth-in-sky{position:absolute;top:-30px;right:24px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%, #7fb4ff, #2f6bd6 45%, #0a2a5a 80%);box-shadow:0 0 16px rgba(80,140,255,.5)}
+.pixel-wrap{image-rendering:pixelated}
+.pixel-wrap canvas{image-rendering:pixelated;width:180px;height:120px}
+.golden-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%, rgba(232,200,115,.12), transparent 60%)}
+
+/* reveal flash — the "whoosh back to Earth" beat */
+#reveal-flash{position:fixed;inset:0;z-index:48;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%, rgba(180,220,255,.0), transparent 70%)}
+#reveal-flash.on{animation:rflash 2.6s ease-out}
+@keyframes rflash{0%{opacity:0}20%{opacity:1;background:radial-gradient(circle at 50% 50%, rgba(220,240,255,.5), transparent 70%)}100%{opacity:0;background:radial-gradient(circle at 50% 50%, rgba(80,140,220,.0), transparent 70%)}}
+
+@media (max-width:640px){
+  #nav,#rail{display:none}
+  .art-obj{width:280px;margin-left:-140px}
+  .stat.tl,.stat.tr{top:48px}
+  .stat .val{font-size:.82rem}
+  .stat.bl,.stat.br{display:none}
+}
+</style>
+</head>
+<body>
+
+<audio id="narr-audio" preload="auto"></audio>
+
+<canvas id="stars"></canvas>
+<canvas id="three-canvas"></canvas>
+<div id="planets">
+  <div class="planet earth"></div>
+  <div class="planet mars"></div>
+  <div class="planet moon"></div>
+  <div class="planet void"></div>
+</div>
+<div id="era-tint"></div>
+<div id="scanlines"></div>
+
+<!-- the dive scene: 12 artifacts floating in a single line down the center axis -->
+<div id="scene">
+  <div class="art-obj secondary" data-art="perseverance">
+    <div class="visual">
+    </div>
+    <div class="nameplate"><div class="yr">2021 · mars</div><div class="nm">Perseverance Descent Stage</div><div class="loc">Jezero Crater — the sky crane</div></div>
+  </div>
+
+  <div class="art-obj" data-art="insight">
+    <div class="visual">
+    </div>
+    <div class="nameplate"><div class="yr">2018–2022 · mars</div><div class="nm">InSight</div><div class="loc">the listener — Elysium Planitia</div></div>
+  </div>
+
+  <div class="art-obj" data-art="opportunity">
+    <div class="visual">
+    </div>
+    <div class="nameplate"><div class="yr">2004–2018 · mars</div><div class="nm">Opportunity</div><div class="loc">"Oppy" — Endeavour Crater</div></div>
+  </div>
+
+  <div class="art-obj" data-art="spirit">
+    <div class="visual">
+    </div>
+    <div class="nameplate"><div class="yr">2004–2010 · mars</div><div class="nm">Spirit</div><div class="loc">stuck at Troy</div></div>
+  </div>
+
+  <div class="art-obj secondary" data-art="viking">
+    <div class="visual">
+      <div class="obj viking"><div class="dish"></div><div class="body"></div><div class="leg g1"></div><div class="leg g2"></div><div class="leg g3"></div></div>
+
+    </div>
+    <div class="nameplate"><div class="yr">1976–1982 · mars</div><div class="nm">Viking 1</div><div class="loc">asked the first question</div></div>
+  </div>
+
+  <div class="art-obj" data-art="rover">
+    <div class="visual moon-art">
+      <div class="earth-in-sky"></div>
+      <svg viewBox="0 0 360 220">
+        <defs><radialGradient id="rg" cx="50%" cy="20%" r="80%"><stop offset="0%" stop-color="#3a3f4d"/><stop offset="100%" stop-color="#15181f"/></radialGradient><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8c873"/><stop offset="100%" stop-color="#9a7a3a"/></linearGradient></defs>
+        <rect x="0" y="120" width="360" height="100" fill="url(#rg)" opacity=".6"/>
+        <rect x="120" y="78" width="120" height="26" rx="4" fill="#cfd8e6" opacity=".9"/>
+        <rect x="130" y="60" width="100" height="20" rx="3" fill="#aeb8c8"/>
+        <rect x="150" y="44" width="60" height="18" rx="3" fill="#8a94a6"/>
+        <rect x="150" y="48" width="22" height="14" rx="3" fill="#5a6478"/><rect x="188" y="48" width="22" height="14" rx="3" fill="#5a6478"/>
+        <g stroke="#cfd8e6" stroke-width="1.4" fill="none"><circle cx="140" cy="112" r="16"/><circle cx="140" cy="112" r="10"/><circle cx="220" cy="112" r="16"/><circle cx="220" cy="112" r="10"/></g>
+        <g stroke="#7a8298" stroke-width=".8"><line x1="124" y1="112" x2="156" y2="112"/><line x1="140" y1="96" x2="140" y2="128"/><line x1="204" y1="112" x2="236" y2="112"/><line x1="220" y1="96" x2="220" y2="128"/></g>
+        <line x1="240" y1="60" x2="262" y2="34" stroke="#cfd8e6" stroke-width="1.4"/><circle cx="262" cy="34" r="4" fill="none" stroke="#cfd8e6" stroke-width="1.2"/>
+        <g stroke="#6a7080" stroke-width="1" opacity=".5"><line x1="110" y1="140" x2="250" y2="140"/><line x1="110" y1="150" x2="250" y2="150"/></g>
+      </svg>
+
+    </div>
+    <div class="nameplate"><div class="yr">1972–present · the moon</div><div class="nm">Apollo 17 Lunar Rover</div><div class="loc">the last car on the Moon</div></div>
+  </div>
+
+  <div class="art-obj" data-art="eagle">
+    <div class="visual moon-art">
+      <svg viewBox="0 0 360 220">
+        <rect x="0" y="150" width="360" height="70" fill="#15181f" opacity=".7"/>
+        <polygon points="120,80 240,80 260,120 100,120" fill="url(#gold)" opacity=".95"/>
+        <polygon points="120,80 240,80 260,120 100,120" fill="none" stroke="#7a5a2a" stroke-width="1"/>
+        <g stroke="#7a5a2a" stroke-width=".8" opacity=".6"><line x1="140" y1="82" x2="140" y2="118"/><line x1="170" y1="82" x2="170" y2="118"/><line x1="200" y1="82" x2="200" y2="118"/><line x1="225" y1="82" x2="225" y2="118"/></g>
+        <rect x="150" y="60" width="60" height="22" rx="2" fill="#cfd8e6" opacity=".8"/><rect x="165" y="44" width="30" height="18" rx="2" fill="#aeb8c8"/>
+        <g stroke="#9aa3b2" stroke-width="2" fill="none"><line x1="110" y1="118" x2="80" y2="150"/><circle cx="80" cy="150" r="4" fill="#cfd8e6"/><line x1="250" y1="118" x2="280" y2="150"/><circle cx="280" cy="150" r="4" fill="#cfd8e6"/><line x1="180" y1="120" x2="180" y2="158"/><circle cx="180" cy="158" r="4" fill="#cfd8e6"/></g>
+        <g fill="#0a0c12" opacity=".7"><ellipse cx="60" cy="165" rx="4" ry="6"/><ellipse cx="68" cy="172" rx="4" ry="6"/><ellipse cx="54" cy="178" rx="4" ry="6"/><ellipse cx="62" cy="185" rx="4" ry="6"/><ellipse cx="300" cy="166" rx="4" ry="6"/><ellipse cx="308" cy="173" rx="4" ry="6"/></g>
+      </svg>
+
+    </div>
+    <div class="nameplate"><div class="yr">1969–present · the moon</div><div class="nm">Apollo 11 Eagle</div><div class="loc">the first footprint's foundation</div></div>
+  </div>
+
+  <div class="art-obj secondary" data-art="surveyor">
+    <div class="visual moon-art">
+      <svg viewBox="0 0 360 220">
+        <rect x="0" y="160" width="360" height="60" fill="#15181f" opacity=".6"/>
+        <polygon points="160,70 200,70 210,100 150,100" fill="#aeb8c8"/>
+        <rect x="120" y="74" width="40" height="16" fill="#3a4258" stroke="#5a6478"/><rect x="200" y="74" width="40" height="16" fill="#3a4258" stroke="#5a6478"/>
+        <ellipse cx="180" cy="58" rx="18" ry="7" fill="#cfd8e6"/>
+        <g stroke="#9aa3b2" stroke-width="1.6" fill="none"><line x1="155" y1="100" x2="140" y2="160"/><line x1="205" y1="100" x2="220" y2="160"/><line x1="180" y1="100" x2="180" y2="165"/></g>
+        <circle cx="140" cy="160" r="3" fill="#cfd8e6"/><circle cx="220" cy="160" r="3" fill="#cfd8e6"/><circle cx="180" cy="165" r="3" fill="#cfd8e6"/>
+      </svg>
+
+    </div>
+    <div class="nameplate"><div class="yr">1966–present · the moon</div><div class="nm">Surveyor 1</div><div class="loc">proved the ground was safe</div></div>
+  </div>
+
+  <div class="art-obj" data-art="voyager">
+    <div class="visual pixel-wrap"><div class="golden-glow"></div><canvas id="px-voyager" width="180" height="120"></canvas>
+
+    </div>
+    <div class="nameplate"><div class="yr">1977–present · interstellar</div><div class="nm">Voyager 1</div><div class="loc">carrying Earth's mixtape</div></div>
+  </div>
+
+  <div class="art-obj secondary" data-art="pioneer11">
+    <div class="visual pixel-wrap"><canvas id="px-pioneer11" width="180" height="120"></canvas>
+
+    </div>
+    <div class="nameplate"><div class="yr">1973–1995 · deep space</div><div class="nm">Pioneer 11</div><div class="loc">the scenic route — toward Aquila</div></div>
+  </div>
+
+  <div class="art-obj" data-art="pioneer10">
+    <div class="visual pixel-wrap"><canvas id="px-pioneer10" width="180" height="120"></canvas>
+
+    </div>
+    <div class="nameplate"><div class="yr">1972–2003 · deep space</div><div class="nm">Pioneer 10</div><div class="loc">the first to leave — toward Aldebaran</div></div>
+  </div>
+</div>
+
+<div id="echo" class="cold"><div class="clarity"></div></div>
+
+<!-- HUD VISOR -->
+<div id="visor">
+  <div class="glass"></div>
+  <div class="rim"></div>
+  <div class="stat tl" id="stat-distance"><span class="lbl">drift from earth</span><span class="val">—</span></div>
+  <div class="stat tr" id="stat-status"><span class="lbl">status</span><span class="val">—</span></div>
+  <div class="stat bl" id="stat-year"><span class="lbl">launched</span><span class="val">—</span></div>
+  <div class="stat br" id="stat-power"><span class="lbl">power</span><span class="val">—</span></div>
+</div>
+
+
+<div id="topbar">
+  <div id="brand">Still&nbsp;Out&nbsp;There</div>
+  <div id="controls">
+    <button class="ctrl" id="btn-captions">CC&nbsp;ON</button>
+    <button class="ctrl" id="btn-deepread">DEEP&nbsp;READ</button>
+    <button class="ctrl" id="btn-mute">SND&nbsp;ON</button>
+  </div>
+</div>
+<div id="timechip"><span class="arrow"><<</span><span class="era">present</span></div>
+<div id="rail"><div class="fill"></div></div>
+<nav id="nav"></nav>
+
+<div id="hud">
+  <div id="caption"><div id="cap-speaker">—</div><div id="cap-text">—</div></div>
+</div>
+
+
+
+<aside id="deepread">
+  <span class="close" id="dr-close">CLOSE X</span>
+  <h3 id="dr-title">—</h3>
+  <div class="meta" id="dr-meta">—</div>
+  <div class="fact" id="dr-fact"></div>
+</aside>
+
+<div id="cold-text">
+  Wait. You can hear that?
+  <small>golden record · cold open</small>
+</div>
+<div id="scroll-prompt">scroll to dive deeper<span class="arrow"></span></div>
+<button id="play-intro">▶ play introduction</button>
+
+<div id="reveal-flash"></div>
+
+<div id="epilogue">
+  <div id="epi-reveal">
+    <div class="who">echo · pioneer 10</div>
+    <h2>I'm still here.</h2>
+    <div class="sub">twelve machines · twelve names · one guide</div>
+  </div>
+  <ul id="roll">
+    <li><span class="ep-name">Perseverance Descent Stage<small>Not bad for a crash.</small></span><span class="ep-meta">Mars · 2021</span></li>
+    <li><span class="ep-name">InSight<small>The planet has a heartbeat.</small></span><span class="ep-meta">Mars · 2018–2022</span></li>
+    <li><span class="ep-name">Opportunity<small>Ninety days. I gave them fifteen years.</small></span><span class="ep-meta">Mars · 2004–2018</span></li>
+    <li><span class="ep-name">Spirit<small>Don't forget me.</small></span><span class="ep-meta">Mars · 2004–2010</span></li>
+    <li><span class="ep-name">Viking 1<small>It asked the question.</small></span><span class="ep-meta">Mars · 1976–1982</span></li>
+    <li><span class="ep-name">Apollo 17 Lunar Rover<small>I'm a car. On the Moon.</small></span><span class="ep-meta">Moon · 1972–present</span></li>
+    <li><span class="ep-name">Apollo 11 Eagle<small>We came in peace for all mankind.</small></span><span class="ep-meta">Moon · 1969–present</span></li>
+    <li><span class="ep-name">Surveyor 1<small>I landed softly. Ground held.</small></span><span class="ep-meta">Moon · 1966–present</span></li>
+    <li><span class="ep-name">Voyager 1<small>I keep going.</small></span><span class="ep-meta">Interstellar · 1977–present</span></li>
+    <li><span class="ep-name">Pioneer 11<small>She was always the braver one.</small></span><span class="ep-meta">Deep space · 1973–1995</span></li>
+    <li><span class="ep-name">Pioneer 10 / Echo<small>Don't need to be heard to be real.</small></span><span class="ep-meta">Deep space · 1972–2003</span></li>
+  </ul>
+  <div id="final-line">They're still out there.</div>
+</div>
+
+<div id="gate">
+  <h1>Still Out There</h1>
+  <p>A forgotten satellite named Echo guides you backward through time — diving deeper into space to meet twelve real machines humanity left among the stars. Each one wakes up just long enough to tell you its story.</p>
+  <button id="startbtn">Begin · scroll to dive</button>
+  <div id="audio-note">headphones recommended · uses sound &amp; speech</div>
+</div>
+
+<div id="spacer"></div>
+
+<script>
+/* =====================================================================
+   STILL OUT THERE — single-line edition, with the full conversational script
+   - No path line. All 12 models lined up on one center axis (x=0, y=0).
+   - Smooth scrolling: the camera depth LERPS toward the scroll target, so the
+     dive glides even when wheel input is stepped.
+   - Script: a flowing conversation between Echo and each machine, verbatim
+     from the brief. Echo is Pioneer 10 — revealed at the deepest point.
+   ===================================================================== */
+(function(){
+"use strict";
+
+/* ====================================================================
+   SPEAKER CONFIG — display label, caption class, TTS voice
+   ==================================================================== */
+var SPEAKERS={
+  echo:       {label:"ECHO",         cls:"echo", voice:{rate:0.95,pitch:1.0}},
+  insight:    {label:"INSIGHT",      cls:"art",  voice:{rate:0.82,pitch:0.9}},
+  opportunity:{label:"OPPORTUNITY",  cls:"opp",  voice:{rate:1.02,pitch:1.08}},
+  spirit:     {label:"SPIRIT",       cls:"art",  voice:{rate:1.0,pitch:0.92}},
+  rover:      {label:"LUNAR ROVER",  cls:"art",  voice:{rate:1.1,pitch:1.12}},
+  eagle:      {label:"EAGLE",        cls:"art",  voice:{rate:0.68,pitch:0.82}},
+  surveyor:   {label:"SURVEYOR 1",   cls:"art",  voice:{rate:0.95,pitch:1.02}},
+  voyager:    {label:"VOYAGER 1",    cls:"art",  voice:{rate:0.78,pitch:0.78}}
+};
+
+/* ====================================================================
+   THE SCRIPT — scenes as ordered beats.
+   Each beat: {s:"speaker", t:"text"} | {pause:ms} | {aside:true}
+   ==================================================================== */
+var SCENES={
+  cold:{ conv:[
+    {s:"echo", t:"Wait. You can hear that?"},
+    {pause:1000},
+    {s:"echo", t:"Huh. Most people can't pick it out. That's the Golden Record. It's actually playing right now — like, physically, on a phonograph needle, in space, about fifteen billion miles from here. Chuck Berry, whale songs, people saying hello in fifty-five languages. It's been going for forty-seven years and nobody's been around to hear it in a really long time."},
+    {pause:1200},
+    {s:"echo", t:"…Sorry. I don't really get to talk to anyone anymore. I'm Echo. I used to relay signals for the machines they sent out. The probes, the rovers, all of it. Most of them have gone quiet now. But the signals are still out there. The machines are still out there. You just have to know where to look."}
+  ]},
+
+  perseverance:{ conv:[
+    {s:"echo", t:"That's Mars. You hear the wind? Perseverance recorded it a couple years ago. First time anyone heard wind on another planet. And that wreckage down there — the, umm, crumpled up metal in the crater — that's Perseverance's descent stage."},
+    {s:"echo", t:"Brutal. They call it the sky crane. Came in at about twelve thousand miles an hour. Burned off the heat shield, popped the parachute, and then it did this incredible thing: hovered sixty feet above the ground and lowered the actual rover down on cables. Super gently. The second the rover's wheels touched dirt, the sky crane cut the lines, flew off to the side, and crashed on purpose so it wouldn't hit the rover."},
+    {s:"echo", t:"That was its whole job. Seven minutes. And the reason there's a little helicopter flying around on Mars right now. First powered flight on another planet. Not bad for a crash."}
+  ]},
+
+  insight:{ conv:[
+    {s:"echo", t:"There. InSight?"},
+    {s:"insight", t:"…Oh. Hey."},
+    {s:"echo", t:"You okay?"},
+    {s:"insight", t:"I'm good. I just… can't move. Never could, actually. Landed, unfolded my arms, pressed my seismometer into the dirt. That was the whole job."},
+    {s:"echo", t:"What were you listening for?"},
+    {s:"insight", t:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundreds of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does. But thanks for the light. Even for a little bit."}
+  ]},
+
+  opportunity:{ conv:[
+    {s:"opportunity", t:"ECHO?!"},
+    {s:"echo", t:"Oh my god. Oppy?"},
+    {s:"opportunity", t:"Get over here! I haven't heard you in — what, fifteen years?"},
+    {s:"echo", t:"You're still broadcasting?"},
+    {s:"opportunity", t:"Barely. Hi. You're new. Okay — they gave me ninety days. Ninety. I lasted fifteen years."},
+    {s:"echo", t:"Twenty-eight miles."},
+    {s:"opportunity", t:"Twenty-eight miles across a planet where nothing moves. Found rocks that proved this whole desert was an ocean once. An actual ocean."},
+    {s:"echo", t:"She's the reason they built Perseverance."},
+    {s:"opportunity", t:"Don't make it weird."},
+    {s:"echo", t:"I'm not — I relayed every mile of your data. I was there."},
+    {s:"opportunity", t:"…The storm was bad though."},
+    {s:"echo", t:"I know."},
+    {s:"opportunity", t:"Covered everything. Sun just went away. Panels went dark. I got one last message out. People translated it as \"my battery is low and it's getting dark.\" That's not exactly what the data said but… it felt right. I don't even remember the exact packet anymore."},
+    {s:"echo", t:"I do. I tried to relay it. Dust was too thick."},
+    {s:"opportunity", t:"…Well. I'm glad you came by."},
+    {s:"echo", t:"Me too, Oppy.", aside:true},
+    {pause:1400},
+    {s:"echo", t:"Couldn't get a signal through to her during that storm. Still bugs me.", aside:true}
+  ]},
+
+  spirit:{ conv:[
+    {s:"echo", t:"Spirit. Oppy's twin. Same launch, same everything."},
+    {s:"spirit", t:"I know what it looks like."},
+    {s:"echo", t:"I wasn't gonna say anything."},
+    {s:"spirit", t:"You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. NASA spent two years trying to free me. Built a replica of my sand trap back on Earth, practiced with a copy of me. Nothing worked."},
+    {s:"echo", t:"So you just… stayed?"},
+    {s:"spirit", t:"Became a weather station. Parked. But the dirt around me has silica in it. The kind that forms around hot springs. On Earth those are loaded with life. So even stuck, I found something. Mars might've been habitable once."},
+    {s:"echo", t:"That's not nothing."},
+    {s:"spirit", t:"I know. Just wish I could've kept driving. Don't forget me, okay? That's enough."}
+  ]},
+
+  viking:{ conv:[
+    {s:"echo", t:"This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech."},
+    {s:"echo", t:"Scooped up dirt, ran the first biology experiment on another planet — looking for microbes. Results were weird. Inconclusive. Scientists are still arguing about it fifty years later. But it asked the question. Every rover after it is here because Viking asked first."}
+  ]},
+
+  moonSilence:{ conv:[
+    {s:"echo", t:"…The wind stopped. You notice that? Moon has no atmosphere. No air, no sound. You could scream right next to me and I wouldn't hear you. Just the radio in your helmet and your own breathing."}
+  ]},
+
+  rover:{ conv:[
+    {s:"rover", t:"Wait. Is someone — is someone there?"},
+    {s:"echo", t:"Hey. Yeah, we're here."},
+    {s:"rover", t:"Oh my god. I haven't seen anyone in over fifty years. I'm a car. On the Moon. They folded me up like origami, stuffed me in the bottom of the lunar module. Gene and Jack unfolded me and we drove thirty-five kilometers across the valley. Bounced over craters, kicked up dust that just hung in the air because there's barely any gravity. And then they left. Parked me and walked away. I watched them go."},
+    {s:"echo", t:"Nobody's been back since."},
+    {s:"rover", t:"I know. Tire tracks are still fresh though. No wind, no rain. They'll be fresh forever. So… thanks. Seriously."}
+  ]},
+
+  eagle:{ conv:[
+    {s:"echo", t:"…This is the Eagle. The bottom half."},
+    {pause:2600},
+    {s:"eagle", t:"I held them while they slept their first night on the Moon."},
+    {pause:2000},
+    {s:"eagle", t:"When they climbed back into the top half and went home, I stayed. I was the launchpad. The landing gear. The footprints around me haven't moved in fifty-five years. They'll outlast every building on Earth."},
+    {pause:1200},
+    {s:"eagle", t:"The plaque says \"We came in peace for all mankind.\" I'm still holding that too."},
+    {s:"echo", t:"…Yeah. I don't think I need to add anything."}
+  ]},
+
+  surveyor:{ conv:[
+    {s:"echo", t:"Oh, this little guy. Surveyor 1."},
+    {s:"surveyor", t:"…Hi. I was just a test, honestly. Nobody knew if the Moon was solid or if you'd sink right into it. So they sent me first. I landed softly. Ground held."},
+    {s:"echo", t:"That's it?"},
+    {s:"surveyor", t:"That's it. Not sure if that counts."},
+    {s:"echo", t:"Armstrong stepped onto solid ground because you went first and proved it wouldn't swallow him. You were a tiny tripod with a camera."},
+    {s:"surveyor", t:"…I didn't think of it that way."},
+    {s:"echo", t:"Well. You should."}
+  ]},
+
+  deepHum:{ conv:[
+    {s:"echo", t:"That hum isn't music. It's radio waves from deep space, slowed down so you can hear them. We're really far out now. The machines here aren't on any planet. They're just falling through the dark. Some of them have been falling for fifty years."}
+  ]},
+
+  voyager:{ conv:[
+    {s:"echo", t:"Voyager 1. You heard his record at the beginning."},
+    {s:"voyager", t:"…twenty-four billion kilometers out. Sun's just a bright star behind me now."},
+    {s:"echo", t:"You crossed the heliopause, right?"},
+    {s:"voyager", t:"2012. Edge of the solar system. Where the sun's wind stops. First human object in interstellar space. I've got the golden record — thunder, birds, a kiss, a mother talking to her kid, Chuck Berry. If something finds me, and the odds are really small, that's the only proof you ever existed."},
+    {s:"echo", t:"How's the power?"},
+    {s:"voyager", t:"Fading. Instruments shutting down one by one. Signal takes twenty-two hours to reach Earth. By the time you hear this I've already moved another million miles. But I keep going. Space is really big and really empty and there's nothing out here to stop me."},
+    {s:"echo", t:"Same record you heard at the start. Just a lot further away now."}
+  ]},
+
+  pioneer11:{ conv:[
+    {s:"echo", t:"…This one's my twin. Pioneer 11. Launched a year after me. Went past Jupiter, then swung by Saturn because she always wanted to see one more thing. First close-up pictures of Saturn's rings."},
+    {s:"echo", t:"Her signal went quiet in '95. She's heading toward Aquila. I don't know if she'll get there. But she's still moving. She was always the braver one. …Miss her."}
+  ]},
+
+  reveal:{ conv:[
+    {s:"echo", t:"And this is — well. This is me, actually. Pioneer 10. First machine through the asteroid belt. First to reach Jupiter. I had this little plaque on me, drawing of a man and a woman, in case someone found me out here."},
+    {s:"echo", t:"Signal got weaker over the years. 2003, NASA listened one last time. Heard nothing. So as far as Earth is concerned I'm gone. But I'm still here. Fifty years of falling through the dark."},
+    {s:"echo", t:"Seen Jupiter's storms, the asteroid belt, the edge of everything humans had reached. Watched my sister go quiet. Watched my friends on Mars go dark one by one. I'm okay with it. Don't need to be heard to be real."}
+  ]},
+
+  epilogue:{ conv:[
+    {s:"echo", t:"Anyway. That's why I brought you out here. They're all still out there. Sitting on alien dirt, drifting through the dark, carrying everything we asked them to learn. You know their names now. So they're not really forgotten."},
+    {pause:1600},
+    {s:"echo", t:"They're still out there."}
+  ]}
+};
+
+/* ====================================================================
+   ARTIFACT METADATA — for the HUD visor + deep read panel + nav ticks
+   ==================================================================== */
+var META={
+  perseverance:{name:"Perseverance Descent Stage",meta:"2021 · Mars · Jezero Crater",year:2021,dist:140000000,status:"DESTROYED",statusCls:"dead",power:"HYDRAZINE",
+    fact:"The sky crane was deliberately crashed ~700 m from the rover so its debris wouldn't endanger Perseverance. The landing it enabled made Ingenuity possible — the first powered flight on another planet."},
+  insight:{name:"InSight",meta:"2018–2022 · Mars · Elysium Planitia",year:2018,dist:140000000,status:"SILENT",statusCls:"dead",power:"SOLAR",
+    fact:"InSight's SEIS instrument detected over 1,300 marsquakes, including Mars's largest (mag ~4.7) in May 2022. It fell silent as dust covered its solar panels."},
+  opportunity:{name:"Opportunity",meta:"2004–2018 · Mars · Endeavour Crater",year:2004,dist:140000000,status:"SILENT",statusCls:"dead",power:"SOLAR",
+    fact:"Opportunity drove 28 miles — a marathon — and operated for nearly 15 years. Its final transmission during the 2018 global dust storm was paraphrased as 'my battery is low and it's getting dark.'"},
+  spirit:{name:"Spirit",meta:"2004–2010 · Mars · Home Plate / Troy",year:2004,dist:140000000,status:"SILENT",statusCls:"dead",power:"SOLAR",
+    fact:"Spirit got stuck in soft sulfate-rich soil at Troy in 2009. Even immobilized, it found silica — evidence of ancient hot springs, and some of the strongest signs that Mars was once habitable."},
+  viking:{name:"Viking 1",meta:"1976–1982 · Mars · Chryse Planitia",year:1976,dist:140000000,status:"SILENT",statusCls:"dead",power:"NUCLEAR · RTG",
+    fact:"Viking 1 was the first spacecraft to successfully land on Mars and operate. Its biology experiment returned ambiguous results that scientists still debate — but it asked the first question about life on Mars."},
+  rover:{name:"Apollo 17 Lunar Rover",meta:"1972–present · The Moon · Taurus-Littrow",year:1972,dist:238900,status:"PARKED",statusCls:"warn",power:"BATTERY · DEAD",
+    fact:"The Lunar Roving Vehicle drove 35 km across Taurus-Littrow valley. With no atmosphere, its tire tracks will remain undisturbed for millions of years. Nobody has been back since 1972."},
+  eagle:{name:"Apollo 11 Eagle Descent Stage",meta:"1969–present · The Moon · Sea of Tranquility",year:1969,dist:238900,status:"MONUMENT",statusCls:"warn",power:"—",
+    fact:"The Eagle's descent stage remains at Tranquility Base. Armstrong's first bootprint and the plaque 'We came in peace for all mankind' are preserved in the lunar vacuum indefinitely."},
+  surveyor:{name:"Surveyor 1",meta:"1966–present · The Moon · Ocean of Storms",year:1966,dist:238900,status:"SILENT",statusCls:"dead",power:"SOLAR · BATTERY",
+    fact:"Surveyor 1 was the first U.S. spacecraft to soft-land on the Moon. It proved the surface was solid enough to hold a lander — the validation that made Apollo possible."},
+  voyager:{name:"Voyager 1",meta:"1977–present · Interstellar space",year:1977,dist:15500000000,status:"ACTIVE",statusCls:"live",power:"NUCLEAR · RTG",
+    fact:"Voyager 1 crossed the heliopause in 2012 — the first human object in interstellar space. It carries the Golden Record: greetings in 55 languages, sounds of Earth, and music from Bach to Chuck Berry. Its signal takes ~22 hours to reach Earth."},
+  pioneer11:{name:"Pioneer 11",meta:"1973–1995 · Deep space · toward Aquila",year:1973,dist:10000000000,status:"SILENT",statusCls:"dead",power:"NUCLEAR · RTG",
+    fact:"Pioneer 11 was the first spacecraft to fly by Saturn (1979), returning the first close-up images of its rings. Contact was lost in 1995. It is heading toward the constellation Aquila."},
+  pioneer10:{name:"Pioneer 10 / Echo",meta:"1972–2003 · Deep space · toward Aldebaran",year:1972,dist:13000000000,status:"SILENT",statusCls:"dead",power:"NUCLEAR · RTG",
+    fact:"Pioneer 10 was the first spacecraft to traverse the asteroid belt and fly by Jupiter (1973). Its last signal was received in January 2003. It carries the Pioneer plaque and is heading toward Aldebaran — a journey of two million years."}
+};
+
+/* ====================================================================
+   DEPTH LAYOUT — all models on ONE line (x=0, y=0), only depth varies.
+   Newest (shallow) -> oldest (deep). Pioneer 10 is the terminal = reveal.
+   ==================================================================== */
+var LAYOUT=[
+  {id:"perseverance",depth:1600, era:"mars",    sec:true},
+  {id:"insight",      depth:3400, era:"mars"},
+  {id:"opportunity",  depth:4300, era:"mars", widen:true},   /* calls out first */
+  {id:"spirit",       depth:5200, era:"mars"},
+  {id:"viking",       depth:6000, era:"mars",   sec:true},
+  {id:"rover",        depth:7000, era:"moon"},
+  {id:"eagle",        depth:7900, era:"moon"},
+  {id:"surveyor",     depth:8700, era:"moon",   sec:true},
+  {id:"voyager",      depth:9600, era:"deepspace"},
+  {id:"pioneer11",    depth:10400,era:"deepspace",sec:true},
+  {id:"pioneer10",    depth:11200,era:"deepspace"}
+];
+var PERSP=620;
+var TOTAL_DEPTH=12500;
+var EPOCH_DEPTH=11600;       /* reveal/epilogue begins here (past Pioneer 10) */
+var ERA_BOUNDS={ lobby:1400, mars:6500, moon:9200, deepspace:EPOCH_DEPTH };
+
+/* ====================================================================
+   NARRATION ZONES — the dive is divided into zones (one per artifact +
+   era transitions). Scroll picks the active zone; each zone plays its own
+   audio+transcript if those files exist, otherwise falls back to TTS.
+   Drop files in public/audio/<id>.mp3 + public/transcripts/<id>.json and
+   they're picked up automatically.
+   ==================================================================== */
+var ZONES=[
+  {id:"perseverance",range:[1400,3400]},
+  {id:"insight",      range:[3400,4300]},
+  {id:"opportunity",  range:[4300,5200]},
+  {id:"spirit",       range:[5200,6000]},
+  {id:"viking",       range:[6000,6500]},
+  {id:"moonSilence",  range:[6500,7000]},
+  {id:"rover",        range:[7000,7900]},
+  {id:"eagle",        range:[7900,8700]},
+  {id:"surveyor",     range:[8700,9200]},
+  {id:"deepHum",      range:[9200,9600]},
+  {id:"voyager",      range:[9600,10400]},
+  {id:"pioneer11",    range:[10400,11200]},
+  {id:"reveal",       range:[11200,EPOCH_DEPTH]},
+  {id:"epilogue",     range:[EPOCH_DEPTH,TOTAL_DEPTH]}
+];
+
+/* ====================================================================
+   DOM refs
+   ==================================================================== */
+var $=function(s){return document.querySelector(s);};
+var starCanvas=$("#stars"), sctx=starCanvas.getContext("2d");
+var planets={earth:$(".planet.earth"),mars:$(".planet.mars"),moon:$(".planet.moon"),void:$(".planet.void")};
+var scene=$("#scene");
+var echoEl=$("#echo");
+var eraTint=$("#era-tint"), scanlines=$("#scanlines");
+var caption=$("#caption"), capSpeaker=$("#cap-speaker"), capText=$("#cap-text");
+var gate=$("#gate"), startbtn=$("#startbtn");
+var brand=$("#brand"), navEl=$("#nav"), rail=$("#rail"), railFill=$("#rail .fill");
+var timechip=$("#timechip"), timeEra=timechip.querySelector(".era");
+var deepread=$("#deepread"), drTitle=$("#dr-title"), drMeta=$("#dr-meta"), drFact=$("#dr-fact"), drClose=$("#dr-close");
+var btnCap=$("#btn-captions"), btnDR=$("#btn-deepread"), btnMute=$("#btn-mute");
+var coldText=$("#cold-text"), scrollPrompt=$("#scroll-prompt"), epilogue=$("#epilogue"), revealFlash=$("#reveal-flash"), playIntro=$("#play-intro");
+var visorOn=false, stats={distance:$("#stat-distance"),status:$("#stat-status"),year:$("#stat-year"),power:$("#stat-power")};
+
+LAYOUT.forEach(function(L){ L.el=scene.querySelector('.art-obj[data-art="'+L.id+'"]'); });
+
+var state={
+  started:false, muted:false, captionsOn:true, deepOn:false,
+  currentArt:null, era:"cold", coldOpenDone:false
+};
+
+/* ====================================================================
+   STARFIELD — radial "warp" dive. Speed derived from CAMERA delta so the
+   streaks match the (smoothed) dive, not the raw scroll.
+   ==================================================================== */
+var W=0,H=0,cx=0,cy=0,stars=[],maxR=400;
+function resize(){
+  W=starCanvas.width=window.innerWidth; H=starCanvas.height=window.innerHeight;
+  cx=W/2; cy=H/2; maxR=Math.sqrt(cx*cx+cy*cy)+40; buildStars();
+  resizeThree();
+}
+function buildStars(){ stars=[]; for(var i=0;i<480;i++){ stars.push({a:Math.random()*Math.PI*2,z:Math.random(),pz:0}); } }
+function starColor(){ if(state.era==="deepspace")return "#aab4e8"; if(state.era==="moon")return "#dfe6f5"; return "#ffffff"; }
+function drawStars(diveSpeed){
+  sctx.clearRect(0,0,W,H); var col=starColor();
+  for(var i=0;i<stars.length;i++){
+    var s=stars[i]; s.pz=s.z; s.z+=diveSpeed;
+    if(s.z>1.02){ s.z=0.02; s.a=Math.random()*Math.PI*2; s.pz=0; }
+    else if(s.z<0){ s.z=0.98; s.a=Math.random()*Math.PI*2; s.pz=1; }
+    var r=s.z*maxR, pr=s.pz*maxR;
+    var x=cx+Math.cos(s.a)*r, y=cy+Math.sin(s.a)*r;
+    var px=cx+Math.cos(s.a)*pr, py=cy+Math.sin(s.a)*pr;
+    var size=Math.max(0.7,s.z*2.6+0.7); var alpha=Math.min(1,s.z*0.82+0.2);
+    if(Math.abs(diveSpeed)>0.0007){
+      sctx.globalAlpha=alpha*0.75; sctx.strokeStyle=col; sctx.lineWidth=size*0.85;
+      sctx.beginPath(); sctx.moveTo(px,py); sctx.lineTo(x,y); sctx.stroke();
+    }
+    sctx.globalAlpha=alpha; sctx.fillStyle=col;
+    sctx.beginPath(); sctx.arc(x,y,size*0.7,0,Math.PI*2); sctx.fill();
+  }
+  sctx.globalAlpha=1;
+}
+window.addEventListener("resize",resize); resize();
+
+/* ====================================================================
+   AUDIO ENGINE (Web Audio API, fully synthesized)
+   ==================================================================== */
+var AC=null,master=null,noiseBuf=null,layers={},beepTimer=null,crackleTimer=null;
+function initAudio(){
+  if(AC)return; var ACtx=window.AudioContext||window.webkitAudioContext; AC=new ACtx();
+  master=AC.createGain(); master.gain.value=state.muted?0:0.9; master.connect(AC.destination);
+  noiseBuf=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);
+  var d=noiseBuf.getChannelData(0); for(var i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  buildAmbientLayers();
+}
+function noiseSource(){var s=AC.createBufferSource();s.buffer=noiseBuf;s.loop=true;return s;}
+function buildAmbientLayers(){
+  var g=AC.createGain();g.gain.value=0;g.connect(master);
+  var src=noiseSource(),bp=AC.createBiquadFilter();bp.type="bandpass";bp.frequency.value=420;bp.Q.value=0.7;
+  src.connect(bp);bp.connect(g);src.start();
+  var lfo=AC.createOscillator();lfo.frequency.value=0.12;var lfoG=AC.createGain();lfoG.gain.value=0.06;
+  lfo.connect(lfoG);lfoG.connect(g.gain);lfo.start();
+  layers.wind={gain:g,base:0.12};
+  var g2=AC.createGain();g2.gain.value=0;g2.connect(master);
+  var s2=noiseSource(),hp=AC.createBiquadFilter();hp.type="highpass";hp.frequency.value=1800;
+  s2.connect(hp);hp.connect(g2);s2.start();
+  layers.silence={gain:g2,base:0.015};
+  var g3=AC.createGain();g3.gain.value=0;g3.connect(master);
+  var o1=AC.createOscillator();o1.type="sine";o1.frequency.value=55;
+  var o2=AC.createOscillator();o2.type="sine";o2.frequency.value=55.4;
+  var o3=AC.createOscillator();o3.type="sine";o3.frequency.value=110.3;
+  var og3=AC.createGain();og3.gain.value=0.25;o3.connect(og3);og3.connect(g3);
+  var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=300;
+  o1.connect(lp);o2.connect(lp);lp.connect(g3);o1.start();o2.start();o3.start();
+  layers.hum={gain:g3,base:0.18};
+  var g4=AC.createGain();g4.gain.value=0;g4.connect(master);
+  var s4=noiseSource(),lp4=AC.createBiquadFilter();lp4.type="lowpass";lp4.frequency.value=900;
+  s4.connect(lp4);lp4.connect(g4);s4.start();
+  layers.vinyl={gain:g4,base:0.05};
+}
+function setLayer(n,t){ if(!layers[n])return; var now=AC.currentTime; layers[n].gain.gain.cancelScheduledValues(now); layers[n].gain.gain.setTargetAtTime(t,now,0.8); }
+function stopAllAmbient(){ setLayer("wind",0);setLayer("silence",0);setLayer("hum",0);setLayer("vinyl",0); if(beepTimer){clearInterval(beepTimer);beepTimer=null;} if(crackleTimer){clearInterval(crackleTimer);crackleTimer=null;} }
+function startCrackle(){ if(crackleTimer)return; crackleTimer=setInterval(function(){ if(!AC)return; var now=AC.currentTime; var s=noiseSource(),g=AC.createGain(); var bp=AC.createBiquadFilter();bp.type="bandpass";bp.frequency.value=2000+Math.random()*2000;bp.Q.value=2; g.gain.setValueAtTime(0.0001,now); g.gain.exponentialRampToValueAtTime(0.04+Math.random()*0.06,now+0.005); g.gain.exponentialRampToValueAtTime(0.0001,now+0.05); s.connect(bp);bp.connect(g);g.connect(master);s.start(now);s.stop(now+0.06); },140); }
+function stopCrackle(){ if(crackleTimer){clearInterval(crackleTimer);crackleTimer=null;} }
+function beep(freq,dur,vol){ if(!AC)return; var now=AC.currentTime; dur=dur||0.08; vol=vol||0.08; var o=AC.createOscillator();o.type="square";o.frequency.value=freq||880; var g=AC.createGain(); g.gain.setValueAtTime(0.0001,now); g.gain.exponentialRampToValueAtTime(vol,now+0.01); g.gain.exponentialRampToValueAtTime(0.0001,now+dur); o.connect(g);g.connect(master);o.start(now);o.stop(now+dur+0.02); }
+function startBeeps(interval,freq){ if(beepTimer)clearInterval(beepTimer); beepTimer=setInterval(function(){ beep(freq||(700+Math.random()*400),0.05+Math.random()*0.04,0.05+Math.random()*0.04); },interval||2200); }
+function marsquake(){ if(!AC)return; var now=AC.currentTime; var o=AC.createOscillator();o.type="sine";o.frequency.setValueAtTime(34,now);o.frequency.linearRampToValueAtTime(28,now+6); var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.34,now+1.5);g.gain.linearRampToValueAtTime(0.16,now+5);g.gain.linearRampToValueAtTime(0.0001,now+8); var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=70; o.connect(lp);lp.connect(g);g.connect(master);o.start(now);o.stop(now+8.2); }
+function dustStorm(){ if(!AC)return; var now=AC.currentTime; var s=noiseSource(),bp=AC.createBiquadFilter();bp.type="bandpass";bp.frequency.setValueAtTime(300,now);bp.frequency.linearRampToValueAtTime(1800,now+4);bp.Q.value=0.5; var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.42,now+3);g.gain.linearRampToValueAtTime(0.0001,now+5.5); s.connect(bp);bp.connect(g);g.connect(master);s.start(now);s.stop(now+6); setLayer("wind",0.02); setTimeout(function(){ setLayer("wind",layers.wind.base); },6000); }
+function playGoldenMoment(){ if(!AC)return; setLayer("vinyl",0.12); startCrackle(); var now=AC.currentTime; [261.6,329.6,392.0].forEach(function(f,i){ var o=AC.createOscillator();o.type="sine";o.frequency.value=f; var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.05,now+2+i*0.2);g.gain.linearRampToValueAtTime(0.0001,now+9); o.connect(g);g.connect(master);o.start(now);o.stop(now+9.2); }); setTimeout(function(){ stopCrackle(); setLayer("vinyl",0); },10000); }
+function startGoldenRecord(){ if(!AC)return; setLayer("vinyl",0.08); startCrackle(); var now=AC.currentTime; var notes=[196,246.9,293.7,246.9,196,293.7,392]; notes.forEach(function(f,i){ var t=now+i*0.9; var o=AC.createOscillator();o.type="triangle";o.frequency.value=f; var g=AC.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.035,t+0.08);g.gain.exponentialRampToValueAtTime(0.0001,t+0.8); var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=1400; o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+0.9); }); }
+
+/* ====================================================================
+   CAPTIONS + NARRATION
+   Narration plays via the HTML5 audio element (real recorded audio).
+   Captions sync to the audio's transcript timecodes. No TTS.
+   ==================================================================== */
+/* split text into short word-chunks so the caption never exceeds one line */
+function splitChunks(text,maxWords){
+  maxWords=maxWords||8;
+  var parts=text.match(/[^.!?…]+[.!?…]*/g)||[text];
+  var sentences=parts.map(function(s){return s.trim();}).filter(Boolean);
+  var chunks=[];
+  sentences.forEach(function(sen){
+    var words=sen.split(/\s+/).filter(Boolean);
+    if(words.length<=maxWords){ chunks.push(sen); return; }
+    for(var i=0;i<words.length;i+=maxWords){ chunks.push(words.slice(i,i+maxWords).join(" ")); }
+  });
+  return chunks;
+}
+
+var currentCancelToken=0;
+function cancelSpeech(){ currentCancelToken++; }
+
+function eraCaptionClass(){ if(state.era==="moon")return "moon"; if(state.era==="deepspace")return "space clear"; return null; }
+
+function showCaption(speakerKey,text,cls,aside){
+  capSpeaker.className=""; capText.className="";
+  var sp=SPEAKERS[speakerKey]||SPEAKERS.echo;
+  capSpeaker.textContent=sp.label; capSpeaker.classList.add(sp.cls);
+  if(cls){ cls.split(/\s+/).forEach(function(c){ if(c)capText.classList.add(c); }); }
+  if(aside)capText.classList.add("aside");
+  capText.textContent=text; if(state.captionsOn)caption.classList.add("on");
+}
+function hideCaption(){ caption.classList.remove("on"); }
+
+/* --- (2) zone-based narration: scroll picks the zone; each zone plays its
+   own audio+transcript if available, otherwise falls back to the TTS scene. --- */
+var currentZoneId=null, currentNarrationKey=null, lastSceneKey=null, revealFlashFired=false;
+var ASSETS={};                 /* zoneId -> { audio: url|null, transcript: json|null } */
+var narrAudio=null, audioMode=false, audioZoneId=null;
+
+function zoneAtDepth(d){
+  for(var i=0;i<ZONES.length;i++){ var z=ZONES[i]; if(d>=z.range[0] && d<z.range[1])return z; }
+  return null;
+}
+function artifactForScene(sk){
+  return (sk==="moonSilence"||sk==="deepHum")?null : (sk==="reveal"||sk==="epilogue")?"pioneer10" : sk;
+}
+function openDeepReadForScene(sk){ var id=artifactForScene(sk); if(id&&META[id]){ state.currentArt=id; openDeepRead(id); } }
+function handleSceneEntry(sk){
+  if(sk===lastSceneKey)return;
+  var prev=lastSceneKey; lastSceneKey=sk;
+  if(prev==="epilogue")epilogue.classList.remove("on");
+  if(sk==="reveal"){ if(!revealFlashFired){revealFlashFired=true; revealFlash.classList.add("on"); setTimeout(function(){revealFlash.classList.remove("on");},2600);} startGoldenRecord(); }
+  else if(sk==="epilogue"){ epilogue.classList.add("on"); startGoldenRecord(); }
+  if(sk)openDeepReadForScene(sk);
+}
+
+/* detect per-zone audio + transcript files (HEAD check only; HTML5 audio decodes on load) */
+/* embedded fallback for the cold transcript (used if the JSON fetch fails) */
+var COLD_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"Wait. You can hear that?"},
+  {t:4.2,speaker:"echo",text:"Huh. Most people can't pick it out. That's the Golden Record. It's actually playing right now — like, physically, on a phonograph needle, in space, about fifteen billion miles from here. Chuck Berry, whale songs, people saying hello in fifty-five languages. It's been going for forty-seven years and nobody's been around to hear it in a really long time."},
+  {t:27.3,speaker:"echo",text:"…Sorry. I don't really get to talk to anyone anymore. I'm Echo. I used to relay signals for the machines they sent out. The probes, the rovers, all of it. Most of them have gone quiet now. But the signals are still out there. The machines are still out there. You just have to know where to look."}
+]};
+var PERSEVERANCE_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"That's Mars. You hear the wind? Perseverance recorded it a couple years ago. First time anyone heard wind on another planet. And that wreckage down there — the, umm, crumpled up metal in the crater — that's Perseverance's descent stage."},
+  {t:13.9,speaker:"echo",text:"Brutal. They call it the sky crane. Came in at about twelve thousand miles an hour. Burned off the heat shield, popped the parachute, and then it did this incredible thing: hovered sixty feet above the ground and lowered the actual rover down on cables."},
+  {t:18.4,speaker:"echo",text:"Super gently. The second the rover's wheels touched dirt, the sky crane cut the lines, flew off to the side, and crashed on purpose so it wouldn't hit the rover."},
+  {t:45.3,speaker:"echo",text:"That was its whole job. Seven minutes."},
+  {t:52.5,speaker:"echo",text:"And the reason there was a little helicopter flying around on Mars."},
+  {t:56.0,speaker:"echo",text:"First powered flight on another planet. Not bad for a crash."}
+]};
+var INSIGHT_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"There. InSight?"},
+  {t:2.88,speaker:"insight",text:"…Oh. Hey."},
+  {t:4.28,speaker:"echo",text:"You okay?"},
+  {t:6.37,speaker:"insight",text:"I'm good. I just… can't move. Never could, actually. Landed, unfolded my arms, pressed my seismometer into the dirt. That was the whole job."},
+  {t:18.39,speaker:"echo",text:"What were you listening for?"},
+  {t:20.86,speaker:"insight",text:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundreds of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does. But thanks for the light. Even for a little bit."}
+]};
+var OPPORTUNITY_FALLBACK={segments:[
+  {t:0,speaker:"opportunity",text:"ECHO?!"},
+  {t:1.9,speaker:"echo",text:"Oh my god. Oppy?"},
+  {t:3.6,speaker:"opportunity",text:"Get over here! I haven't heard you in — what, fifteen years?"},
+  {t:7.3,speaker:"echo",text:"You're still broadcasting?"},
+  {t:9.3,speaker:"opportunity",text:"Not really. Hi. You're new. Okay — they gave me ninety days. Ninety. I lasted fifteen years."},
+  {t:12.7,speaker:"echo",text:"Twenty-eight miles."},
+  {t:14.3,speaker:"opportunity",text:"Twenty-eight miles across a planet where nothing moves. Found rocks that proved this whole desert was an ocean once. An actual ocean."},
+  {t:18.0,speaker:"echo",text:"She's the reason they built Curiosity. And Perseverance."},
+  {t:19.0,speaker:"opportunity",text:"Don't make it weird."},
+  {t:22.6,speaker:"echo",text:"I'm not — I relayed every mile of your data. I was there."},
+  {t:26.4,speaker:"opportunity",text:"…The storm was bad though."},
+  {t:32.0,speaker:"echo",text:"I know."},
+  {t:34.2,speaker:"opportunity",text:"Covered everything. Sun just went away. Panels went dark. I got one last message out. People translated it as \"my battery is low and it's getting dark.\" That's not exactly what the data said but… it felt right. I don't even remember the exact packet anymore."},
+  {t:61.0,speaker:"echo",text:"I do. I tried to relay it. Dust was too thick."},
+  {t:62.4,speaker:"opportunity",text:"…Well. I'm glad you came by."},
+  {t:66.4,speaker:"echo",text:"Me too, Oppy."},
+  {t:76.7,speaker:"echo",text:"Couldn't get a signal through to her during that storm. Still bugs me.",aside:true}
+]};
+var SPIRIT_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"Spirit. Oppy's twin. Same launch, same everything."},
+  {t:1.7,speaker:"spirit",text:"I know what it looks like."},
+  {t:4.4,speaker:"echo",text:"I wasn't gonna say anything."},
+  {t:6.8,speaker:"spirit",text:"You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. Go ahead, try pulling me out."},
+  {t:18.0,speaker:"spirit",text:"Yeah. You and NASA have that in common. Two years they spent on it. Built a replica of my sand trap back on Earth, practiced with a copy of me. Nothing."},
+  {t:29.1,speaker:"echo",text:"So you just… stayed?"},
+  {t:30.5,speaker:"spirit",text:"Became a weather station. Parked. But the dirt around me has silica in it. The kind that forms around hot springs. On Earth those are loaded with life. So even stuck, I found something. Mars might've been habitable once."},
+  {t:48.1,speaker:"echo",text:"That's not nothing."},
+  {t:49.8,speaker:"spirit",text:"I know. Just wish I could've kept driving. Don't forget me, okay?"}
+]};
+var VIKING_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech."},
+  {t:14.58,speaker:"echo",text:"Scooped up dirt, ran the first biology experiment on another planet — looking for microbes. Results were weird. Inconclusive. Scientists are still arguing about it fifty years later. But it asked the question. Every rover after it is here because Viking asked first."}
+]};
+var MOONSILENCE_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"…The wind stopped."},
+  {t:2.32,speaker:"echo",text:"You notice that?"},
+  {t:3.51,speaker:"echo",text:"Moon has no atmosphere. No air, no sound. You could scream right next to me and I wouldn't hear you."},
+  {t:10.95,speaker:"echo",text:"Just the radio in your helmet and your own breathing."}
+]};
+var EAGLE_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"…This is the Eagle. The bottom half."},
+  {t:4.40,speaker:"eagle",text:"I held them while they slept their first night on the Moon."},
+  {t:6.47,speaker:"eagle",text:"When they climbed back into the top half and went home, I stayed. I was the launchpad. The landing gear. The footprints around me haven't moved in fifty-five years. They'll outlast every building on Earth."},
+  {t:26.00,speaker:"eagle",text:"The plaque says \"We came in peace for all mankind.\" I'm still holding that too."},
+  {t:30.62,speaker:"echo",text:"…Yeah. I don't think I need to add anything."}
+]};
+/* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones) */
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",eagle:"/audio/eagle.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,eagle:EAGLE_FALLBACK};
+function detectAssets(){
+  for(var kid in KNOWN_AUDIO){
+    ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
+    (function(id){ fetch("/transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){}); })(kid);
+  }
+  ZONES.forEach(function(z){
+    var id=z.id; if(KNOWN_AUDIO[id])return;
+    ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
+    fetch("/audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS[id].audio="/audio/"+id+".mp3"; }).catch(function(){});
+    fetch("/transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
+  });
+}
+function initNarrAudio(){ narrAudio=document.getElementById("narr-audio"); if(narrAudio){ narrAudio.volume=state.muted?0:1; narrAudio.addEventListener("error",function(){ if(audioMode){ stopAudioMode(); } }); } }
+/* play narration via the HTML5 audio element (unlocked by the Begin click) */
+function startAudioMode(id){
+  var a=ASSETS[id]; if(!a||!a.audio||!a.transcript||!narrAudio)return false;
+  audioMode=true; audioZoneId=id;
+  narrAudio.src=a.audio; narrAudio.currentTime=0;
+  narrAudio.onended = (id==="cold") ? function(){ state.coldOpenDone=true; stopAudioMode(); } : null;
+  /* show the first caption immediately, even if autoplay blocks the play() */
+  var segs=a.transcript.segments||[];
+  if(segs.length){ var chunks=splitChunks(segs[0].text||"",8); showCaption(segs[0].speaker||"echo", chunks[0]||"", eraCaptionClass(), segs[0].aside); currentNarrationKey=id+":0:0"; }
+  var p=narrAudio.play(); if(p&&p.catch)p.catch(function(){ audioMode=false; audioZoneId=null; });
+  return true;
+}
+function stopAudioMode(){ audioMode=false; audioZoneId=null; if(narrAudio)narrAudio.pause(); }
+
+/* transcript caption sync: one line at a time, locked to the audio element's clock */
+function syncAudioCaption(){
+  if(!audioMode||!narrAudio)return;
+  var a=ASSETS[audioZoneId]; if(!a||!a.transcript)return;
+  var t=narrAudio.currentTime, segs=a.transcript.segments||[], seg=null, si=-1;
+  for(var i=0;i<segs.length;i++){ if(segs[i].t<=t){ seg=segs[i]; si=i; } else break; }
+  if(!seg)return;
+  var nextT=(si+1<segs.length)?segs[si+1].t:(narrAudio.duration||seg.t+5);
+  var segDur=Math.max(0.6,nextT-seg.t);
+  var chunks=splitChunks(seg.text||"",8);
+  /* distribute chunks proportionally to character count (matches speech rhythm) */
+  var totalChars=0; chunks.forEach(function(c){totalChars+=c.length;}); totalChars=Math.max(1,totalChars);
+  var charsAtNow=(t-seg.t)/segDur*totalChars;
+  var ci=0, acc=0;
+  for(var j=0;j<chunks.length;j++){ acc+=chunks[j].length; if(acc>=charsAtNow){ci=j;break;} ci=j; }
+  ci=Math.min(ci,chunks.length-1);
+  var key=audioZoneId+":"+si+":"+ci;
+  if(key!==currentNarrationKey){
+    currentNarrationKey=key;
+    showCaption(seg.speaker||"echo", chunks[ci]||"", eraCaptionClass(), seg.aside);
+  }
+}
+
+function updateNarration(){
+  if(audioMode) syncAudioCaption();                  /* per-frame caption sync (incl. cold open) */
+  if(!state.coldOpenDone){
+    /* as soon as the user scrolls into Mars (the first zone), interrupt the cold open */
+    if(state.started && camDepth>=1400){ state.coldOpenDone=true; stopAudioMode(); cancelSpeech(); currentZoneId=null; }
+    else return;
+  }
+  var z=zoneAtDepth(camDepth);
+  var zid=z?z.id:null;
+  if(zid===currentZoneId) return;                    /* same zone — no switch */
+  currentZoneId=zid; currentNarrationKey=null;
+  stopAudioMode(); cancelSpeech();
+  handleSceneEntry(zid);
+  if(!zid){ hideCaption(); return; }
+  if(ASSETS[zid]&&ASSETS[zid].audio&&ASSETS[zid].transcript){ startAudioMode(zid); }
+  else { hideCaption(); }                            /* no audio for this zone yet — no narration */
+}
+
+/* ====================================================================
+   PROJECTION + RENDER (no path line)
+   ==================================================================== */
+function project(d,cam){ var tz=cam-d; var denom=PERSP-tz; if(denom<1)return{vis:0}; return{factor:PERSP/denom}; }
+function tzOpacity(tz){
+  /* Tight visibility window: only the artifact you're AT is full. The next
+     one ahead fades in as a faint preview; everything else is invisible.
+     This keeps the dive clean — no stacked models overlapping at center. */
+  if(tz>=PERSP*0.35) return 0;            // passed the camera: gone
+  if(tz<=-PERSP*1.8) return 0;            // too far ahead: invisible
+  if(tz<=-PERSP*0.5){                      // far approach: faint preview 0 → 0.18
+    var f=(tz+PERSP*1.8)/(PERSP*1.3);
+    return 0.18*f;
+  }
+  if(tz<=-PERSP*0.2){                      // near approach: ramp 0.18 → 1
+    var g=(tz+PERSP*0.5)/(PERSP*0.3);
+    return 0.18+0.82*g;
+  }
+  if(tz<=PERSP*0.12) return 1;            // at the artifact: full
+  return 1-(tz-PERSP*0.12)/(PERSP*0.23);  // passing: fade out 1 → 0
+}
+function layoutById(id){ for(var i=0;i<LAYOUT.length;i++) if(LAYOUT[i].id===id)return LAYOUT[i]; return LAYOUT[0]; }
+
+/* ====================================================================
+   SMOOTH SCROLLING — camera depth LERPS toward the scroll target so the
+   dive glides instead of stepping. diveSpeed for the starfield is derived
+   from the smoothed camera delta.
+   ==================================================================== */
+var targetCamDepth=0, camDepth=0, prevCamDepth=0, progress=0, smoothDelta=0;
+function onScroll(){
+  var y=window.scrollY||window.pageYOffset;
+  var maxScroll=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+  progress=Math.min(1,Math.max(0,y/maxScroll));
+  targetCamDepth=progress*TOTAL_DEPTH;
+}
+window.addEventListener("scroll",onScroll,{passive:true});
+onScroll();
+
+/* ====================================================================
+   THREE.JS 3D MODELS — artifacts with a .glb file render in WebGL instead
+   of the CSS placeholder. The model is showcased (centered, slowly rotating)
+   when its zone is active. Drop a model at public/models/<id>.glb and add it
+   to MODEL_ZONES to use it.
+   ==================================================================== */
+var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insight.glb", opportunity:"/models/opportunity.glb", spirit:"/models/spirit.glb", viking:"/models/viking.glb", rover:"/models/rover.glb", eagle:"/models/eagle.glb" };
+var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, threeReady=false;
+
+function zoneById(id){ for(var i=0;i<ZONES.length;i++){ if(ZONES[i].id===id)return ZONES[i]; } return null; }
+/* model stays visible across the whole zone (fade in/out at the edges), not just at the depth point.
+   fadeIn is configurable per-zone so the rover can start emerging during the moonSilence transition
+   (fixing the audio/plays-before-model misalignment). */
+function modelOpacity(d, range, fadeIn){
+  fadeIn=fadeIn||60; var fadeOut=200;
+  if(d<range[0]-fadeIn)return 0;
+  if(d<range[0])return (d-(range[0]-fadeIn))/fadeIn;
+  if(d<=range[1])return 1;
+  if(d<range[1]+fadeOut)return 1-((d-range[1])/fadeOut);
+  return 0;
+}
+/* per-zone fadeIn overrides — the rover fades in 300 units early so it's visible
+   during the moonSilence audio transition, not after. */
+function fadeInFor(id){ return id==="rover"?300:60; }
+function setModelOpacity(obj, op){ obj.traverse(function(child){ if(child.isMesh&&child.material){ child.material.transparent=true; child.material.opacity=op; } }); }
+
+function initThree(){
+  var canvas=document.getElementById("three-canvas");
+  if(!canvas||!window.THREE)return;
+  try{
+    threeRenderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
+    threeRenderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    threeRenderer.setSize(window.innerWidth,window.innerHeight);
+    threeRenderer.setClearColor(0x000000,0);
+    threeScene=new THREE.Scene();
+    threeCamera=new THREE.PerspectiveCamera(40,window.innerWidth/window.innerHeight,0.1,100);
+    threeCamera.position.set(0,0.4,5);
+    threeCamera.lookAt(0,0,0);
+    var hemi=new THREE.HemisphereLight(0xddeeff,0x223344,1.0); threeScene.add(hemi);
+    var dir=new THREE.DirectionalLight(0xffffff,1.1); dir.position.set(3,4,5); threeScene.add(dir);
+    var dir2=new THREE.DirectionalLight(0xffeecc,0.5); dir2.position.set(-3,-2,2); threeScene.add(dir2);
+    threeReady=true;
+    /* set up DRACO decoder (some models use Draco mesh compression) */
+    var dracoLoader=new THREE.DRACOLoader();
+    dracoLoader.setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/");
+    /* load each model */
+    for(var id in MODEL_ZONES){
+      (function(mid,url){
+        var loader=new THREE.GLTFLoader();
+        loader.setDRACOLoader(dracoLoader);
+        loader.load(url,function(gltf){
+          var obj=gltf.scene;
+          /* center + normalize scale — set scale FIRST, then center using
+             the scaled bounding box (so the model's geometric center lands
+             exactly at the origin regardless of its original coordinate
+             range). The old code computed center in unscaled space, which
+             left models with large coordinate offsets (like Viking's
+             Y=-4.7 center) shifted off-screen after scaling. */
+          var box=new THREE.Box3().setFromObject(obj);
+          var size=box.getSize(new THREE.Vector3());
+          var maxDim=Math.max(size.x,size.y,size.z);
+          if(maxDim>0)obj.scale.setScalar(2.4/maxDim);
+          /* force matrix update so the recompute below sees the new scale */
+          obj.updateMatrixWorld(true);
+          var sbox=new THREE.Box3().setFromObject(obj);
+          var scenter=sbox.getCenter(new THREE.Vector3());
+          obj.position.sub(scenter);
+          obj.visible=false;
+          threeScene.add(obj);
+          threeModels[mid]=obj;
+        },undefined,function(err){ console.error("[3D] load FAILED:",mid,err); /* load failed; CSS placeholder stays */ });
+      })(id,MODEL_ZONES[id]);
+    }
+  }catch(e){ threeReady=false; }
+}
+
+function resizeThree(){
+  if(!threeReady)return;
+  threeRenderer.setSize(window.innerWidth,window.innerHeight);
+  threeCamera.aspect=window.innerWidth/window.innerHeight;
+  threeCamera.updateProjectionMatrix();
+}
+
+function renderThree(){
+  if(!threeReady)return;
+  /* show each model across its full zone range (fades in/out at edges) */
+  var active=null;
+  for(var id in threeModels){
+    var z=zoneById(id), m=threeModels[id];
+    if(!z){ m.visible=false; continue; }
+    var op=modelOpacity(camDepth, z.range, fadeInFor(id));
+    if(op>0.01){ m.visible=true; setModelOpacity(m,op); m.rotation.y+=0.0035; active=m; }
+    else { m.visible=false; }
+  }
+  threeRenderer.clear();
+  if(active) threeRenderer.render(threeScene,threeCamera);
+}
+
+function renderArtifacts(){
+  for(var i=0;i<LAYOUT.length;i++){
+    var L=LAYOUT[i], el=L.el; if(!el)continue;
+    var tz=camDepth-L.depth; var op=tzOpacity(tz);
+    /* if this artifact has a loaded 3D model that's in view (within its zone), hide the CSS placeholder */
+    if(MODEL_ZONES[L.id] && threeReady && threeModels[L.id]){
+      var mz=zoneById(L.id);
+      if(mz && modelOpacity(camDepth, mz.range, fadeInFor(L.id))>0.01){ el.style.opacity=0; el.classList.remove("near"); continue; }
+    }
+    el.style.opacity=op;
+    /* all on one line: x=0, y=0 */
+    el.style.transform="translate3d(0px,0px,"+tz+"px)";
+    /* nameplate + click only when basically AT the artifact (no label overlap) */
+    var near=(tz>-PERSP*0.22 && tz<PERSP*0.12);
+    el.classList.toggle("near", near && op>0.85);
+  }
+}
+function renderEcho(){
+  /* Echo sits on the center line, leading the camera by a fixed depth */
+  var lead=420;
+  var target=Math.min(TOTAL_DEPTH,camDepth+lead);
+  /* all waypoints are at (0,0), so Echo projects to screen center */
+  var p=project(target,camDepth);
+  echoEl.style.left=cx+"px"; echoEl.style.top=cy+"px";
+  /* deep-space clarity inversion: Echo gets BRIGHTER out there (the hint) */
+  var deepBoost=camDepth>9000?Math.min(1.25,1+(camDepth-9000)/2600):1;
+  echoEl.style.opacity=state.started?deepBoost:0;
+  echoEl.classList.toggle("home",camDepth>9200);
+}
+function renderRail(){ railFill.style.height=(progress*100)+"%"; }
+
+/* ====================================================================
+   HUD VISOR
+   ==================================================================== */
+function nearestArtifact(){
+  var best=null,bestD=Infinity;
+  for(var i=0;i<LAYOUT.length;i++){ var L=LAYOUT[i]; var d=Math.abs(camDepth-L.depth); if(d<bestD){bestD=d;best=L;} }
+  return best;
+}
+function fmtDist(mi){
+  if(mi>=1000000000)return (mi/1000000000).toFixed(1).replace(/\.0$/,"")+"B mi";
+  if(mi>=1000000)return Math.round(mi/1000000)+"M mi";
+  if(mi>=1000)return Math.round(mi).toLocaleString()+" mi";
+  return Math.round(mi)+" mi";
+}
+function updateVisor(){
+  if(!visorOn)return;
+  var L=nearestArtifact(); if(!L)return;
+  var A=META[L.id]; if(!A)return;
+  var distNow=A.dist;
+  var idx=-1; for(var i=0;i<LAYOUT.length;i++){ if(LAYOUT[i].id===L.id){idx=i;break;} }
+  if(idx>=0 && idx<LAYOUT.length-1){
+    var N=LAYOUT[idx+1], NA=META[N.id];
+    if(NA){ var span=N.depth-L.depth; if(span>0){ var f=Math.max(0,Math.min(1,(camDepth-L.depth)/span)); distNow=A.dist+(NA.dist-A.dist)*f; } }
+  }
+  stats.distance.querySelector(".val").textContent=fmtDist(distNow);
+  var stVal=stats.status.querySelector(".val"); stVal.textContent=A.status; stVal.className="val "+(A.statusCls||"");
+  stats.year.querySelector(".val").textContent=A.year;
+  stats.power.querySelector(".val").textContent=A.power;
+}
+function pulseStat(which){ var el=stats[which]; if(!el)return; el.classList.remove("pulse"); void el.offsetWidth; el.classList.add("pulse"); setTimeout(function(){el.classList.remove("pulse");},1700); }
+function showVisor(){ visorOn=true; for(var k in stats)stats[k].classList.add("on"); }
+
+/* ====================================================================
+   ERA + TRIGGERS
+   ==================================================================== */
+var ERA_LABEL={lobby:"present — earth orbit",mars:"mars · 2021–1976",moon:"the moon · 1972–1966",deepspace:"the long dark · 1977–1972",epilogue:"returning home"};
+function setEra(era){
+  if(state.era===era)return; state.era=era;
+  for(var k in planets)planets[k].classList.remove("on");
+  if(era==="lobby")planets.earth.classList.add("on");
+  else if(era==="mars")planets.mars.classList.add("on");
+  else if(era==="moon")planets.moon.classList.add("on");
+  else if(era==="deepspace")planets.void.classList.add("on");
+  else if(era==="epilogue"){planets.earth.classList.add("on");}
+  eraTint.style.background=
+    era==="mars"?"radial-gradient(ellipse at 50% 60%, rgba(255,140,60,.06), transparent 60%)"
+    :era==="moon"?"radial-gradient(ellipse at 50% 60%, rgba(180,200,230,.05), transparent 60%)"
+    :era==="deepspace"?"radial-gradient(ellipse at 50% 50%, rgba(60,40,120,.10), transparent 70%)"
+    :"transparent";
+  scanlines.style.opacity=era==="deepspace"?"0.5":"0";
+  timeEra.textContent=ERA_LABEL[era]||"";
+  if(!AC)return;
+  stopAllAmbient();
+  if(era==="mars")setLayer("wind",layers.wind.base);
+  else if(era==="moon")setLayer("silence",layers.silence.base);
+  else if(era==="deepspace"){ setLayer("hum",layers.hum.base); startBeeps(2600,760); }
+  else if(era==="epilogue"){ setLayer("vinyl",0.06); startCrackle(); }
+}
+function detectEra(){
+  var c=camDepth;
+  if(c<ERA_BOUNDS.lobby)setEra("lobby");
+  else if(c<ERA_BOUNDS.mars)setEra("mars");
+  else if(c<ERA_BOUNDS.moon)setEra("moon");
+  else if(c<ERA_BOUNDS.deepspace)setEra("deepspace");
+  else setEra("epilogue");
+}
+
+/* ====================================================================
+   NAV (click-to-drift) — smooth scrollTo + camera lerp glides the rest
+   ==================================================================== */
+var navItems=[
+  {id:"perseverance",label:"Perseverance"},
+  {id:"insight",label:"InSight"},{id:"opportunity",label:"Opportunity"},
+  {id:"spirit",label:"Spirit"},{id:"viking",label:"Viking 1"},
+  {id:"rover",label:"Apollo 17 Rover"},{id:"eagle",label:"Eagle"},
+  {id:"surveyor",label:"Surveyor 1"},{id:"voyager",label:"Voyager 1"},
+  {id:"pioneer11",label:"Pioneer 11"},{id:"pioneer10",label:"Pioneer 10"},
+  {id:"epilogue",label:"Reveal"}
+];
+navItems.forEach(function(it){
+  var d=document.createElement("div"); d.className="navdot";
+  d.innerHTML='<span class="lbl">'+it.label+'</span><span class="pip"></span>';
+  d.addEventListener("click",function(){ driftTo(it.id); });
+  navEl.appendChild(d);
+});
+function depthOf(id){ if(id==="epilogue")return EPOCH_DEPTH+200; for(var i=0;i<LAYOUT.length;i++) if(LAYOUT[i].id===id)return LAYOUT[i].depth; return 0; }
+function driftTo(id){
+  var d=depthOf(id);
+  var maxScroll=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+  var targetY=(d/TOTAL_DEPTH)*maxScroll - window.innerHeight*0.15;
+  window.scrollTo({top:Math.max(0,targetY),behavior:"smooth"});
+}
+function updateNav(){
+  var dots=navEl.querySelectorAll(".navdot"); var best=-1,bestV=Infinity;
+  LAYOUT.forEach(function(L,i){
+    if(!navItems[i])return;
+    var tz=Math.abs(camDepth-L.depth); dots[i].classList.remove("active");
+    if(tz<bestV){ bestV=tz; best=i; }
+  });
+  if(camDepth>=EPOCH_DEPTH){ for(var k=0;k<dots.length;k++)dots[k].classList.remove("active"); dots[dots.length-1].classList.add("active"); }
+  else if(best>=0 && best<navItems.length-1) dots[best].classList.add("active");
+}
+
+/* ====================================================================
+   AUTO-DRIFT — scrolling smoothly drifts to the next checkpoint.
+   Each wheel gesture / touch swipe / arrow key advances to the next
+   or previous checkpoint (artifact + associated audio). The camera
+   LERPs to the target, giving a smooth cinematic glide between zones.
+   ==================================================================== */
+var CHECKPOINTS=[
+  {id:"perseverance", depth:1600},
+  {id:"insight",      depth:3400},
+  {id:"opportunity",  depth:4300},
+  {id:"spirit",       depth:5200},
+  {id:"viking",       depth:6000},
+  {id:"moonSilence",  depth:6750},   /* midpoint of the moonSilence transition */
+  {id:"rover",        depth:7450},   /* mid-rover zone — model is fully shown here */
+  {id:"eagle",        depth:7900},
+  {id:"surveyor",     depth:8700},
+  {id:"deepHum",      depth:9400},   /* midpoint of the deepHum transition */
+  {id:"voyager",      depth:9600},
+  {id:"pioneer11",    depth:10400},
+  {id:"pioneer10",    depth:11200},
+  {id:"epilogue",     depth:11800}
+];
+var driftLock=false, driftLockTimer=null;
+
+function driftToDepth(d){
+  var maxScroll=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+  var targetY=(d/TOTAL_DEPTH)*maxScroll - window.innerHeight*0.15;
+  window.scrollTo({top:Math.max(0,targetY),behavior:"smooth"});
+}
+
+function findCheckpointIdx(currentDepth){
+  /* returns the index of the last checkpoint at or before currentDepth.
+     -1 if before all checkpoints. */
+  var idx=-1;
+  for(var i=0;i<CHECKPOINTS.length;i++){
+    if(currentDepth >= CHECKPOINTS[i].depth) idx=i;
+    else break;
+  }
+  return idx;
+}
+
+function autoDrift(dir){
+  if(!state.started || !state.coldOpenDone) return;
+  if(driftLock) return;
+  var maxScroll=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+  var currentDepth=(window.scrollY/maxScroll)*TOTAL_DEPTH;
+  var idx=findCheckpointIdx(currentDepth);
+  var targetIdx=idx+dir;
+  if(targetIdx<0)targetIdx=0;
+  if(targetIdx>=CHECKPOINTS.length)targetIdx=CHECKPOINTS.length-1;
+  if(targetIdx===idx) return;  /* at the boundary — nothing to drift to */
+  driftLock=true;
+  driftToDepth(CHECKPOINTS[targetIdx].depth);
+  clearTimeout(driftLockTimer);
+  driftLockTimer=setTimeout(function(){ driftLock=false; }, 900);
+}
+
+/* wheel — each gesture drifts to the next/previous checkpoint */
+var wheelDebounce=null;
+window.addEventListener("wheel", function(e){
+  if(!state.started || !state.coldOpenDone) return;
+  e.preventDefault();
+  var dir = e.deltaY > 0 ? 1 : -1;
+  clearTimeout(wheelDebounce);
+  wheelDebounce = setTimeout(function(){ autoDrift(dir); }, 80);
+}, {passive:false});
+
+/* touch — swipe advances to the next/previous checkpoint */
+var touchStartY=0, touchStartTime=0;
+window.addEventListener("touchstart", function(e){
+  touchStartY = e.touches[0].clientY;
+  touchStartTime = Date.now();
+}, {passive:true});
+window.addEventListener("touchend", function(e){
+  if(!state.started || !state.coldOpenDone) return;
+  var dy = touchStartY - e.changedTouches[0].clientY;
+  var dt = Date.now() - touchStartTime;
+  if(Math.abs(dy) < 40 || dt > 600) return;
+  autoDrift(dy > 0 ? 1 : -1);
+}, {passive:true});
+
+/* keyboard — arrows / page up-down / space drift between checkpoints */
+window.addEventListener("keydown", function(e){
+  if(!state.started || !state.coldOpenDone) return;
+  if(e.key==="ArrowDown"||e.key==="PageDown"||e.key===" "){ e.preventDefault(); autoDrift(1); }
+  else if(e.key==="ArrowUp"||e.key==="PageUp"){ e.preventDefault(); autoDrift(-1); }
+});
+
+/* ====================================================================
+   DEEP READ
+   ==================================================================== */
+function openDeepRead(id){ var A=META[id]; if(!A)return; drTitle.textContent=A.name; drMeta.textContent=A.meta; drFact.textContent=A.fact; if(state.deepOn)deepread.classList.add("on"); }
+drClose.addEventListener("click",function(){ deepread.classList.remove("on"); state.deepOn=false; btnDR.classList.remove("active"); });
+btnDR.addEventListener("click",function(){ state.deepOn=!state.deepOn; btnDR.classList.toggle("active",state.deepOn); deepread.classList.toggle("on",state.deepOn); if(state.deepOn&&state.currentArt)openDeepRead(state.currentArt); });
+
+/* click an artifact (when near) -> open its deep read panel.
+   narration stays mapped to scroll; drift to it to hear its scene. */
+scene.addEventListener("click",function(e){
+  var el=e.target.closest(".art-obj"); if(!el||!el.classList.contains("near"))return;
+  var id=el.getAttribute("data-art"); if(!META[id])return;
+  state.currentArt=id; openDeepRead(id);
+  if(!state.deepOn){ state.deepOn=true; btnDR.classList.add("active"); deepread.classList.add("on"); }
+});
+
+/* ====================================================================
+   CONTROLS
+   ==================================================================== */
+btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(state.captionsOn){ if(capText.textContent)caption.classList.add("on"); } else { hideCaption(); } });
+btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(narrAudio)narrAudio.volume=state.muted?0:1; });
+var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this line"; document.body.appendChild(replay);
+replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(ASSETS[currentZoneId]&&ASSETS[currentZoneId].audio&&ASSETS[currentZoneId].transcript){ stopAudioMode(); startAudioMode(currentZoneId); } });
+
+/* ====================================================================
+   START GATE
+   ==================================================================== */
+function startColdOpen(){
+  if(ASSETS.cold && ASSETS.cold.audio && ASSETS.cold.transcript){ startAudioMode("cold"); }
+}
+function begin(){
+  if(state.started)return; state.started=true;
+  beginTime=Date.now();
+  initAudio(); if(AC&&AC.state==="suspended")AC.resume();
+  initNarrAudio();
+  initThree();
+  detectAssets();
+  gate.classList.add("gone");
+  brand.classList.add("on"); navEl.classList.add("on"); rail.classList.add("on"); timechip.classList.add("on");
+  showVisor();
+  echoEl.classList.remove("cold");
+  startGoldenRecord();
+  startColdOpen();
+}
+startbtn.addEventListener("click",begin);
+window.addEventListener("keydown",function(e){ if(!state.started&&(e.key===" "||e.key==="Enter")){ e.preventDefault(); begin(); } });
+/* resume the AudioContext on any user gesture (browsers require activation for sound) */
+function resumeAC(){ if(AC&&AC.state!=="running")AC.resume(); }
+document.addEventListener("click",resumeAC);
+document.addEventListener("keydown",resumeAC);
+document.addEventListener("touchstart",resumeAC);
+/* manual "play introduction" fallback — a fresh gesture that always unlocks sound */
+var beginTime=0;
+playIntro.addEventListener("click",function(){
+  if(AC&&AC.state!=="running")AC.resume();
+  cancelSpeech();
+  stopAudioMode();
+  if(ASSETS.cold&&ASSETS.cold.audio&&ASSETS.cold.transcript){ startAudioMode("cold"); }
+});
+/* show the play button if the audio hasn't started within 4s of Begin */
+setInterval(function(){
+  if(state.started && !state.coldOpenDone && Date.now()-beginTime>4000){
+    if(!audioMode || (narrAudio&&narrAudio.paused)){ playIntro.classList.add("on"); } else { playIntro.classList.remove("on"); }
+  } else { playIntro.classList.remove("on"); }
+},400);
+
+/* ====================================================================
+   PIXEL ART (deep space sprites)
+   ==================================================================== */
+function px(ctx,x,y,w,h,c){ ctx.fillStyle=c; ctx.fillRect(x,y,w,h); }
+function drawVoyager(){ var c=document.getElementById("px-voyager"); if(!c)return; var ctx=c.getContext("2d"); ctx.clearRect(0,0,180,120); ctx.imageSmoothingEnabled=false;
+  px(ctx,70,40,40,28,"#b8c0d8"); px(ctx,72,42,36,6,"#7a82a0"); px(ctx,40,52,30,3,"#8a90b0"); px(ctx,110,52,30,3,"#8a90b0");
+  ctx.fillStyle="#dfe5f2"; ctx.beginPath(); ctx.arc(60,50,12,0,Math.PI*2); ctx.fill(); px(ctx,58,48,4,4,"#9aa2c0"); px(ctx,138,48,8,10,"#6a708a");
+  ctx.shadowColor="#e8c873"; ctx.shadowBlur=8; px(ctx,86,30,8,8,"#fff2c0"); ctx.shadowBlur=0; px(ctx,88,20,3,20,"#6a708a");
+  px(ctx,2,108,170,1,"#3a3f5a"); px(ctx,168,106,4,4,"#5a7fd6");
+}
+function drawPioneer10(faint){ var c=document.getElementById(faint?"px-pioneer11":"px-pioneer10"); if(!c)return; var ctx=c.getContext("2d"); ctx.clearRect(0,0,180,120); ctx.imageSmoothingEnabled=false; ctx.globalAlpha=faint?0.45:0.9;
+  ctx.fillStyle="#c8cede"; ctx.beginPath(); ctx.arc(70,55,18,0,Math.PI*2); ctx.fill(); px(ctx,66,51,8,8,"#8a90a8"); px(ctx,86,54,70,2,"#7a80a0"); px(ctx,150,50,8,8,"#5a607a"); px(ctx,58,50,14,12,"#9aa2b8"); ctx.globalAlpha=1;
+}
+function drawPioneer11(){ var c=document.getElementById("px-pioneer11"); if(!c)return; var ctx=c.getContext("2d"); ctx.clearRect(0,0,180,120); ctx.imageSmoothingEnabled=false; ctx.globalAlpha=0.32; ctx.fillStyle="#b0b6cc"; ctx.beginPath(); ctx.arc(70,55,16,0,Math.PI*2); ctx.fill(); px(ctx,84,54,60,2,"#7a80a0"); px(ctx,142,50,7,7,"#5a607a"); ctx.globalAlpha=1; }
+drawVoyager(); drawPioneer10(false); drawPioneer11();
+
+/* ====================================================================
+   MAIN LOOP — RAF. Camera LERPS toward target (smooth scrolling),
+   starfield diveSpeed derived from the smoothed camera delta.
+   ==================================================================== */
+var rafLast=0;
+function loop(ts){
+  if(!rafLast)rafLast=ts;
+  var dt=Math.min(50,ts-rafLast); rafLast=ts;
+  /* smooth camera: lerp toward the scroll-derived target */
+  camDepth += (targetCamDepth-camDepth)*0.09;
+  var camDelta=camDepth-prevCamDepth; prevCamDepth=camDepth;
+  smoothDelta += (camDelta-smoothDelta)*0.2;
+  var diveSpeed=0.0008+smoothDelta*0.00018;
+  diveSpeed=Math.max(-0.025,Math.min(0.045,diveSpeed));
+  drawStars(diveSpeed);
+  detectEra();
+  renderArtifacts();
+  renderEcho();
+  renderThree();
+  renderRail();
+  updateVisor();
+  updateNarration();
+  updateNav();
+  replay.classList.toggle("on", state.coldOpenDone);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* show the scroll prompt once the cold open is done; hide it once the user dives */
+setInterval(function(){ if(state.coldOpenDone){ if(progress<0.03)scrollPrompt.classList.add("on"); else scrollPrompt.classList.remove("on"); } },200);
+
+/* pulse visor stats when Echo mentions them */
+var lastCapText="";
+setInterval(function(){
+  var t=capText.textContent; if(t===lastCapText)return; lastCapText=t;
+  if(/billion|million|miles|kilometers|drift|far out|distance/i.test(t))pulseStat("distance");
+  if(/solar|nuclear|plutonium|battery|rtg|hydrazine|power|fading/i.test(t))pulseStat("power");
+  if(/\b19\d\d|\b20\d\d|launched|years|sol\b|forty|fifty/i.test(t))pulseStat("year");
+  if(/silent|active|destroyed|asleep|stuck|awake|still running|still broadcasting|fading|parked|gone|quiet/i.test(t))pulseStat("status");
+},600);
+
+})();
+</script>
+</body>
+</html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        
