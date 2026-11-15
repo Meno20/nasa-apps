@@ -267,6 +267,7 @@ body.dive-active{touch-action:none}
 <body>
 
 <audio id="narr-audio" preload="auto"></audio>
+<audio id="golden-audio" src="/audio/goldenRecord.mp3" loop preload="auto"></audio>
 
 <canvas id="stars"></canvas>
 <canvas id="three-canvas"></canvas>
@@ -798,8 +799,14 @@ function beep(freq,dur,vol){ if(!AC)return; var now=AC.currentTime; dur=dur||0.0
 function startBeeps(interval,freq){ if(beepTimer)clearInterval(beepTimer); beepTimer=setInterval(function(){ beep(freq||(700+Math.random()*400),0.05+Math.random()*0.04,0.05+Math.random()*0.04); },interval||2200); }
 function marsquake(){ if(!AC)return; var now=AC.currentTime; var o=AC.createOscillator();o.type="sine";o.frequency.setValueAtTime(34,now);o.frequency.linearRampToValueAtTime(28,now+6); var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.34,now+1.5);g.gain.linearRampToValueAtTime(0.16,now+5);g.gain.linearRampToValueAtTime(0.0001,now+8); var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=70; o.connect(lp);lp.connect(g);g.connect(master);o.start(now);o.stop(now+8.2); }
 function dustStorm(){ if(!AC)return; var now=AC.currentTime; var s=noiseSource(),bp=AC.createBiquadFilter();bp.type="bandpass";bp.frequency.setValueAtTime(300,now);bp.frequency.linearRampToValueAtTime(1800,now+4);bp.Q.value=0.5; var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.42,now+3);g.gain.linearRampToValueAtTime(0.0001,now+5.5); s.connect(bp);bp.connect(g);g.connect(master);s.start(now);s.stop(now+6); setLayer("wind",0.02); setTimeout(function(){ setLayer("wind",layers.wind.base); },6000); }
-function playGoldenMoment(){ if(!AC)return; setLayer("vinyl",0.12); startCrackle(); var now=AC.currentTime; [261.6,329.6,392.0].forEach(function(f,i){ var o=AC.createOscillator();o.type="sine";o.frequency.value=f; var g=AC.createGain();g.gain.setValueAtTime(0.0001,now);g.gain.linearRampToValueAtTime(0.05,now+2+i*0.2);g.gain.linearRampToValueAtTime(0.0001,now+9); o.connect(g);g.connect(master);o.start(now);o.stop(now+9.2); }); setTimeout(function(){ stopCrackle(); setLayer("vinyl",0); },10000); }
-function startGoldenRecord(){ if(!AC)return; setLayer("vinyl",0.08); startCrackle(); var now=AC.currentTime; var notes=[196,246.9,293.7,246.9,196,293.7,392]; notes.forEach(function(f,i){ var t=now+i*0.9; var o=AC.createOscillator();o.type="triangle";o.frequency.value=f; var g=AC.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(0.035,t+0.08);g.gain.exponentialRampToValueAtTime(0.0001,t+0.8); var lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=1400; o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+0.9); }); }
+/* The Golden Record — actual sounds of Earth (footsteps, heartbeat, laughter)
+   from the uploaded audio file, looping as the record "plays on a phonograph
+   needle in space". Replaces the old synthesized melody. */
+function startGoldenRecord(){
+  if(goldenAudio){ try{ goldenAudio.currentTime=0; }catch(e){} var p=goldenAudio.play(); if(p&&p.catch)p.catch(function(){}); }
+}
+function stopGoldenRecord(){ if(goldenAudio){ goldenAudio.pause(); } }
+function playGoldenMoment(){ startGoldenRecord(); }
 
 /* ====================================================================
    CAPTIONS + NARRATION
@@ -840,6 +847,7 @@ function hideCaption(){ caption.classList.remove("on"); }
 var currentZoneId=null, currentNarrationKey=null, lastSceneKey=null, revealFlashFired=false;
 var ASSETS={};                 /* zoneId -> { audio: url|null, transcript: json|null } */
 var narrAudio=null, audioMode=false, audioZoneId=null;
+var goldenAudio=null;
 
 function zoneAtDepth(d){
   for(var i=0;i<ZONES.length;i++){ var z=ZONES[i]; if(d>=z.range[0] && d<z.range[1])return z; }
@@ -855,6 +863,7 @@ function handleSceneEntry(sk){
   if(prev==="epilogue")epilogue.classList.remove("on");
   if(sk==="reveal"){ if(!revealFlashFired){revealFlashFired=true; revealFlash.classList.add("on"); setTimeout(function(){revealFlash.classList.remove("on");},2600);} startGoldenRecord(); }
   else if(sk==="epilogue"){ epilogue.classList.add("on"); startGoldenRecord(); }
+  else { stopGoldenRecord(); }   /* leaving the reveal/epilogue — stop the record */
   if(sk)openDeepReadForScene(sk);
 }
 
@@ -1003,7 +1012,7 @@ function detectAssets(){
     fetch("/transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
   });
 }
-function initNarrAudio(){ narrAudio=document.getElementById("narr-audio"); if(narrAudio){ narrAudio.volume=state.muted?0:1; narrAudio.addEventListener("error",function(){ if(audioMode){ stopAudioMode(); } }); } }
+function initNarrAudio(){ narrAudio=document.getElementById("narr-audio"); if(narrAudio){ narrAudio.volume=state.muted?0:1; narrAudio.addEventListener("error",function(){ if(audioMode){ stopAudioMode(); } }); } goldenAudio=document.getElementById("golden-audio"); if(goldenAudio){ goldenAudio.volume=state.muted?0:0.7; } }
 /* play narration via the HTML5 audio element (unlocked by the Begin click) */
 function startAudioMode(id){
   var a=ASSETS[id]; if(!a||!a.audio||!a.transcript||!narrAudio)return false;
@@ -1327,7 +1336,9 @@ function setEra(era){
   if(!AC)return;
   stopAllAmbient();
   if(era==="mars")setLayer("wind",layers.wind.base);
-  else if(era==="moon")setLayer("silence",layers.silence.base);
+  else if(era==="moon"){ /* true silence — the Moon has no atmosphere, so the
+     moon section carries no ambient bed at all. Only the narration audios
+     (moonSilence, rover, eagle, surveyor) are heard. */ }
   else if(era==="deepspace"){ setLayer("hum",layers.hum.base); startBeeps(2600,760); }
   else if(era==="epilogue"){ setLayer("vinyl",0.06); startCrackle(); }
 }
@@ -1451,6 +1462,7 @@ function interruptColdOpen(){
   if(state.coldOpenDone)return;
   state.coldOpenDone=true;
   stopAudioMode(); cancelSpeech(); currentZoneId=null;
+  stopGoldenRecord();   /* the Golden Record fades out as the dive begins */
 }
 
 function startDriftTo(targetIdx, dir){
@@ -1587,7 +1599,7 @@ scene.addEventListener("click",function(e){
    CONTROLS
    ==================================================================== */
 btnCap.addEventListener("click",function(){ state.captionsOn=!state.captionsOn; btnCap.textContent=state.captionsOn?"CC ON":"CC OFF"; btnCap.classList.toggle("active",!state.captionsOn); if(state.captionsOn){ if(capText.textContent)caption.classList.add("on"); } else { hideCaption(); } });
-btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(narrAudio)narrAudio.volume=state.muted?0:1; });
+btnMute.addEventListener("click",function(){ state.muted=!state.muted; btnMute.textContent=state.muted?"SND OFF":"SND ON"; btnMute.classList.toggle("active",state.muted); if(master)master.gain.value=state.muted?0:0.9; if(narrAudio)narrAudio.volume=state.muted?0:1; if(goldenAudio)goldenAudio.volume=state.muted?0:0.7; });
 var replay=document.createElement("button"); replay.className="replaybtn"; replay.textContent="replay this line"; document.body.appendChild(replay);
 replay.addEventListener("click",function(){ if(!state.coldOpenDone||!currentZoneId)return; if(ASSETS[currentZoneId]&&ASSETS[currentZoneId].audio&&ASSETS[currentZoneId].transcript){ stopAudioMode(); startAudioMode(currentZoneId); } });
 
