@@ -941,15 +941,15 @@ var COLD_FALLBACK={segments:[
 ]};
 function detectAssets(){
   /* cold open: audio URL is known; transcript fetched with an embedded fallback */
-  ASSETS.cold={audio:"audio/cold.mp3",transcript:COLD_FALLBACK};
-  fetch("transcripts/cold.json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS.cold.transcript=j; }).catch(function(){});
+  ASSETS.cold={audio:"/audio/cold.mp3",transcript:COLD_FALLBACK};
+  fetch("/transcripts/cold.json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS.cold.transcript=j; }).catch(function(){});
   ZONES.forEach(function(z){
     var id=z.id; ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
-    fetch("audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS[id].audio="audio/"+id+".mp3"; }).catch(function(){});
-    fetch("transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
+    fetch("/audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS[id].audio="/audio/"+id+".mp3"; }).catch(function(){});
+    fetch("/transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
   });
 }
-function initNarrAudio(){ narrAudio=document.getElementById("narr-audio"); if(narrAudio)narrAudio.volume=state.muted?0:1; }
+function initNarrAudio(){ narrAudio=document.getElementById("narr-audio"); if(narrAudio){ narrAudio.volume=state.muted?0:1; narrAudio.addEventListener("error",function(){ if(audioMode){ var zid=audioZoneId; stopAudioMode(); if(zid&&SCENES[zid])playScene(zid,null); } }); } }
 /* play narration via the HTML5 audio element (unlocked by the Begin click) */
 function startAudioMode(id){
   var a=ASSETS[id]; if(!a||!a.audio||!a.transcript||!narrAudio)return false;
@@ -1202,7 +1202,7 @@ function begin(){
   initAudio(); if(AC&&AC.state==="suspended")AC.resume();
   initNarrAudio();
   /* unlock the audio element inside the Begin gesture so later play() calls aren't blocked */
-  if(narrAudio){ narrAudio.src="audio/cold.mp3"; var u=narrAudio.play(); if(u&&u.then)u.then(function(){ narrAudio.pause(); narrAudio.currentTime=0; }).catch(function(){}); }
+  if(narrAudio){ narrAudio.src="/audio/cold.mp3"; var u=narrAudio.play(); if(u&&u.then)u.then(function(){ narrAudio.pause(); narrAudio.currentTime=0; }).catch(function(){}); }
   detectAssets();
   gate.classList.add("gone");
   brand.classList.add("on"); navEl.classList.add("on"); rail.classList.add("on"); timechip.classList.add("on");
