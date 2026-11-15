@@ -944,12 +944,25 @@ var COLD_FALLBACK={segments:[
   {t:4.2,speaker:"echo",text:"Huh. Most people can't pick it out. That's the Golden Record. It's actually playing right now — like, physically, on a phonograph needle, in space, about fifteen billion miles from here. Chuck Berry, whale songs, people saying hello in fifty-five languages. It's been going for forty-seven years and nobody's been around to hear it in a really long time."},
   {t:27.3,speaker:"echo",text:"…Sorry. I don't really get to talk to anyone anymore. I'm Echo. I used to relay signals for the machines they sent out. The probes, the rovers, all of it. Most of them have gone quiet now. But the signals are still out there. The machines are still out there. You just have to know where to look."}
 ]};
+var PERSEVERANCE_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"That's Mars. You hear the wind? Perseverance recorded it a couple years ago. First time anyone heard wind on another planet. And that wreckage down there — the, umm, crumpled up metal in the crater — that's Perseverance's descent stage."},
+  {t:13.9,speaker:"echo",text:"Brutal. They call it the sky crane. Came in at about twelve thousand miles an hour. Burned off the heat shield, popped the parachute, and then it did this incredible thing: hovered sixty feet above the ground and lowered the actual rover down on cables."},
+  {t:18.4,speaker:"echo",text:"Super gently. The second the rover's wheels touched dirt, the sky crane cut the lines, flew off to the side, and crashed on purpose so it wouldn't hit the rover."},
+  {t:45.3,speaker:"echo",text:"That was its whole job. Seven minutes."},
+  {t:52.5,speaker:"echo",text:"And the reason there was a little helicopter flying around on Mars."},
+  {t:56.0,speaker:"echo",text:"First powered flight on another planet. Not bad for a crash."}
+]};
+/* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones) */
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK};
 function detectAssets(){
-  /* cold open: audio URL is known; transcript fetched with an embedded fallback */
-  ASSETS.cold={audio:"/audio/cold.mp3",transcript:COLD_FALLBACK};
-  fetch("/transcripts/cold.json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS.cold.transcript=j; }).catch(function(){});
+  for(var kid in KNOWN_AUDIO){
+    ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
+    (function(id){ fetch("/transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){}); })(kid);
+  }
   ZONES.forEach(function(z){
-    var id=z.id; ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
+    var id=z.id; if(KNOWN_AUDIO[id])return;
+    ASSETS[id]=ASSETS[id]||{audio:null,transcript:null};
     fetch("/audio/"+id+".mp3",{method:"HEAD"}).then(function(r){ if(r.ok)ASSETS[id].audio="/audio/"+id+".mp3"; }).catch(function(){});
     fetch("/transcripts/"+id+".json").then(function(r){ if(r.ok)return r.json(); }).then(function(j){ if(j)ASSETS[id].transcript=j; }).catch(function(){});
   });
@@ -1048,6 +1061,18 @@ onScroll();
 var MODEL_ZONES={ perseverance:"/models/perseverance.glb" };
 var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, threeReady=false;
 
+function zoneById(id){ for(var i=0;i<ZONES.length;i++){ if(ZONES[i].id===id)return ZONES[i]; } return null; }
+/* model stays visible across the whole zone (fade in/out at the edges), not just at the depth point */
+function modelOpacity(d, range){
+  var margin=200;
+  if(d<range[0]-margin)return 0;
+  if(d<range[0])return (d-(range[0]-margin))/margin;
+  if(d<=range[1])return 1;
+  if(d<range[1]+margin)return 1-((d-range[1])/margin);
+  return 0;
+}
+function setModelOpacity(obj, op){ obj.traverse(function(child){ if(child.isMesh&&child.material){ child.material.transparent=true; child.material.opacity=op; } }); }
+
 function initThree(){
   var canvas=document.getElementById("three-canvas");
   if(!canvas||!window.THREE)return;
@@ -1095,14 +1120,14 @@ function resizeThree(){
 
 function renderThree(){
   if(!threeReady)return;
-  /* show each model based on camera proximity (same window as the CSS artifacts) */
+  /* show each model across its full zone range (fades in/out at edges) */
   var active=null;
   for(var id in threeModels){
-    var L=layoutById(id), m=threeModels[id];
-    if(!L){ m.visible=false; continue; }
-    var op=tzOpacity(camDepth-L.depth);
-    m.visible = (op>0.02);
-    if(m.visible){ m.rotation.y += 0.0035; active=m; }
+    var z=zoneById(id), m=threeModels[id];
+    if(!z){ m.visible=false; continue; }
+    var op=modelOpacity(camDepth, z.range);
+    if(op>0.01){ m.visible=true; setModelOpacity(m,op); m.rotation.y+=0.0035; active=m; }
+    else { m.visible=false; }
   }
   threeRenderer.clear();
   if(active) threeRenderer.render(threeScene,threeCamera);
@@ -1112,8 +1137,11 @@ function renderArtifacts(){
   for(var i=0;i<LAYOUT.length;i++){
     var L=LAYOUT[i], el=L.el; if(!el)continue;
     var tz=camDepth-L.depth; var op=tzOpacity(tz);
-    /* if this artifact has a loaded 3D model that's in view, hide the CSS placeholder */
-    if(MODEL_ZONES[L.id] && threeReady && threeModels[L.id] && op>0.02){ el.style.opacity=0; el.classList.remove("near"); continue; }
+    /* if this artifact has a loaded 3D model that's in view (within its zone), hide the CSS placeholder */
+    if(MODEL_ZONES[L.id] && threeReady && threeModels[L.id]){
+      var mz=zoneById(L.id);
+      if(mz && modelOpacity(camDepth, mz.range)>0.01){ el.style.opacity=0; el.classList.remove("near"); continue; }
+    }
     el.style.opacity=op;
     /* all on one line: x=0, y=0 */
     el.style.transform="translate3d(0px,0px,"+tz+"px)";
