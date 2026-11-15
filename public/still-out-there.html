@@ -912,6 +912,8 @@ var VIKING_FALLBACK={segments:[
   {t:0,speaker:"echo",text:"This is the old one. Viking 1. First thing to land on Mars and actually work. Looks like it was built in a garage and honestly it basically was. Seventies tech."},
   {t:14.58,speaker:"echo",text:"Scooped up dirt, ran the first biology experiment on another planet — looking for microbes. Results were weird. Inconclusive. Scientists are still arguing about it fifty years later. But it asked the question. Every rover after it is here because Viking asked first."}
 ]};
+/* moon-silence narration — now plays in the ROVER zone (the first moon
+   artifact), introducing the moon's eerie silence as the rover model appears. */
 var MOONSILENCE_FALLBACK={segments:[
   {t:0,speaker:"echo",text:"…The wind stopped."},
   {t:2.32,speaker:"echo",text:"You notice that?"},
@@ -925,9 +927,14 @@ var EAGLE_FALLBACK={segments:[
   {t:26.00,speaker:"eagle",text:"The plaque says \"We came in peace for all mankind.\" I'm still holding that too."},
   {t:30.62,speaker:"echo",text:"…Yeah. I don't think I need to add anything."}
 ]};
-/* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones) */
-var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",eagle:"/audio/eagle.mp3"};
-var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,eagle:EAGLE_FALLBACK};
+/* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones).
+   The moon-silence narration ("…the wind stopped… Moon has no atmosphere…") is
+   mapped to the ROVER zone — it plays with the rover model + captions when you
+   arrive at the first moon artifact, rather than in the silent mars→moon
+   transition zone before it. The moonSilence zone itself is now a quiet visual
+   bridge (the planet change carries it). */
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,rover:MOONSILENCE_FALLBACK,eagle:EAGLE_FALLBACK};
 function detectAssets(){
   for(var kid in KNOWN_AUDIO){
     ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
@@ -1321,8 +1328,7 @@ var CHECKPOINTS=[
   {id:"opportunity",  depth:4750},
   {id:"spirit",       depth:5600},
   {id:"viking",       depth:6250},
-  {id:"moonSilence",  depth:6750},   /* midpoint of the moonSilence transition */
-  {id:"rover",        depth:7450},   /* mid-rover zone — model is fully shown here */
+  {id:"rover",        depth:7450},   /* mid-rover zone — model + moon-silence narration */
   {id:"eagle",        depth:8300},
   {id:"surveyor",     depth:8950},
   {id:"deepHum",      depth:9400},   /* midpoint of the deepHum transition */
