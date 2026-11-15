@@ -948,20 +948,33 @@ var SURVEYOR_FALLBACK={segments:[
   {t:24.46,speaker:"surveyor",text:"I didn't think of it that way."},
   {t:27.67,speaker:"echo",text:"Well, you should."}
 ]};
-/* Voyager 1 narration — Echo introduces the deep-space era: the hum is radio
-   waves from deep space, and the machines here are just falling through the
-   dark, some for fifty years. */
-var VOYAGER_FALLBACK={segments:[
+/* deepHum transition (moon→deepspace) — Echo introduces the deep-space era:
+   the hum is radio waves from deep space, and the machines here are just
+   falling through the dark, some for fifty years. Plays just before Voyager 1. */
+var DEEPHUM_FALLBACK={segments:[
   {t:0,speaker:"echo",text:"Oh, the hum you hear right now isn't music — it's radio waves coming from deep space, slowed down so you can hear them."},
   {t:9.66,speaker:"echo",text:"We're really far out now, and the machines here aren't really on any planet — they're just falling through the dark."},
   {t:18.53,speaker:"echo",text:"Some of them have been falling for fifty years."}
 ]};
+/* Voyager 1 monologue — the probe itself speaks: the Golden Record, crossing
+   the heliopause in 2012, first human object in interstellar space, power
+   fading, signal taking 22 hours to reach Earth, still going. */
+var VOYAGER_FALLBACK={segments:[
+  {t:0,speaker:"voyager",text:"Well, Voyager 1. You heard my record at the beginning — sixteen billion miles out. Sun's just a star behind me now."},
+  {t:9.46,speaker:"voyager",text:"You crossed the heliopause in twenty-twelve. Edge of the solar system, where the sun's wind stops. First human object in interstellar space."},
+  {t:15.61,speaker:"voyager",text:"I've got the Golden Record. A kiss, a mother talking to her kid, Chuck Berry. If something finds me — and the odds are really small — that's the only proof you ever existed."},
+  {t:28.92,speaker:"voyager",text:"And the power's fading. Instruments shutting down one by one. Signal takes twenty-two hours to reach Earth. By the time you hear this, I've already moved another million miles. But I keep going."},
+  {t:39.83,speaker:"voyager",text:"Space is really big and really empty, and there's nothing out here to stop me."},
+  {t:45.69,speaker:"voyager",text:"Same record you heard at the start, just a lot further away now."}
+]};
 /* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones).
    The moonSilence zone (mars→moon transition) carries the "…the wind stopped…
-   Moon has no atmosphere…" intro narration. The ROVER zone carries the rover's
-   own dialogue (Echo meets the Lunar Rover). Both play with captions. */
-var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3",surveyor:"/audio/surveyor.mp3",voyager:"/audio/voyager.mp3"};
-var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,rover:ROVER_FALLBACK,eagle:EAGLE_FALLBACK,surveyor:SURVEYOR_FALLBACK,voyager:VOYAGER_FALLBACK};
+   Moon has no atmosphere…" intro narration. The deepHum zone (moon→deepspace
+   transition) carries the "hum is radio waves from deep space" intro. The ROVER
+   zone carries the rover's own dialogue (Echo meets the Lunar Rover). All play
+   with captions. */
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3",viking:"/audio/viking.mp3",moonSilence:"/audio/moonSilence.mp3",rover:"/audio/rover.mp3",eagle:"/audio/eagle.mp3",surveyor:"/audio/surveyor.mp3",deepHum:"/audio/deepHum.mp3",voyager:"/audio/voyager.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK,viking:VIKING_FALLBACK,moonSilence:MOONSILENCE_FALLBACK,rover:ROVER_FALLBACK,eagle:EAGLE_FALLBACK,surveyor:SURVEYOR_FALLBACK,deepHum:DEEPHUM_FALLBACK,voyager:VOYAGER_FALLBACK};
 function detectAssets(){
   for(var kid in KNOWN_AUDIO){
     ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
