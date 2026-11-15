@@ -296,8 +296,6 @@ body{
 
   <div class="art-obj" data-art="spirit">
     <div class="visual">
-      <div class="obj rover spirit"><div class="panel"></div><div class="mast"></div><div class="head"></div><div class="body"></div><div class="whl w1"></div><div class="whl w2"></div><div class="whl w3"></div><div class="dust"></div></div>
-
     </div>
     <div class="nameplate"><div class="yr">2004–2010 · mars</div><div class="nm">Spirit</div><div class="loc">stuck at Troy</div></div>
   </div>
@@ -895,9 +893,20 @@ var OPPORTUNITY_FALLBACK={segments:[
   {t:66.4,speaker:"echo",text:"Me too, Oppy."},
   {t:76.7,speaker:"echo",text:"Couldn't get a signal through to her during that storm. Still bugs me.",aside:true}
 ]};
+var SPIRIT_FALLBACK={segments:[
+  {t:0,speaker:"echo",text:"Spirit. Oppy's twin. Same launch, same everything."},
+  {t:1.7,speaker:"spirit",text:"I know what it looks like."},
+  {t:4.4,speaker:"echo",text:"I wasn't gonna say anything."},
+  {t:6.8,speaker:"spirit",text:"You were. I'm stuck. Soft sand, place called Troy, 2009. Wheels just spun. Go ahead, try pulling me out."},
+  {t:18.0,speaker:"spirit",text:"Yeah. You and NASA have that in common. Two years they spent on it. Built a replica of my sand trap back on Earth, practiced with a copy of me. Nothing."},
+  {t:29.1,speaker:"echo",text:"So you just… stayed?"},
+  {t:30.5,speaker:"spirit",text:"Became a weather station. Parked. But the dirt around me has silica in it. The kind that forms around hot springs. On Earth those are loaded with life. So even stuck, I found something. Mars might've been habitable once."},
+  {t:48.1,speaker:"echo",text:"That's not nothing."},
+  {t:49.8,speaker:"spirit",text:"I know. Just wish I could've kept driving. Don't forget me, okay?"}
+]};
 /* hardcoded audio URLs + fallback transcripts (no HEAD fetch needed for these zones) */
-var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3"};
-var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK};
+var KNOWN_AUDIO={cold:"/audio/cold.mp3",perseverance:"/audio/perseverance.mp3",insight:"/audio/insight.mp3",opportunity:"/audio/opportunity.mp3",spirit:"/audio/spirit.mp3"};
+var KNOWN_FALLBACK={cold:COLD_FALLBACK,perseverance:PERSEVERANCE_FALLBACK,insight:INSIGHT_FALLBACK,opportunity:OPPORTUNITY_FALLBACK,spirit:SPIRIT_FALLBACK};
 function detectAssets(){
   for(var kid in KNOWN_AUDIO){
     ASSETS[kid]={audio:KNOWN_AUDIO[kid],transcript:KNOWN_FALLBACK[kid]||null};
@@ -1010,7 +1019,7 @@ onScroll();
    when its zone is active. Drop a model at public/models/<id>.glb and add it
    to MODEL_ZONES to use it.
    ==================================================================== */
-var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insight.glb", opportunity:"/models/opportunity.glb" };
+var MODEL_ZONES={ perseverance:"/models/perseverance.glb", insight:"/models/insight.glb", opportunity:"/models/opportunity.glb", spirit:"/models/spirit.glb" };
 var threeRenderer=null, threeScene=null, threeCamera=null, threeModels={}, threeReady=false;
 
 function zoneById(id){ for(var i=0;i<ZONES.length;i++){ if(ZONES[i].id===id)return ZONES[i]; } return null; }
