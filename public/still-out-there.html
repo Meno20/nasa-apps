@@ -6,6 +6,7 @@
 <title>Still Out There</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
 <style>
 :root{
   --bg:#03030a;
@@ -530,14 +531,12 @@ var SCENES={
   ]},
 
   insight:{ conv:[
-    {s:"echo", t:"This one's quiet. InSight. Solar panels completely buried in dust."},
-    {pause:1100},
-    {s:"echo", t:"InSight?"},
+    {s:"echo", t:"There. InSight?"},
     {s:"insight", t:"…Oh. Hey."},
     {s:"echo", t:"You okay?"},
     {s:"insight", t:"I'm good. I just… can't move. Never could, actually. Landed, unfolded my arms, pressed my seismometer into the dirt. That was the whole job."},
     {s:"echo", t:"What were you listening for?"},
-    {s:"insight", t:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundred of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does."}
+    {s:"insight", t:"Marsquakes. The planet has a heartbeat. Really slow, really deep. Picked up over thirteen hundreds of them. Last one was a meteorite, thirty-five hundred kilometers away, and I felt it. And then the dust just… won. It always does. But thanks for the light. Even for a little bit."}
   ]},
 
   opportunity:{ conv:[
@@ -985,7 +984,7 @@ function startAudioMode(id){
   /* show the first caption immediately, even if autoplay blocks the play() */
   var segs=a.transcript.segments||[];
   if(segs.length){ var chunks=splitChunks(segs[0].text||"",8); showCaption(segs[0].speaker||"echo", chunks[0]||"", eraCaptionClass(), segs[0].aside); currentNarrationKey=id+":0:0"; }
-  var p=narrAudio.play(); if(p&&p.catch)p.catch(function(){ audioMode=false; audioZoneId=null; });
+  var p=narrAudio.play(); if(p&&p.catch)p.catch(function(){ audioMode=false; audioZoneId=null; if(SCENES[id])playScene(id,null); });
   return true;
 }
 function stopAudioMode(){ audioMode=false; audioZoneId=null; if(narrAudio)narrAudio.pause(); }
@@ -1101,10 +1100,14 @@ function initThree(){
     var dir=new THREE.DirectionalLight(0xffffff,1.1); dir.position.set(3,4,5); threeScene.add(dir);
     var dir2=new THREE.DirectionalLight(0xffeecc,0.5); dir2.position.set(-3,-2,2); threeScene.add(dir2);
     threeReady=true;
+    /* set up DRACO decoder (some models use Draco mesh compression) */
+    var dracoLoader=new THREE.DRACOLoader();
+    dracoLoader.setDecoderPath("https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/draco/");
     /* load each model */
     for(var id in MODEL_ZONES){
       (function(mid,url){
         var loader=new THREE.GLTFLoader();
+        loader.setDRACOLoader(dracoLoader);
         loader.load(url,function(gltf){
           var obj=gltf.scene;
           /* center + normalize scale */
@@ -1318,15 +1321,13 @@ function begin(){
   initAudio(); if(AC&&AC.state==="suspended")AC.resume();
   initNarrAudio();
   initThree();
-  /* unlock the audio element inside the Begin gesture so later play() calls aren't blocked */
-  if(narrAudio){ narrAudio.src="/audio/cold.mp3"; var u=narrAudio.play(); if(u&&u.then)u.then(function(){ narrAudio.pause(); narrAudio.currentTime=0; }).catch(function(){}); }
   detectAssets();
   gate.classList.add("gone");
   brand.classList.add("on"); navEl.classList.add("on"); rail.classList.add("on"); timechip.classList.add("on");
   showVisor();
   echoEl.classList.remove("cold");
   startGoldenRecord();
-  setTimeout(function(){ startColdOpen(); }, 2800);
+  startColdOpen();
 }
 startbtn.addEventListener("click",begin);
 window.addEventListener("keydown",function(e){ if(!state.started&&(e.key===" "||e.key==="Enter")){ e.preventDefault(); begin(); } });
